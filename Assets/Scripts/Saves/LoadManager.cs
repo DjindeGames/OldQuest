@@ -50,11 +50,14 @@ public class LoadManager : MonoBehaviour
         MenuUI.Instance.setFileName(saveManager.SaveFileName);
         //Restoring inventory
         loadInventoryContent();
+        //Restoring playerStats
+        PlayerStatsManager.Instance.loadStats(SaveManager.Instance.PlayerStats);
         //Restoring scene state
         PlayerController.Instance.gameObject.transform.position = saveManager.PlayerPosition;
         removeDestroyedItems();
         restoreLights();
         restoreDoorsStates();
+        openOpenedChests();
     }
 
     private void restoreDoorsStates()
@@ -91,10 +94,13 @@ public class LoadManager : MonoBehaviour
     {
         foreach(int id in saveManager.DestroyedItemsIds)
         {
-            GameObject toBeDestroyed = retrieveSavedGameObject(id);
-            if (toBeDestroyed)
+            if (id >= 0)
             {
-                Destroy(toBeDestroyed);
+                GameObject toBeDestroyed = retrieveSavedGameObject(id);
+                if (toBeDestroyed)
+                {
+                    Destroy(toBeDestroyed);
+                }
             }
         }
     }
@@ -110,6 +116,22 @@ public class LoadManager : MonoBehaviour
                 if (lightable)
                 {
                     lightable.lightUp(true);
+                }
+            }
+        }
+    }
+
+    private void openOpenedChests()
+    {
+        foreach (int id in saveManager.OpenedChestsIds)
+        {
+            GameObject chestToOpen = retrieveSavedGameObject(id);
+            if (chestToOpen)
+            {
+                Chest chest = chestToOpen.GetComponent<Chest>();
+                if (chest)
+                {
+                    chest.forceOpen();
                 }
             }
         }

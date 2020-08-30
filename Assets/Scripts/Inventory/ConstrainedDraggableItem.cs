@@ -90,6 +90,7 @@ public abstract class ConstrainedDraggableItem : MonoBehaviour
     protected virtual void OnItemReleased()
     {
         Grabbed = false;
+        rb.isKinematic = false;
     }
 
     protected virtual void OnItemGrabbed()

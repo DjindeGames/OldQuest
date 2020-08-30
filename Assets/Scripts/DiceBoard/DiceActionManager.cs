@@ -6,6 +6,9 @@ public class DiceActionManager : MonoBehaviour
 {
     public static DiceActionManager Instance { get; private set; }
 
+    public delegate void actionPerformed(ThrowActionType actionType, int result);
+    public event actionPerformed onActionPerformed;
+
     void Awake()
     {
         Instance = this;
@@ -48,6 +51,14 @@ public class DiceActionManager : MonoBehaviour
 
     public void onThrowComplete(ThrowAction action)
     {
-
+        switch(action.actionType)
+        {
+            case (ThrowActionType.HealingPotion):
+                PlayerStatsManager.Instance.addHealthPointsModifier(action.result);
+                break;
+            default:
+                onActionPerformed(action.actionType, action.result);
+                break;
+        }
     }
 }

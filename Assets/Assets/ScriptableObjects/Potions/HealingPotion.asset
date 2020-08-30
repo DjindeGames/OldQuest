@@ -17,4 +17,4 @@ MonoBehaviour:
   name: Healing potion
   details: A weird beverage, restores up to D6 health points.
   type: 1
-  value: 5
+  value: 1

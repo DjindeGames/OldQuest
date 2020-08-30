@@ -89,7 +89,7 @@ public class DiceBoardManager : MonoBehaviour
     private void onThrowComplete()
     {
         ThrowAction completedAction = popThrowAction();
-        clearThrowAction(completedAction);
+        computeAndClearThrowAction(completedAction);
         throwIsComplete(completedAction);
     }
 
@@ -241,13 +241,16 @@ public class DiceBoardManager : MonoBehaviour
         {
             GameObject instantiatedDice = Instantiate(dice, dicesContainer);
             instantiatedDice.transform.position = new Vector3(diceBoardPosition.x, diceBoardPosition.y + baseVerticalInstantiationOffset + cumulatedInstantiationOffset, diceBoardPosition.z);
-            action.dices.Add(instantiatedDice.GetComponent<Dice>());
+            Dice diceComponent = instantiatedDice.GetComponent<Dice>();
+            diceComponent.setParentAction(action);
+            action.dices.Add(diceComponent);
             cumulatedInstantiationOffset += instantiationIterativeOffset;
         }
     }
 
-    private void clearThrowAction(ThrowAction action)
+    private void computeAndClearThrowAction(ThrowAction action)
     {
+        action.computeResult();
         for(int i = 0; i < action.dices.Count; i++)
         {
             Destroy(action.dices[i].gameObject);
@@ -293,6 +296,7 @@ public class ThrowAction
     public int numberOfDices;
     public int minimumValueNeeded;
     public bool isAutomaticThrow = false;
+    public int result;
     public List<Dice> dices = new List<Dice>();
 
     public void pauseAction()
@@ -325,22 +329,21 @@ public class ThrowAction
         return actionComplete;
     }
 
-    public int getResult()
+    public void computeResult()
     {
-        int result = 0;
-        switch(actionType)
+        switch (actionType)
         {
             case (ThrowActionType.HealingPotion):
-                result = getTotalScore();
+            case (ThrowActionType.LootChest):
+                result = getValueSum();
                 break;
             default:
-                result = getNBValid();
+                result = getValidSum();
                 break;
         }
-        return result;
     }
 
-    private int getNBValid()
+    private int getValidSum()
     {
         int nbValidDices = 0;
         foreach (Dice dice in dices)
@@ -353,7 +356,7 @@ public class ThrowAction
         return nbValidDices;
     }
 
-    private int getTotalScore()
+    private int getValueSum()
     {
         int totalScore = 0;
         foreach (Dice dice in dices)

@@ -61,6 +61,7 @@ public class InventoryItem : ConstrainedDraggableItem
     private void use()
     {
         InventoryManager.Instance.useItem(this);
+        InventoryUI.Instance.hideItemDetails();
     }
 
     private void remove()

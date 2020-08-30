@@ -117,9 +117,11 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void remove(GameObject item)
+    public void removeItem(GameObject item, bool destroy = false)
     {
-        //inventoryContent.Remove(item);
+        Tuple<GameObject, bool> itemToRemove = retrieveItem(item);
+        inventoryContent.Remove(itemToRemove);
+        Destroy(item);
     }
 
     public void addFileToArchives(ReadableKey key, bool withSelection = true)
@@ -242,7 +244,7 @@ public class InventoryManager : MonoBehaviour
                 break;
             case (ItemType.Potion):
                 usePotion((Potion)item);
-                Destroy(inventoryItem);
+                removeItem(inventoryItem.gameObject);
                 break;
         }
     }
@@ -280,12 +282,12 @@ public class InventoryManager : MonoBehaviour
 
     private void updateEquipmentState(GameObject reference, bool value)
     {
-        Tuple<GameObject, bool> tuple = retrieveEquipment(reference);
+        Tuple<GameObject, bool> tuple = retrieveItem(reference);
         inventoryContent.Remove(tuple);
         inventoryContent.Add(new Tuple<GameObject, bool>(reference, value));
     }
 
-    private Tuple<GameObject, bool> retrieveEquipment(GameObject reference)
+    private Tuple<GameObject, bool> retrieveItem(GameObject reference)
     {
         Tuple<GameObject, bool> tuple = new Tuple<GameObject, bool>(null, false);
         foreach(Tuple<GameObject,bool> t in inventoryContent)

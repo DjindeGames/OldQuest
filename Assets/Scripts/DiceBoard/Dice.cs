@@ -206,7 +206,6 @@ public class Dice : ConstrainedDraggableItem
     protected override void OnItemReleased()
     {
         base.OnItemReleased();
-        rb.isKinematic = false;
         currentThrowType = DiceThrowType.Manual;
     }
 

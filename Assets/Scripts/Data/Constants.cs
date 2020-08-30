@@ -5,14 +5,14 @@ public enum SFXType { ItemEquipped, PageChanged, OpenReadable, CloseReadable }
 public enum VolumeType { Music, Effects, Physics }
 public enum CameraType { Player, Inventory, FirstPerson, DiceBoard, Puppet }
 public enum ScreenType { Main, Inventory, Menu, Archives, Puppet, DiceBoard }
-public enum UIType { Main, Inventory, Menu, Archives, DiceBoard, Puppet }
+public enum UIType { Main, Inventory, Menu, Archives, DiceBoard, Puppet, PlayerStats }
 public enum PotionType { Strength, Health }
 public enum GearSlot { Chest, Head, RightHand, LeftHand }
 public enum EquipmentBonus { HitRolls, Armor, HealthPoints, ToHit, ToWound, Strength, Endurance }
 public enum DoorState { Opened, Closed, Locked }
 public enum DiceValue { Broken = 0, One, Two, Three, Four, Five, Six }
 public enum DiceThrowType { None, Automatic, Manual, Thrown }
-public enum ThrowActionType { HealingPotion, StrengthPotion, Loot, Touch, Wound }
+public enum ThrowActionType { HealingPotion, StrengthPotion, LootChest, Touch, Wound }
 public enum ThrowActionPerformer { Player, Ennemy }
 public enum DiceColor { Red, Green, Blue, Black, White, Gold }
 public enum DiceOutlineType { None, Broken, Success, Failure, Selected }
@@ -47,6 +47,7 @@ public static class Constants
     public static string SFSerializedPlayerPositionField { get; private set; } = "PlayerPosition";
     public static string SFSerializedDestroyedItemsField { get; private set; } = "DestroyedItems";
     public static string SFSerializedLitLightsField { get; private set; } = "LitLights";
+    public static string SFSerializedOpenedChestsField { get; private set; } = "OpenedChests";
     public static string SFSerializedDoorsStatesField { get; private set; } = "DoorsStates";
     public static string SFSerializedUnlockedDoorsField { get; private set; } = "UnlockedDoors";
     public static string SFSerializedOilAmountField { get; private set; } = "OilAmount";
@@ -54,4 +55,7 @@ public static class Constants
     public static string SFSerializedKeysField { get; private set; } = "Keys";
     public static string SFSerializedInventoryContentField { get; private set; } = "InventoryContent";
     public static string SFSerializedArchivesField { get; private set; } = "Archives";
+    public static string SFSerializedPlayerStatsField { get; private set; } = "PlayerStats";
+    public static string SFSerializedPlayerStatsHealthPointsField { get; private set; } = "HealthPoints";
+    public static string SFSerializedPlayerStatsMaxHealthPointsField { get; private set; } = "MaxHealthPoints";
 }
