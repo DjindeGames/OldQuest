@@ -40,6 +40,15 @@ public class InventoryUI : MonoBehaviour
     {
         itemName.text = which.name;
         itemDetails.text = which.details;
+        if (which.Type == ItemType.Equipment)
+        {
+            Equipment equipment = (Equipment)which;
+            itemDetails.text += "\n\nBonuses:";
+            for (int i = 0; i < equipment.stats.Length; i++)
+            {
+                itemDetails.text += "\n" + equipment.stats[i].type.ToString() + ": " + equipment.stats[i].value.ToString();
+            }
+        }
     }
 
     public void hideItemDetails()

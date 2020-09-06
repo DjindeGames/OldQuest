@@ -18,7 +18,7 @@ MonoBehaviour:
   details: A solid but heavy piece of armor.
   slots: 00000000
   stats:
-  - type: 1
-    value: 10
   - type: 0
+    value: 10
+  - type: 2
     value: -1

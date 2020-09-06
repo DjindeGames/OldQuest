@@ -18,5 +18,5 @@ MonoBehaviour:
   details: Does not protect much more than your identity..
   slots: 01000000
   stats:
-  - type: 1
+  - type: 0
     value: 5

@@ -127,9 +127,13 @@ public class SaveManager : MonoBehaviour
         serializedSave.AddField(Constants.SFSerializedSceneField, SceneManager.GetActiveScene().name);
 
         //SERIALIZING PLAYER STATS
-        PlayerStatsManager playerStatsManager = PlayerStatsManager.Instance;
-        playerStats.AddField(Constants.SFSerializedPlayerStatsHealthPointsField, playerStatsManager.PlayerHealth);
-        playerStats.AddField(Constants.SFSerializedPlayerStatsMaxHealthPointsField, playerStatsManager.MaxPlayerHealth);
+        PlayerStats copiedPlayerStats = PlayerStatsManager.Instance.getPlayerStats();
+        playerStats.AddField(Constants.SFSerializedPlayerStatsHealthPointsField, copiedPlayerStats.healthPoints);
+        playerStats.AddField(Constants.SFSerializedPlayerStatsVitalityField, copiedPlayerStats.vitality);
+        playerStats.AddField(Constants.SFSerializedPlayerStatsStrengthField, copiedPlayerStats.strength);
+        playerStats.AddField(Constants.SFSerializedPlayerStatsEnduranceField, copiedPlayerStats.endurance);
+        playerStats.AddField(Constants.SFSerializedPlayerStatsHitRollsField, copiedPlayerStats.hitRolls);
+        playerStats.AddField(Constants.SFSerializedPlayerStatsScoreToHitField, copiedPlayerStats.scoreToHit);
         serializedSave.AddField(Constants.SFSerializedPlayerStatsField, playerStats);
 
         //SERIALIZING SCENE STATE
@@ -313,7 +317,11 @@ public class SaveManager : MonoBehaviour
         JSONObject playerStats = saveFile.GetField(Constants.SFSerializedPlayerStatsField);
         PlayerStats = new PlayerStats();
         PlayerStats.healthPoints = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsHealthPointsField).ToString());
-        PlayerStats.maxHealthPoints = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsMaxHealthPointsField).ToString());
+        PlayerStats.vitality = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsVitalityField).ToString());
+        PlayerStats.strength = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsStrengthField).ToString());
+        PlayerStats.endurance = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsEnduranceField).ToString());
+        PlayerStats.hitRolls = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsHitRollsField).ToString());
+        PlayerStats.scoreToHit = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsScoreToHitField).ToString());
 
         //Misc
         JSONObject playerPosition = saveFile.GetField(Constants.SFSerializedPlayerPositionField);

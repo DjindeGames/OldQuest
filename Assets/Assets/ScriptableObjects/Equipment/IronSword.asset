@@ -18,5 +18,5 @@ MonoBehaviour:
   details: Rusty and not very sharp, could you even kill something with that?
   slots: 0200000003000000
   stats:
-  - type: 0
-    value: 1
+  - type: 1
+    value: 2

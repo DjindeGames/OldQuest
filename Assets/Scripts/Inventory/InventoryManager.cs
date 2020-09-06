@@ -210,6 +210,7 @@ public class InventoryManager : MonoBehaviour
                         Destroy(equippedSlot.parent.GetChild(0).gameObject);
                         Destroy(pupperSlot.parent.GetChild(0).gameObject);
                         updateEquipmentState(inventoryItem.gameObject, false);
+                        updateEquipmentBonuses(equipment, false);
                         if (!restored)
                         {
                             writeEquipmentLog(0, equippedSlot.type, inventoryItem.LinkedItem.name);
@@ -228,6 +229,7 @@ public class InventoryManager : MonoBehaviour
                             Instantiate(skin, associatedSlot.parent);
                             Instantiate(skin, pupperSlot.parent);
                             updateEquipmentState(inventoryItem.gameObject, true);
+                            updateEquipmentBonuses(equipment, true);
                             if (!restored)
                             {
                                 writeEquipmentLog(1, equipment.slots[i], inventoryItem.LinkedItem.name);
@@ -246,6 +248,21 @@ public class InventoryManager : MonoBehaviour
                 usePotion((Potion)item);
                 removeItem(inventoryItem.gameObject);
                 break;
+        }
+    }
+
+    private void updateEquipmentBonuses(Equipment equipment, bool apply)
+    {
+        for (int i = 0; i < equipment.stats.Length; i++)
+        {
+            if (apply)
+            {
+                PlayerStatsManager.Instance.applyEquipmentBonus(equipment.stats[i]);
+            }
+            else
+            {
+                PlayerStatsManager.Instance.unapplyEquipmentBonus(equipment.stats[i]);
+            }
         }
     }
 
