@@ -46,16 +46,20 @@ public class SoundPlayer : MonoBehaviour
 
     private AudioClip getSFX(SFXType which)
     {
-        AudioClip clip = null;
+        AudioClip[] clips = null;
         for (int i = 0; i < SFXsounds.Length; i++)
         {
             if (SFXsounds[i].type == which)
             {
-                clip = SFXsounds[i].clip;
+                clips = SFXsounds[i].clips;
                 break;
             }
         }
-        return clip;
+        if (clips.Length > 0)
+        {
+            return clips[Random.Range(0, clips.Length)];
+        }
+        return null;
     }
 }
 
@@ -70,5 +74,5 @@ public class LootSound
 public class SoundEffect
 {
     public SFXType type;
-    public AudioClip clip;
+    public AudioClip[] clips;
 }

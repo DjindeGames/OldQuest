@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using NaughtyAttributes;
+using System.Collections.Generic;
 
 public class Chest : Highlightable
 {
@@ -43,6 +43,7 @@ public class Chest : Highlightable
 
     private void dispatchLoot(int score)
     {
+        List<Item> lootedItems = new List<Item>();
         for (int i = 0; i < loots.Length; i++)
         {
             if (loots[i].requiredScore <= score)
@@ -50,8 +51,11 @@ public class Chest : Highlightable
                 Vector3 instancePosition = new Vector3(transform.position.x, transform.position.y + baseLootVerticalOffset, transform.position.z);
                 GameObject instantiated = Instantiate(loots[i].loot, instancePosition, Quaternion.identity);
                 baseLootVerticalOffset += iterativeLootVerticalOffset;
+                lootedItems.Add(instantiated.GetComponent<Lootable>().item);
             }
         }
+        DiceBoardUI.Instance.showLootResults(lootedItems);
+        SoundPlayer.Instance.playSFX(SFXType.OpenedChest);
     }
 
     private void openChest(int score, bool forced = false)
@@ -73,7 +77,7 @@ public class Chest : Highlightable
 [System.Serializable]
 public class LootByScore
 {
-    [RangeAttribute(0,36)]
+    [RangeAttribute(6,36)]
     public int requiredScore;
     public GameObject loot;
 }

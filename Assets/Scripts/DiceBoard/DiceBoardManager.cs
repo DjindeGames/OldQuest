@@ -215,7 +215,7 @@ public class DiceBoardManager : MonoBehaviour
         }
         if (throwActions.Count == 0)
         {
-            ScreenManager.Instance.switchToPreviousScreen();
+            //ScreenManager.Instance.switchToPreviousScreen();
         }
         return poppedAction;
     }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public enum ItemType { Equipment, Readable, Valuable, Key, Potion, Oil }
-public enum SFXType { ItemEquipped, PageChanged, OpenReadable, CloseReadable }
+public enum SFXType { ItemEquipped, PageChanged, OpenReadable, CloseReadable, OpenedChest, DrinkPotion, LootRevealed }
 public enum VolumeType { Music, Effects, Physics }
 public enum CameraType { Player, Inventory, FirstPerson, DiceBoard, Puppet }
 public enum ScreenType { Main, Inventory, Menu, Archives, Puppet, DiceBoard }

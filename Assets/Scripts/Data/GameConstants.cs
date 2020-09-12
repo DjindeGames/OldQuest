@@ -72,6 +72,20 @@ public class GameConstants : MonoBehaviour
         return material;
     }
 
+    public Color getLootableRarityColorByType(LootableOutlineType which)
+    {
+        Color outlineColor = Color.black;
+        for (int i = 0; i < lootableOutlines.Length; i++)
+        {
+            if (lootableOutlines[i].type == which)
+            {
+                outlineColor = lootableOutlines[i].material.GetColor(lootableOutlines[i].material.shader.GetPropertyNameId(3));
+                //outlineColor = lootableOutlines[i].material.GetColor(lootableOutlines[i].material.shader.GetPropertyNameId;
+            }
+        }
+        return outlineColor;
+    }
+
     public Material getDiceOutlineMaterialByType(DiceOutlineType which)
     {
         Material material = null;
