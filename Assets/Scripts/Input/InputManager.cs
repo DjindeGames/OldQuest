@@ -50,11 +50,11 @@ public class InputManager : MonoBehaviour
 
     void checkInputMain()
     {
-        if (Input.GetKeyDown(KeyCode.Tab) && introCompleted)
+        if (Input.GetKeyDown(KeyCode.Tab) && introCompleted && !PlayerHelper.IsGrabbing)
         {
             ScreenManager.Instance.switchScreen(ScreenType.Inventory);
         }
-        else if (Input.GetKeyDown(KeyCode.Escape) && introCompleted)
+        else if (Input.GetKeyDown(KeyCode.Escape) && introCompleted && !PlayerHelper.IsGrabbing)
         {
              ScreenManager.Instance.switchScreen(ScreenType.Menu);
         }

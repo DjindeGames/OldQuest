@@ -56,7 +56,7 @@ public class DiceActionManager : MonoBehaviour
             case (ThrowActionType.HealingPotion):
                 ScreenManager.Instance.switchToPreviousScreen();
                 PlayerStatsManager.Instance.addHealthPointsModifier(action.result);
-                SoundPlayer.Instance.playSFX(SFXType.DrinkPotion);
+                SoundManager.Instance.playSFX(SFXType.DrinkPotion);
                 break;
             default:
                 onActionPerformed(action.actionType, action.result);

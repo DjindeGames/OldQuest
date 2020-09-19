@@ -5,7 +5,7 @@ public abstract class Interactable : MonoBehaviour
     [SerializeField]
     private ScreenType associatedScreen = ScreenType.Main;
      
-    private bool active = true;
+    private bool enabled = true;
 
 
     private void Start()
@@ -25,7 +25,7 @@ public abstract class Interactable : MonoBehaviour
 
     protected virtual void OnMouseOver()
     {
-        if (!active) return;
+        if (!enabled) return;
         if (Input.GetMouseButtonDown(0))
         {
             PlayerController.Instance.cancelMove();
@@ -51,7 +51,7 @@ public abstract class Interactable : MonoBehaviour
 
     protected virtual void OnMouseEnter()
     {
-        if (!active) return;
+        if (!enabled) return;
         if (ScreenManager.Instance.ActiveScreen == associatedScreen)
         {
             mouseEntered();
@@ -60,7 +60,7 @@ public abstract class Interactable : MonoBehaviour
 
     protected virtual void OnMouseExit()
     {
-        if (!active) return;
+        if (!enabled) return;
         if (ScreenManager.Instance.ActiveScreen == associatedScreen)
         {
             mouseExited();
@@ -71,15 +71,16 @@ public abstract class Interactable : MonoBehaviour
     {
         if (which != associatedScreen)
         {
-            active = false;
-            deactivate();
+            disable();
         }
         else
         {
-            active = true;
+            enable();
         }
     }
 
+    protected virtual void disable() { enabled = false; }
+    protected virtual void enable() { enabled = true; }
     protected virtual void activate() { }
     protected virtual void deactivate() { }
     protected virtual void mouseEntered() { }

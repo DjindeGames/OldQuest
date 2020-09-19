@@ -1,8 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(StateSave))]
 public class Lootable : ItemPhysics
 {
     [Header("Parameters")]
@@ -28,7 +26,7 @@ public class Lootable : ItemPhysics
     protected override void mouseEntered()
     {
         MainUI.Instance.displayDescription(item.description);
-        toggleOutline(true);
+        toggleOutline(!grabbed);
     }
 
     protected override void mouseExited()
@@ -46,6 +44,7 @@ public class Lootable : ItemPhysics
     protected override void activate()
     {
         base.activate();
+        toggleOutline(false);
         StartCoroutine(checkIfGrabbedOrClicked());
     }
 

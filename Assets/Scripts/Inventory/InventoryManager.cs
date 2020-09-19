@@ -73,7 +73,7 @@ public class InventoryManager : MonoBehaviour
         switch (item.Type)
         {
             case ItemType.Valuable:
-                SoundPlayer.Instance.playLootSound(item.Type);
+                SoundManager.Instance.playLootSound(item.Type);
                 retrieveSurroundingValuables(looted);
                 return;
             case ItemType.Oil:
@@ -104,7 +104,7 @@ public class InventoryManager : MonoBehaviour
         {
             MainUI.Instance.hideDescription();
             writeLootLog(item.description.ToLower());
-            SoundPlayer.Instance.playLootSound(looted.item.Type);
+            SoundManager.Instance.playLootSound(looted.item.Type);
             StateSave stateSave = looted.GetComponent<StateSave>();
             if (stateSave)
             {
@@ -117,11 +117,38 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    public void removeItem(GameObject item, bool destroy = false)
+    public void removeItem(InventoryItem inventoryItem, bool destroy = false)
     {
-        Tuple<GameObject, bool> itemToRemove = retrieveItem(item);
-        inventoryContent.Remove(itemToRemove);
-        Destroy(item);
+        if (isAlreadyEquipped(inventoryItem, out EquipmentSlot slot))
+        {
+            //writeEquipmentLog(-2, slot.type, inventoryItem.LinkedItem.name);
+            MainUI.Instance.writeLog("Cannot remove the " + inventoryItem.LinkedItem.name + " from inventory: unequip it first.");
+        }
+        else
+        {
+            GameObject item = inventoryItem.gameObject;
+            Tuple<GameObject, bool> itemToRemove = retrieveItem(item);
+
+            inventoryContent.Remove(itemToRemove);
+            //Item is manually removed by player
+            if (!destroy)
+            {
+                Destroy(inventoryItem);
+
+                Vector3 playerPosition = PlayerController.Instance.PlayerPosition;
+                item.transform.position = new Vector3(playerPosition.x, playerPosition.y + 1.0f, playerPosition.z);
+
+                SaveManager.Instance.addSpawnedItem(item);
+
+                SoundManager.Instance.playSFX(SFXType.ItemRemoved);
+                MainUI.Instance.writeLog(inventoryItem.LinkedItem.name + " removed from inventory.");
+            }
+            //Item is consumed
+            else
+            {
+                Destroy(item);
+            }
+        }
     }
 
     public void addFileToArchives(ReadableKey key, bool withSelection = true)
@@ -174,6 +201,8 @@ public class InventoryManager : MonoBehaviour
 
     public void addItem(GameObject item, bool equipped = false, bool restored = false)
     {
+        Destroy(item.GetComponent<StateSave>());
+        SaveManager.Instance.tryRemovedSpawnedItem(item);
         inventoryContent.Add(new Tuple<GameObject, bool>(item.gameObject, equipped));
         Vector3 newPosition = new Vector3(inventoryTable.transform.position.x, inventoryTable.transform.position.y + 2, inventoryTable.transform.position.z);
         item.transform.position = newPosition;
@@ -214,7 +243,7 @@ public class InventoryManager : MonoBehaviour
                         if (!restored)
                         {
                             writeEquipmentLog(0, equippedSlot.type, inventoryItem.LinkedItem.name);
-                            SoundPlayer.Instance.playSFX(SFXType.ItemEquipped);
+                            SoundManager.Instance.playSFX(SFXType.ItemEquipped);
                         }
                         break;
                     }
@@ -233,7 +262,7 @@ public class InventoryManager : MonoBehaviour
                             if (!restored)
                             {
                                 writeEquipmentLog(1, equipment.slots[i], inventoryItem.LinkedItem.name);
-                                SoundPlayer.Instance.playSFX(SFXType.ItemEquipped);
+                                SoundManager.Instance.playSFX(SFXType.ItemEquipped);
                             }
                             break;
                         }
@@ -245,8 +274,16 @@ public class InventoryManager : MonoBehaviour
                 }
                 break;
             case (ItemType.Potion):
-                usePotion((Potion)item);
-                removeItem(inventoryItem.gameObject);
+                Potion potion = (Potion)item;
+                if (potion.type == PotionType.Health && PlayerStatsManager.Instance.HasFullHealth)
+                {
+                    MainUI.Instance.writeLog("It would be a waste!");
+                }
+                else
+                {
+                    usePotion(potion);
+                    removeItem(inventoryItem, true);
+                }
                 break;
         }
     }
@@ -285,6 +322,9 @@ public class InventoryManager : MonoBehaviour
         }
         switch(equipped)
         {
+            case (-2):
+                MainUI.Instance.writeLog("Cannot remove the " + equipmentName.ToLower() + ": " + formattedSlot + " is equipped with it.");
+                break;
             case (-1):
                 MainUI.Instance.writeLog("Cannot equip the " + equipmentName.ToLower() + ": " + formattedSlot + " slot already used.");
                 break;

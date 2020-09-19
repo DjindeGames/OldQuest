@@ -55,6 +55,7 @@ public class ItemPhysics : Interactable
         if (CameraManager.Instance.FirstPersonViewActive)
         {
             grabbed = true;
+            PlayerHelper.IsGrabbing = true;
             if (obstacle)
             {
                 obstacle.enabled = false;
@@ -68,12 +69,19 @@ public class ItemPhysics : Interactable
         if (CameraManager.Instance.FirstPersonViewActive)
         {
             grabbed = false;
+            PlayerHelper.IsGrabbing = false;
             if (obstacle)
             {
                 obstacle.enabled = true;
             }
             PlayerController.Instance.togglePlayerController(true);
         }
+    }
+
+    protected override void disable()
+    {
+        base.disable();
+        deactivate();
     }
 
     private void Update()

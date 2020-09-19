@@ -4,6 +4,14 @@ public class PlayerStatsManager : MonoBehaviour
 {
     public static PlayerStatsManager Instance { get; private set; }
 
+    public bool HasFullHealth
+    {
+        get
+        {
+            return Health == Vitality;
+        }
+    }
+
     public int Health
     {
         get
@@ -35,7 +43,7 @@ public class PlayerStatsManager : MonoBehaviour
         get
         {
             int strength = playerStats.strength + equipmentBonuses.strength;
-            Mathf.Clamp(strength, 1, int.MaxValue);
+            strength = Mathf.Clamp(strength, 1, int.MaxValue);
             return strength;
         }
         private set
@@ -49,7 +57,7 @@ public class PlayerStatsManager : MonoBehaviour
         get
         {
             int endurance = playerStats.endurance + equipmentBonuses.endurance;
-            Mathf.Clamp(endurance, 1, int.MaxValue);
+            endurance = Mathf.Clamp(endurance, 1, int.MaxValue);
             return endurance;
         }
         private set
@@ -63,7 +71,7 @@ public class PlayerStatsManager : MonoBehaviour
         get
         {
             int hitRolls = playerStats.hitRolls + equipmentBonuses.hitRolls;
-            Mathf.Clamp(hitRolls, 1, int.MaxValue);
+            hitRolls = Mathf.Clamp(hitRolls, 1, int.MaxValue);
             return hitRolls;
         }
         private set
@@ -85,7 +93,7 @@ public class PlayerStatsManager : MonoBehaviour
         get
         {
             int scoreToHit = playerStats.scoreToHit + equipmentBonuses.toHit;
-            Mathf.Clamp(scoreToHit, 1, 6);
+            scoreToHit = Mathf.Clamp(scoreToHit, 1, 6);
             return scoreToHit;
         }
         private set
@@ -126,7 +134,7 @@ public class PlayerStatsManager : MonoBehaviour
     public void addHealthPointsModifier(int modifier)
     {
         int newHealthPoints = playerStats.healthPoints + modifier;
-        Mathf.Clamp(newHealthPoints, 0, Vitality);
+        newHealthPoints = Mathf.Clamp(newHealthPoints, 0, Vitality);
         Health = newHealthPoints;
         if (Health == 0)
         {

@@ -50,12 +50,14 @@ public class Chest : Highlightable
             {
                 Vector3 instancePosition = new Vector3(transform.position.x, transform.position.y + baseLootVerticalOffset, transform.position.z);
                 GameObject instantiated = Instantiate(loots[i].loot, instancePosition, Quaternion.identity);
+                Destroy(instantiated.GetComponent<StateSave>());
+                SaveManager.Instance.addSpawnedItem(instantiated);
                 baseLootVerticalOffset += iterativeLootVerticalOffset;
                 lootedItems.Add(instantiated.GetComponent<Lootable>().item);
             }
         }
         DiceBoardUI.Instance.showLootResults(lootedItems);
-        SoundPlayer.Instance.playSFX(SFXType.OpenedChest);
+        SoundManager.Instance.playSFX(SFXType.OpenedChest);
     }
 
     private void openChest(int score, bool forced = false)

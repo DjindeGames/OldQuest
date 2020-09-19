@@ -4,7 +4,9 @@ public class UIManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField]
-    public UIInstance[] uis;
+    public UIInstance[] switchableUis;
+    [SerializeField]
+    public UIInstance[] persistentUis;
 
     private Canvas activeUI;
 
@@ -18,7 +20,8 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         activeUI = getCanvas(UIType.Main);
-        toggleUI(UIType.Main);
+        toggleSwitchableUI(UIType.Main);
+        togglePersistentUI(UIType.All);
     }
 
     public void switchUI(UIType which)
@@ -37,29 +40,58 @@ public class UIManager : MonoBehaviour
     private Canvas getCanvas(UIType which)
     {
         Canvas canvas = null;
-        for (int i = 0; i < uis.Length; i++)
+        for (int i = 0; i < switchableUis.Length; i++)
         {
-            if (uis[i].type == which)
+            if (switchableUis[i].type == which)
             {
-                canvas = uis[i].canvas;
+                canvas = switchableUis[i].canvas;
                 break;
             }
         }
         return canvas;
     }
 
-    private void toggleUI(UIType which)
+    private void toggleSwitchableUI(UIType which)
     {
-        for (int i = 0; i < uis.Length; i++)
+        for (int i = 0; i < switchableUis.Length; i++)
         {
-            if (uis[i].type == which)
+            if (switchableUis[i].type == which || which == UIType.All)
             {
-                uis[i].canvas.enabled = true;
+                switchableUis[i].canvas.enabled = true;
             }
             else
             {
-                uis[i].canvas.enabled = false;
+                switchableUis[i].canvas.enabled = false;
             }
+        }
+    }
+
+    private void togglePersistentUI(UIType which)
+    {
+        for (int i = 0; i < persistentUis.Length; i++)
+        {
+            if (persistentUis[i].type == which || which == UIType.All)
+            {
+                persistentUis[i].canvas.enabled = true;
+            }
+            else
+            {
+                persistentUis[i].canvas.enabled = false;
+            }
+        }
+    }
+
+    public void toggleUI(bool on)
+    {
+        if (on)
+        {
+            activeUI.enabled = true;
+            togglePersistentUI(UIType.All);
+        }
+        else
+        {
+            toggleSwitchableUI(UIType.None);
+            togglePersistentUI(UIType.None);
         }
     }
 }

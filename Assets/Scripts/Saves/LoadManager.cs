@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class LoadManager : MonoBehaviour
 {
@@ -58,6 +56,7 @@ public class LoadManager : MonoBehaviour
         restoreLights();
         restoreDoorsStates();
         openOpenedChests();
+        loadSpawnedItems();
     }
 
     private void restoreDoorsStates()
@@ -134,6 +133,27 @@ public class LoadManager : MonoBehaviour
                     chest.forceOpen();
                 }
             }
+        }
+    }
+
+    private void loadSpawnedItems()
+    {
+        //References can't be kept as we would compare an instantiated gameobject to it's prefab 
+        //when later picking up any removed item (see the implementation of SaveManager::tryDeleteRemovedItem)
+        //That's why the list needs to be rebuilt
+        List<GameObject> newListContent = new List<GameObject>();
+        foreach (Tuple<GameObject, Tuple<Vector3, Vector3>> spawnedItem in saveManager.SpawnedItems)
+        {
+            GameObject instantiated = Instantiate(spawnedItem.Item1);
+            Destroy(instantiated.GetComponent<StateSave>());
+            instantiated.transform.position = spawnedItem.Item2.Item1;
+            instantiated.transform.rotation = Quaternion.Euler(spawnedItem.Item2.Item2);
+            newListContent.Add(instantiated);
+        }
+        saveManager.SpawnedItems.Clear();
+        foreach (GameObject item in newListContent)
+        {
+            SaveManager.Instance.addSpawnedItem(item);
         }
     }
 

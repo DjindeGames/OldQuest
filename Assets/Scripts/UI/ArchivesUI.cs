@@ -54,7 +54,7 @@ public class ArchivesUI : MonoBehaviour
 
     public void close()
     {
-        SoundPlayer.Instance.playSFX(SFXType.CloseReadable);
+        SoundManager.Instance.playSFX(SFXType.CloseReadable);
         ScreenManager.Instance.switchToPreviousScreen();
     }
 
@@ -95,7 +95,7 @@ public class ArchivesUI : MonoBehaviour
         content.text = cachedContent;
         startIndexByPage.Add(0);
 
-        SoundPlayer.Instance.playSFX(SFXType.OpenReadable);
+        SoundManager.Instance.playSFX(SFXType.OpenReadable);
 
         StartCoroutine(computeNumberOfPages());
     }
@@ -116,14 +116,14 @@ public class ArchivesUI : MonoBehaviour
         {
             startIndexByPage.Add(startIndexByPage[currentPageIndex - 1] + currentlyDisplayedChars);
         }
-        SoundPlayer.Instance.playSFX(SFXType.PageChanged);
+        SoundManager.Instance.playSFX(SFXType.PageChanged);
         refreshPage();
     }
 
     public void previousPage()
     {
         currentPageIndex--;
-        SoundPlayer.Instance.playSFX(SFXType.PageChanged);
+        SoundManager.Instance.playSFX(SFXType.PageChanged);
         refreshPage();
     }
 

@@ -26,6 +26,7 @@ public class SaveManager : MonoBehaviour
     public Dictionary<int, bool> DoorsStates { get; private set; }
     public List<int> UnlockedDoorsIds { get; private set; }
     public List<int> OpenedChestsIds { get; private set; }
+    public List<Tuple<GameObject,Tuple<Vector3,Vector3>>> SpawnedItems { get; private set; } = new List<Tuple<GameObject, Tuple<Vector3, Vector3>>>();
 
     //INVENTORY
     public int OilAmount { get; private set; }
@@ -87,6 +88,19 @@ public class SaveManager : MonoBehaviour
         DoorsStates[id] = opened;
     }
 
+    public void addSpawnedItem(GameObject item)
+    {
+        //Positions are computed on save
+        Tuple<GameObject,Tuple<Vector3,Vector3>> spawnedItem = new Tuple<GameObject, Tuple<Vector3, Vector3>>(item, new Tuple<Vector3,Vector3>(Vector3.zero, Vector3.zero));
+        SpawnedItems.Add(spawnedItem);
+    }
+
+    public void tryRemovedSpawnedItem(GameObject item)
+    {
+        Tuple<GameObject, Tuple<Vector3, Vector3>> toBeRemoved = SpawnedItems.Find(candidate => candidate.Item1 == item);
+        SpawnedItems.Remove(toBeRemoved);
+    }
+
     public void SaveSettings()
     {
         JSONObject prefs = new JSONObject();
@@ -111,6 +125,7 @@ public class SaveManager : MonoBehaviour
         JSONObject unlockedDoors = new JSONObject(JSONObject.Type.ARRAY);
         JSONObject doorsStates = new JSONObject(JSONObject.Type.ARRAY);
         JSONObject destroyedItems = new JSONObject(JSONObject.Type.ARRAY);
+        JSONObject spawnedItems = new JSONObject(JSONObject.Type.ARRAY);
         JSONObject keys = new JSONObject(JSONObject.Type.ARRAY);
 
         //GETTING DATE AND PLAYTIME
@@ -183,6 +198,34 @@ public class SaveManager : MonoBehaviour
         }
         serializedSave.AddField(Constants.SFSerializedUnlockedDoorsField, unlockedDoors);
 
+        //Spawned items
+        foreach (Tuple<GameObject,Tuple<Vector3,Vector3>> spawnedItem in SpawnedItems)
+        {
+            JSONObject serializedSpawnedItem = new JSONObject(JSONObject.Type.ARRAY);
+            JSONObject spawnedItemCoordinates = new JSONObject();
+            JSONObject spawnedItemPosition = new JSONObject();
+            JSONObject spawnedItemRotation = new JSONObject();
+            Vector3 itemPosition = spawnedItem.Item1.transform.position;
+            Vector3 itemRotation = spawnedItem.Item1.transform.rotation.eulerAngles;
+            //Prefab Path
+            serializedSpawnedItem.Add(Constants.prefabsPath + spawnedItem.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + spawnedItem.Item1.name.Split('$')[0]);
+            //Position
+            spawnedItemPosition.AddField("x", itemPosition.x.ToString());
+            spawnedItemPosition.AddField("y", itemPosition.y.ToString());
+            spawnedItemPosition.AddField("z", itemPosition.z.ToString());
+            spawnedItemCoordinates.AddField(Constants.SFSerializedSpawnedItemPositionField, spawnedItemPosition);
+            //Rotation
+            spawnedItemRotation.AddField("x", itemRotation.x.ToString());
+            spawnedItemRotation.AddField("y", itemRotation.y.ToString());
+            spawnedItemRotation.AddField("z", itemRotation.z.ToString());
+            spawnedItemCoordinates.AddField(Constants.SFSerializedSpawnedItemRotationField, spawnedItemRotation);
+
+            serializedSpawnedItem.Add(spawnedItemCoordinates);
+
+            spawnedItems.Add(serializedSpawnedItem);
+        }
+        serializedSave.AddField(Constants.SFSerializedSpawnedItemsField, spawnedItems);
+
         //SERIALIZING INVENTORY
         serializedSave.AddField(Constants.SFSerializedOilAmountField, InventoryManager.Instance.OilAmount);
         serializedSave.AddField(Constants.SFSerializedGoldAmountField, InventoryManager.Instance.GoldAmount);
@@ -220,10 +263,10 @@ public class SaveManager : MonoBehaviour
         System.IO.File.WriteAllText(savesPath + date + "/" + date + Constants.SaveFilesExtension, serializedSave.Print(true));
 
         //TAKING SCREENSHOT
-        UIManager.Instance.toggleCurrentUI(false);
+        UIManager.Instance.toggleUI(false);
         yield return new WaitForEndOfFrame();
         ScreenCapture.CaptureScreenshot(savesPath + date + "/" + date + Constants.ScreenshotsExtension);
-        UIManager.Instance.toggleCurrentUI(true);
+        UIManager.Instance.toggleUI(true);
 
         //WAITING FOR SCREEN TO BE WRITTEN ON DISK
         while (!File.Exists(savesPath + date + "/" + date + Constants.ScreenshotsExtension))
@@ -282,6 +325,28 @@ public class SaveManager : MonoBehaviour
             {
                 DoorsStates[Int32.Parse(door[0].ToString())] = state;
             }
+        }
+
+        //Listing SpawnedItems
+        foreach (JSONObject spawnedItem in saveFile.GetField(Constants.SFSerializedSpawnedItemsField).list)
+        {
+            JSONObject serializedSpawnedItemCoordinates = spawnedItem[1];
+            JSONObject serializedSpawnedItemPosition = serializedSpawnedItemCoordinates[0];
+            JSONObject serializedSpawnedItemRotation = serializedSpawnedItemCoordinates[1];
+            Vector3 spawnedItemPosition = new Vector3(
+                float.Parse(serializedSpawnedItemPosition.GetField("x").str), 
+                float.Parse(serializedSpawnedItemPosition.GetField("y").str), 
+                float.Parse(serializedSpawnedItemPosition.GetField("z").str)
+                );
+            Vector3 spawnedItemRotation = new Vector3(
+                float.Parse(serializedSpawnedItemRotation.GetField("x").str),
+                float.Parse(serializedSpawnedItemRotation.GetField("y").str),
+                float.Parse(serializedSpawnedItemRotation.GetField("z").str)
+                );
+            SpawnedItems.Add(
+                new Tuple<GameObject, Tuple<Vector3, Vector3>>(Resources.Load<GameObject>(spawnedItem[0].str + "$"), 
+                new Tuple<Vector3, Vector3>(spawnedItemPosition, spawnedItemRotation))
+                );
         }
 
         //Restoring inventory
@@ -347,5 +412,6 @@ public class SaveManager : MonoBehaviour
         DoorsStates.Clear();
         UnlockedDoorsIds.Clear();
         Archives.Clear();
+        SpawnedItems.Clear();
     }
 }

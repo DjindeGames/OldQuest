@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
 public enum ItemType { Equipment, Readable, Valuable, Key, Potion, Oil }
-public enum SFXType { ItemEquipped, PageChanged, OpenReadable, CloseReadable, OpenedChest, DrinkPotion, LootRevealed }
+public enum SFXType { ItemEquipped, PageChanged, OpenReadable, CloseReadable, OpenedChest, DrinkPotion, LootRevealed, ItemRemoved }
 public enum VolumeType { Music, Effects, Physics }
 public enum CameraType { Player, Inventory, FirstPerson, DiceBoard, Puppet }
 public enum ScreenType { Main, Inventory, Menu, Archives, Puppet, DiceBoard }
-public enum UIType { Main, Inventory, Menu, Archives, DiceBoard, Puppet, PlayerStats }
+public enum UIType { None, Main, Inventory, Menu, Archives, DiceBoard, Puppet, PlayerUtils, All }
 public enum PotionType { Strength, Health }
 public enum GearSlot { Chest, Head, RightHand, LeftHand }
 public enum BaseStat { Vitality, Strength, Endurance, HitRolls, ScoreToHit }
@@ -51,6 +51,9 @@ public static class Constants
     public static string SFSerializedOpenedChestsField { get; private set; } = "OpenedChests";
     public static string SFSerializedDoorsStatesField { get; private set; } = "DoorsStates";
     public static string SFSerializedUnlockedDoorsField { get; private set; } = "UnlockedDoors";
+    public static string SFSerializedSpawnedItemsField { get; private set; } = "SpawnedItems";
+    public static string SFSerializedSpawnedItemPositionField { get; private set; } = "Position";
+    public static string SFSerializedSpawnedItemRotationField { get; private set; } = "Rotation";
     public static string SFSerializedOilAmountField { get; private set; } = "OilAmount";
     public static string SFSerializedGoldAmountField { get; private set; } = "GoldAmount";
     public static string SFSerializedKeysField { get; private set; } = "Keys";

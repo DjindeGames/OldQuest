@@ -6,13 +6,7 @@ public class PlayerStatsUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField]
-    private Slider healthSlider;
-    [SerializeField]
-    private TMP_Text currentHealthPoints;
-    [SerializeField]
-    private TMP_Text currentVitality;
-    [SerializeField]
-    private TMP_Text statsFrameHealth;
+    private OrbGauge healthGauge;
     [SerializeField]
     private TMP_Text statsFrameVitality;
     [SerializeField]
@@ -63,15 +57,12 @@ public class PlayerStatsUI : MonoBehaviour
 
     private void onHealthUpdated(int currentHealth)
     {
-        healthSlider.value = currentHealth;
-        currentHealthPoints.text = currentHealth.ToString();
-        statsFrameHealth.text = currentHealth.ToString();
+        healthGauge.setValue(currentHealth);
     }
 
     private void onVitalityUpdated(int vitality)
     {
-        healthSlider.maxValue = vitality;
-        currentVitality.text = vitality.ToString();
+        healthGauge.setMaxValue(vitality);
     }
 
     private void onStatsUpdated()
@@ -90,13 +81,36 @@ public class PlayerStatsUI : MonoBehaviour
         //Modifiers
         int vitalityBonus = playerStatsManager.getEquipmentBonus(EquipmentBonus.Vitality);
         statsFrameVitalityBonus.text = "[" + ((vitalityBonus >= 0) ? "+" : "") + vitalityBonus + "]";
+        statsFrameVitalityBonus.color = getBonusColor(vitalityBonus);
+
         int strengthBonus = playerStatsManager.getEquipmentBonus(EquipmentBonus.Strength);
         statsFrameStrengthBonus.text = "[" + ((strengthBonus >= 0) ? "+" : "") + strengthBonus + "]";
+        statsFrameStrengthBonus.color = getBonusColor(strengthBonus);
+
         int enduranceBonus = playerStatsManager.getEquipmentBonus(EquipmentBonus.Endurance);
         statsFrameEnduranceBonus.text = "[" + ((enduranceBonus >= 0) ? "+" : "") + enduranceBonus + "]";
+        statsFrameEnduranceBonus.color = getBonusColor(enduranceBonus);
+
         int hitRollsBonus = playerStatsManager.getEquipmentBonus(EquipmentBonus.HitRolls);
         statsFrameHitRollsBonus.text = "[" + ((hitRollsBonus >= 0) ? "+" : "") + hitRollsBonus + "]";
+        statsFrameHitRollsBonus.color = getBonusColor(hitRollsBonus);
+
         int scoreToHitBonus = playerStatsManager.getEquipmentBonus(EquipmentBonus.ToHit);
         statsFrameScoreToHitBonus.text = "[" + ((scoreToHitBonus >= 0) ? "+" : "") + scoreToHitBonus + "]";
+        statsFrameScoreToHitBonus.color = getBonusColor(scoreToHitBonus, true);
+    }
+
+    private Color getBonusColor(int value, bool lessIsMore = false)
+    {
+        Color bonusColor = Color.black;
+        if (value > 0)
+        {
+            bonusColor = lessIsMore ? Color.red : Color.green;
+        }
+        else if (value < 0)
+        {
+            bonusColor = lessIsMore ? Color.green : Color.red;
+        }
+        return bonusColor;
     }
 }

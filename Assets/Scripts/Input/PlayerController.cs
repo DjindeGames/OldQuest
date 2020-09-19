@@ -31,6 +31,13 @@ public class PlayerController : MonoBehaviour
 
     public static PlayerController Instance { get; private set; }
 
+    public Vector3 PlayerPosition
+    {
+        get
+        {
+            return transform.position;
+        }
+    }
 
     private bool active = true;
     private bool frozen = false;
