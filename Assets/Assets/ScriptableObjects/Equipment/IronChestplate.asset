@@ -16,6 +16,7 @@ MonoBehaviour:
   rarity: 5
   name: Iron Chestplate
   details: A solid but heavy piece of armor.
+  skin: {fileID: 5234844255453812160, guid: 769d9a9a3a974ad45a85c9f512c080a2, type: 3}
   slots: 00000000
   stats:
   - type: 0

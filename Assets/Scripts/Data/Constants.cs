@@ -13,7 +13,7 @@ public enum EquipmentBonus { Armor, HitRolls, ToHit, ToWound, Vitality, Strength
 public enum DoorState { Opened, Closed, Locked }
 public enum DiceValue { Broken = 0, One, Two, Three, Four, Five, Six }
 public enum DiceThrowType { None, Automatic, Manual, Thrown }
-public enum ThrowActionType { HealingPotion, StrengthPotion, LootChest, Touch, Wound }
+public enum ThrowActionType { HealingPotion, StrengthPotion, LootChest, PlayerHit, PlayerWound, EnnemyHit, EnnemyWound }
 public enum ThrowActionPerformer { Player, Ennemy }
 public enum DiceColor { Red, Green, Blue, Black, White, Gold }
 public enum DiceOutlineType { None, Broken, Success, Failure, Selected }

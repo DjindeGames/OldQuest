@@ -50,6 +50,10 @@ public class GameConstants : MonoBehaviour
     [BoxGroup("DiceBoard")]
     public float maxDicesOffset = 0.05f;
     [BoxGroup("DiceBoard")]
+    public float checkForStabilizationPerdiod = 1f;
+    [BoxGroup("DiceBoard")]
+    public float diceMovingThreshold = 0.1f;
+    [BoxGroup("DiceBoard")]
     public DiceOutline[] dicesOutlines;
 
     public static GameConstants Instance { get; private set; }

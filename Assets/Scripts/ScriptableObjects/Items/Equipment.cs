@@ -3,6 +3,7 @@
 [CreateAssetMenu]
 public class Equipment : Usable
 {
+    public GameObject skin;
     public GearSlot[] slots;
     public GearStats[] stats;
 }

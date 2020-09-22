@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DiceActionManager : MonoBehaviour
 {
@@ -24,28 +22,30 @@ public class DiceActionManager : MonoBehaviour
         DiceBoardManager.Instance.throwIsComplete += onThrowComplete;
     }
 
-    void Update()
-    {
-        
-    }
-
     public void performThrowAction(ThrowActionType type, int numberOfDices, int minimumValueNeeded)
     {
         ThrowAction action = new ThrowAction();
         action.actionType = type;
-        action.actionPerformer = ThrowActionPerformer.Player;
         switch(type)
         {
             case (ThrowActionType.HealingPotion):
+            case (ThrowActionType.PlayerHit):
+            case (ThrowActionType.PlayerWound):
+                action.actionPerformer = ThrowActionPerformer.Player;
                 action.color = DiceColor.Green;
                 break;
+            case (ThrowActionType.EnnemyHit):
+            case (ThrowActionType.EnnemyWound):
+                action.actionPerformer = ThrowActionPerformer.Ennemy;
+                action.color = DiceColor.Red;
+                break;
             default:
+                action.actionPerformer = ThrowActionPerformer.Player;
                 action.color = DiceColor.Black;
                 break;
         }
         action.numberOfDices = numberOfDices;
         action.minimumValueNeeded = minimumValueNeeded;
-        action.isAutomaticThrow = false;
         DiceBoardManager.Instance.StartThrowAction(action);
     }
 
@@ -59,7 +59,14 @@ public class DiceActionManager : MonoBehaviour
                 SoundManager.Instance.playSFX(SFXType.DrinkPotion);
                 break;
             default:
-                onActionPerformed(action.actionType, action.result);
+                if(onActionPerformed != null)
+                {
+                    onActionPerformed(action.actionType, action.result);
+                }
+                else
+                {
+                    ScreenManager.Instance.switchToPreviousScreen();
+                }
                 break;
         }
     }

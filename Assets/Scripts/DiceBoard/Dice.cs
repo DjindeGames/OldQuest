@@ -51,6 +51,7 @@ public class Dice : ConstrainedDraggableItem
     protected override void Awake()
     {
         base.Awake();
+        interactable = DiceBoardManager.Instance.currentPerformer == ThrowActionPerformer.Player;
         source = GetComponent<AudioSource>();
         startPosition = transform.position;
         startRotation = transform.rotation;
@@ -126,6 +127,11 @@ public class Dice : ConstrainedDraggableItem
     public void forceRelease()
     {
         OnItemReleased();
+    }
+
+    public bool isMoving()
+    {
+        return (Vector3.Magnitude(rb.velocity) >= GameConstants.Instance.diceMovingThreshold);
     }
 
     public void notifyFaceDown(DiceValue face)

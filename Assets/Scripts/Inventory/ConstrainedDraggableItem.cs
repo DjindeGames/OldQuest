@@ -14,6 +14,7 @@ public abstract class ConstrainedDraggableItem : MonoBehaviour
     protected float upperZ, lowerZ, upperX, lowerX;
     protected Vector3 lastPosition;
     protected bool locked = false;
+    protected bool interactable = true;
 
     protected virtual void Awake()
     {
@@ -32,7 +33,7 @@ public abstract class ConstrainedDraggableItem : MonoBehaviour
 
     protected virtual void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0) && !Grabbed && !locked)
+        if (Input.GetMouseButtonDown(0) && !Grabbed && !locked && interactable)
         {
             OnItemGrabbed();
         }
@@ -60,7 +61,7 @@ public abstract class ConstrainedDraggableItem : MonoBehaviour
 
     protected virtual void OnMouseDrag()
     {
-        if (locked)
+        if (locked || !interactable)
         {
             return;
         }

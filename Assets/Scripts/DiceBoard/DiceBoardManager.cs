@@ -1,10 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DiceBoardManager : MonoBehaviour
 {
     public Collider TableCollider { get; private set; }
+
+    public ThrowActionPerformer currentPerformer
+    {
+        get
+        {
+            return getCurrentThrowAction().actionPerformer;
+        }
+    }
 
     public delegate void throwComplete(ThrowAction action);
     public event throwComplete throwIsComplete;
@@ -40,6 +49,9 @@ public class DiceBoardManager : MonoBehaviour
     private bool isGrabbingMultipleDices = false;
     private Dice currentGrabbedDice;
 
+    private bool areDicesStabilized = false;
+    private Coroutine currentWaitForStabilizationCoroutine = null;
+
     void Awake()
     {
         Instance = this;
@@ -60,28 +72,73 @@ public class DiceBoardManager : MonoBehaviour
             }
             else
             {
-                if (Input.GetMouseButtonDown(0) && !anyDiceIsGrabbed())
+                if (currentThrowAction.actionPerformer == ThrowActionPerformer.Player)
                 {
-                    selectionStart = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-                    setIsSelecting(true);
+                    performPlayerAction();
                 }
-                else if (Input.GetMouseButtonUp(0))
+                else
                 {
-                    if (isGrabbingMultipleDices)
-                    {
-                        throwSelectedDices();
-                        resetSelection();
-                    }
-                    else
-                    {
-                        setIsSelecting(false);
-                    }
+                    performEnnemyAction();
                 }
-                if (selecting)
+            }
+        }
+    }
+
+    private void performPlayerAction()
+    {
+        if (Input.GetMouseButtonDown(0) && !anyDiceIsGrabbed())
+        {
+            selectionStart = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            setIsSelecting(true);
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            if (isGrabbingMultipleDices)
+            {
+                throwSelectedDices();
+                resetSelection();
+            }
+            else
+            {
+                setIsSelecting(false);
+            }
+        }
+        if (selecting)
+        {
+            updateSelectionBox();
+            selectDices();
+        }
+    }
+
+    private void performEnnemyAction()
+    {
+        if(currentWaitForStabilizationCoroutine == null && getCurrentThrowAction().areDicesStopped())
+        {
+            currentWaitForStabilizationCoroutine = StartCoroutine(waitForDicesStabilization());
+        }
+        if(areDicesStabilized)
+        {
+            currentWaitForStabilizationCoroutine = null;
+            areDicesStabilized = false;
+            throwAll();
+        }
+    }
+
+    private IEnumerator waitForDicesStabilization()
+    {
+        yield return new WaitForSeconds(GameConstants.Instance.checkForStabilizationPerdiod);
+        if (getCurrentThrowAction() != null)
+        {
+            if (getCurrentThrowAction().areDicesStopped())
+            {
+                if(!getCurrentThrowAction().isActionComplete())
                 {
-                    updateSelectionBox();
-                    selectDices();
+                    areDicesStabilized = true;
                 }
+            }
+            else
+            {
+                StartCoroutine(waitForDicesStabilization());
             }
         }
     }
@@ -89,6 +146,12 @@ public class DiceBoardManager : MonoBehaviour
     private void onThrowComplete()
     {
         ThrowAction completedAction = popThrowAction();
+        areDicesStabilized = false;
+        if (currentWaitForStabilizationCoroutine != null)
+        {
+            StopCoroutine(currentWaitForStabilizationCoroutine);
+            currentWaitForStabilizationCoroutine = null;
+        }
         computeAndClearThrowAction(completedAction);
         throwIsComplete(completedAction);
     }
@@ -262,7 +325,10 @@ public class DiceBoardManager : MonoBehaviour
     {
         foreach(Dice dice in getCurrentThrowAction().dices)
         {
-            dice.randomThrow();
+            if (!dice.IsLocked)
+            {
+                dice.randomThrow();
+            }
         }
     }
 
@@ -295,7 +361,6 @@ public class ThrowAction
     public DiceColor color;
     public int numberOfDices;
     public int minimumValueNeeded;
-    public bool isAutomaticThrow = false;
     public int result;
     public List<Dice> dices = new List<Dice>();
 
@@ -327,6 +392,20 @@ public class ThrowAction
             }
         }
         return actionComplete;
+    }
+
+    public bool areDicesStopped()
+    {
+        bool dicesStabilized = true;
+        foreach (Dice dice in dices)
+        {
+            if (dice.isMoving())
+            {
+                dicesStabilized = false;
+                break;
+            }
+        }
+        return dicesStabilized;
     }
 
     public void computeResult()

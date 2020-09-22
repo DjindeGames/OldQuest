@@ -16,6 +16,7 @@ MonoBehaviour:
   rarity: 6
   name: Iron Helm
   details: Does not protect much more than your identity..
+  skin: {fileID: 4060753393857160947, guid: 263e497c604b0a0449c6f278ec994236, type: 3}
   slots: 01000000
   stats:
   - type: 0

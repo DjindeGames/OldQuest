@@ -282,6 +282,34 @@ public class PlayerStatsManager : MonoBehaviour
         }
         return bonus;
     }
+
+    public int getScoreToWoundAgainst(int endurance)
+    {
+        int scoreNeeded = 1;
+
+        if (endurance >= 2 * Strength)
+        {
+            scoreNeeded = 6;
+        }
+        else if (endurance > Strength)
+        {
+            scoreNeeded = 5;
+        }
+        else if (Strength == endurance)
+        {
+            scoreNeeded = 4;
+        }
+        else if (Strength >= 2 * endurance)
+        {
+            scoreNeeded = 2;
+        }
+        else if (Strength > endurance)
+        {
+            scoreNeeded = 3;
+        }
+
+        return scoreNeeded;
+    }
 }
 
 public class PlayerStats
