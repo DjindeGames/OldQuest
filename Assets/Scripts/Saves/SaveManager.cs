@@ -149,6 +149,7 @@ public class SaveManager : MonoBehaviour
         playerStats.AddField(Constants.SFSerializedPlayerStatsEnduranceField, copiedPlayerStats.endurance);
         playerStats.AddField(Constants.SFSerializedPlayerStatsHitRollsField, copiedPlayerStats.hitRolls);
         playerStats.AddField(Constants.SFSerializedPlayerStatsScoreToHitField, copiedPlayerStats.scoreToHit);
+        playerStats.AddField(Constants.SFSerializedPlayerStatsDamagesField, copiedPlayerStats.damages);
         serializedSave.AddField(Constants.SFSerializedPlayerStatsField, playerStats);
 
         //SERIALIZING SCENE STATE
@@ -387,6 +388,7 @@ public class SaveManager : MonoBehaviour
         PlayerStats.endurance = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsEnduranceField).ToString());
         PlayerStats.hitRolls = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsHitRollsField).ToString());
         PlayerStats.scoreToHit = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsScoreToHitField).ToString());
+        PlayerStats.damages = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsDamagesField).ToString());
 
         //Misc
         JSONObject playerPosition = saveFile.GetField(Constants.SFSerializedPlayerPositionField);

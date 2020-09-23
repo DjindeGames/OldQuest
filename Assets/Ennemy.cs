@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using System.Collections.Generic;
 public class Ennemy : MonoBehaviour
 {
     [Header("Stats")]
@@ -44,10 +44,14 @@ public class Ennemy : MonoBehaviour
     {
         foreach (EnnemyInventoryItem item in inventoryContent)
         {
-            if (item.item.Type == ItemType.Equipment)
+            Lootable lootable = item.prefab.GetComponent<Lootable>();
+            if (lootable)
             {
-                Equipment equipment = (Equipment)item.item;
-                equipItem(equipment);
+                if (lootable.item.Type == ItemType.Equipment)
+                {
+                    Equipment equipment = (Equipment)lootable.item;
+                    equipItem(equipment);
+                }
             }
         }
     }
@@ -71,12 +75,39 @@ public class Ennemy : MonoBehaviour
         }
         return slot;
     }
+
+    public void onDeath()
+    {
+        dispatchLoot();
+    }
+
+    private void dispatchLoot()
+    {
+        List<Item> loots = new List<Item>();
+        foreach (EnnemyInventoryItem inventoryItem in inventoryContent)
+        {
+            if (Random.Range(1, 101) <= inventoryItem.dropRate)
+            {
+                GameObject prefab = inventoryItem.prefab;
+                Lootable lootable = prefab.GetComponent<Lootable>();
+                if (lootable)
+                {
+                    loots.Add(lootable.item);
+                    GameObject instantiated = Instantiate(prefab, transform.position, Quaternion.identity);
+                    Destroy(instantiated.GetComponent<StateSave>());
+                    SaveManager.Instance.addSpawnedItem(instantiated);
+                }
+            }
+        }
+        DiceBoardUI.Instance.showLootResults(loots);
+        Destroy(gameObject);
+    }
 }
 
 [System.Serializable]
 public class EnnemyInventoryItem
 {
-    public Item item;
+    public GameObject prefab;
     [RangeAttribute(0, 100)]
     public int dropRate;
 }

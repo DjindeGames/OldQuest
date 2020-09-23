@@ -1,20 +1,31 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CombatManager : MonoBehaviour
 {
     public static CombatManager Instance { get; private set; }
 
-    private Ennemy currentEnnemy;
+    public Ennemy CurrentEnnemy { get; private set; }
 
     private void Awake()
     {
         Instance = this;
     }
 
+    private void Start()
+    {
+        PlayerStatsManager.Instance.onPlayerDeath += onPlayerDeath;
+    }
+
+    private void OnDestroy()
+    {
+        PlayerStatsManager.Instance.onPlayerDeath -= onPlayerDeath;
+    }
+
     public void startCombat(Ennemy ennemy)
     {
-        currentEnnemy = ennemy;
-        currentEnnemy.onEnnemyDeath += onEnnemyDeath;
+        CurrentEnnemy = ennemy;
+        CurrentEnnemy.onEnnemyDeath += onEnnemyDeath;
         DiceActionManager.Instance.onActionPerformed += onActionComplete;
         DiceActionManager.Instance.performThrowAction(ThrowActionType.PlayerHit, PlayerStatsManager.Instance.HitRolls, PlayerStatsManager.Instance.ScoreToHit);
     }
@@ -26,27 +37,27 @@ public class CombatManager : MonoBehaviour
             case (ThrowActionType.PlayerHit):
                 if (result > 0)
                 {
-                    DiceActionManager.Instance.performThrowAction(ThrowActionType.PlayerWound, result, PlayerStatsManager.Instance.getScoreToWoundAgainst(currentEnnemy.stats.endurance));
+                    DiceActionManager.Instance.performThrowAction(ThrowActionType.PlayerWound, result, PlayerStatsManager.Instance.getScoreToWoundAgainst(CurrentEnnemy.stats.endurance));
                 }
                 else
                 {
-                    DiceActionManager.Instance.performThrowAction(ThrowActionType.EnnemyHit, currentEnnemy.stats.hitRolls, currentEnnemy.stats.scoreToHit);
+                    DiceActionManager.Instance.performThrowAction(ThrowActionType.EnnemyHit, CurrentEnnemy.stats.hitRolls, CurrentEnnemy.stats.scoreToHit);
                 }
                 break;
             case (ThrowActionType.PlayerWound):
-                if (currentEnnemy.resolveWounds(result))
+                if (CurrentEnnemy.resolveWounds(result))
                 {
                     onEnnemyDeath();
                 }
                 else
                 {
-                    DiceActionManager.Instance.performThrowAction(ThrowActionType.EnnemyHit, currentEnnemy.stats.hitRolls, currentEnnemy.stats.scoreToHit);
+                    DiceActionManager.Instance.performThrowAction(ThrowActionType.EnnemyHit, CurrentEnnemy.stats.hitRolls, CurrentEnnemy.stats.scoreToHit);
                 }
                 break;
             case (ThrowActionType.EnnemyHit):
                 if (result > 0)
                 {
-                    DiceActionManager.Instance.performThrowAction(ThrowActionType.EnnemyWound, result, PlayerStatsManager.Instance.getScoreToWoundAgainst(currentEnnemy.stats.endurance));
+                    DiceActionManager.Instance.performThrowAction(ThrowActionType.EnnemyWound, result, PlayerStatsManager.Instance.getScoreToWoundAgainst(CurrentEnnemy.stats.endurance));
                 }
                 else
                 {
@@ -62,13 +73,13 @@ public class CombatManager : MonoBehaviour
 
     private void onEnnemyDeath()
     {
-        ScreenManager.Instance.switchScreen(ScreenType.Main);
+        CurrentEnnemy.onDeath();
         DiceActionManager.Instance.onActionPerformed -= onActionComplete;
-        currentEnnemy.onEnnemyDeath -= onEnnemyDeath;
+        CurrentEnnemy.onEnnemyDeath -= onEnnemyDeath;
     }
 
     private void onPlayerDeath()
     {
-
+        SceneManager.LoadScene("Intro");
     }
 }

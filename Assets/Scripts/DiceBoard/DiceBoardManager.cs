@@ -40,17 +40,18 @@ public class DiceBoardManager : MonoBehaviour
 
     private List<Dice> selectedDices = new List<Dice>();
 
+    //Selection
     private Vector2 selectionStart;
     private float currentSelectionWidth;
     private float currentSelectionHeight;
     private Vector2 currentSelectionCenter;
     private bool selecting = false;
-
     private bool isGrabbingMultipleDices = false;
     private Dice currentGrabbedDice;
 
-    private bool areDicesStabilized = false;
-    private Coroutine currentWaitForStabilizationCoroutine = null;
+    //Misc
+    private bool deactivated = true;
+    float remainingThrowCooldown = 1f;
 
     void Awake()
     {
@@ -60,15 +61,14 @@ public class DiceBoardManager : MonoBehaviour
         Random.InitState(System.DateTime.Now.Millisecond);
     }
 
-    // Update is called once per frame
     void Update()
     {
         ThrowAction currentThrowAction = getCurrentThrowAction();
-        if (currentThrowAction != null)
+        if (currentThrowAction != null && !deactivated)
         {
             if (currentThrowAction.isActionComplete())
             {
-                onThrowComplete();
+                StartCoroutine(resolveThrow());
             }
             else
             {
@@ -112,46 +112,33 @@ public class DiceBoardManager : MonoBehaviour
 
     private void performEnnemyAction()
     {
-        if(currentWaitForStabilizationCoroutine == null && getCurrentThrowAction().areDicesStopped())
+        if (!getCurrentThrowAction().areDicesStopped())
         {
-            currentWaitForStabilizationCoroutine = StartCoroutine(waitForDicesStabilization());
+            resetThrowCooldown();
         }
-        if(areDicesStabilized)
+        remainingThrowCooldown -= Time.deltaTime;
+        if (remainingThrowCooldown <= 0)
         {
-            currentWaitForStabilizationCoroutine = null;
-            areDicesStabilized = false;
+            resetThrowCooldown();
             throwAll();
         }
     }
 
-    private IEnumerator waitForDicesStabilization()
+    private IEnumerator resolveThrow()
     {
-        yield return new WaitForSeconds(GameConstants.Instance.checkForStabilizationPerdiod);
-        if (getCurrentThrowAction() != null)
-        {
-            if (getCurrentThrowAction().areDicesStopped())
-            {
-                if(!getCurrentThrowAction().isActionComplete())
-                {
-                    areDicesStabilized = true;
-                }
-            }
-            else
-            {
-                StartCoroutine(waitForDicesStabilization());
-            }
-        }
+        deactivated = true;
+        yield return new WaitForSeconds(1);
+        onThrowComplete();
+    }
+
+    private void resetThrowCooldown()
+    {
+        remainingThrowCooldown = GameConstants.Instance.checkForStabilizationPeriod;
     }
 
     private void onThrowComplete()
     {
         ThrowAction completedAction = popThrowAction();
-        areDicesStabilized = false;
-        if (currentWaitForStabilizationCoroutine != null)
-        {
-            StopCoroutine(currentWaitForStabilizationCoroutine);
-            currentWaitForStabilizationCoroutine = null;
-        }
         computeAndClearThrowAction(completedAction);
         throwIsComplete(completedAction);
     }
@@ -252,6 +239,8 @@ public class DiceBoardManager : MonoBehaviour
         ScreenManager.Instance.switchScreen(ScreenType.DiceBoard);
         pushThrowAction(action);
         addDices(action);
+        resetThrowCooldown();
+        deactivated = false;
     }
 
     private void pushThrowAction(ThrowAction action)
@@ -275,10 +264,6 @@ public class DiceBoardManager : MonoBehaviour
             {
                 previousAction.resumeAction();
             }
-        }
-        if (throwActions.Count == 0)
-        {
-            //ScreenManager.Instance.switchToPreviousScreen();
         }
         return poppedAction;
     }
@@ -427,7 +412,7 @@ public class ThrowAction
         int nbValidDices = 0;
         foreach (Dice dice in dices)
         {
-            if ((int)dice.Value > minimumValueNeeded)
+            if ((int)dice.Value >= minimumValueNeeded)
             {
                 nbValidDices++;
             }

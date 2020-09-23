@@ -27,6 +27,10 @@ public class ScreenManager : MonoBehaviour
     
     public void switchScreen (ScreenType which)
     {
+        if (which == ActiveScreen)
+        {
+            return;
+        }
         previousScreen = ActiveScreen;
         ActiveScreen = which;
         //Debug.Log("Switched Screen to " + ActiveScreen.ToString());

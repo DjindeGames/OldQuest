@@ -8,8 +8,8 @@ public enum ScreenType { Main, Inventory, Menu, Archives, Puppet, DiceBoard }
 public enum UIType { None, Main, Inventory, Menu, Archives, DiceBoard, Puppet, PlayerUtils, All }
 public enum PotionType { Strength, Health }
 public enum GearSlot { Chest, Head, RightHand, LeftHand }
-public enum BaseStat { Vitality, Strength, Endurance, HitRolls, ScoreToHit }
-public enum EquipmentBonus { Armor, HitRolls, ToHit, ToWound, Vitality, Strength, Endurance }
+public enum BaseStat { Vitality, Strength, Endurance, HitRolls, ScoreToHit, Damages }
+public enum EquipmentBonus { Armor, HitRolls, ToHit, ToWound, Vitality, Strength, Endurance, Damages }
 public enum DoorState { Opened, Closed, Locked }
 public enum DiceValue { Broken = 0, One, Two, Three, Four, Five, Six }
 public enum DiceThrowType { None, Automatic, Manual, Thrown }
@@ -66,4 +66,5 @@ public static class Constants
     public static string SFSerializedPlayerStatsStrengthField { get; private set; } = "Strength";
     public static string SFSerializedPlayerStatsHitRollsField { get; private set; } = "HitRolls";
     public static string SFSerializedPlayerStatsScoreToHitField { get; private set; } = "ScoreToHit";
+    public static string SFSerializedPlayerStatsDamagesField { get; private set; } = "Damages";
 }

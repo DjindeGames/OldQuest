@@ -9,4 +9,5 @@ public class CharacterStats : ScriptableObject
     public int endurance = 3;
     public int hitRolls = 1;
     public int scoreToHit = 5;
+    public int damages = 1;
 }

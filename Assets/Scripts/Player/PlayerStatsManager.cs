@@ -102,6 +102,18 @@ public class PlayerStatsManager : MonoBehaviour
         }
     }
 
+    public int Damages
+    {
+        get
+        {
+            return playerStats.damages + equipmentBonuses.damages;
+        }
+        private set
+        {
+            playerStats.damages = value;
+        }
+    }
+
     public int BonusToWound
     {
         get
@@ -162,6 +174,9 @@ public class PlayerStatsManager : MonoBehaviour
             case (BaseStat.ScoreToHit):
                 playerStats.scoreToHit += (int)value;
                 break;
+            case (BaseStat.Damages):
+                playerStats.damages += (int)value;
+                break;
         }
     }
 
@@ -186,6 +201,9 @@ public class PlayerStatsManager : MonoBehaviour
                 break;
             case (EquipmentBonus.ToWound):
                 equipmentBonuses.toWound += stats.value;
+                break;
+            case (EquipmentBonus.Damages):
+                equipmentBonuses.damages += stats.value;
                 break;
             case (EquipmentBonus.Vitality):
                 equipmentBonuses.vitality += stats.value;
@@ -227,6 +245,9 @@ public class PlayerStatsManager : MonoBehaviour
                 Health = newHealthPoints;
                 onVitalityUpdated?.Invoke(Vitality);
                 break;
+            case (EquipmentBonus.Damages):
+                equipmentBonuses.damages -= stats.value;
+                break;
         }
         onStatsUpdated?.Invoke();
     }
@@ -239,6 +260,7 @@ public class PlayerStatsManager : MonoBehaviour
         playerStats.endurance = stats.endurance;
         playerStats.hitRolls = stats.hitRolls;
         playerStats.scoreToHit = stats.scoreToHit;
+        playerStats.damages = stats.damages;
     }
 
     public PlayerStats getPlayerStats()
@@ -250,6 +272,7 @@ public class PlayerStatsManager : MonoBehaviour
         copiedPlayerStats.endurance = playerStats.endurance;
         copiedPlayerStats.hitRolls = playerStats.hitRolls;
         copiedPlayerStats.scoreToHit = playerStats.scoreToHit;
+        copiedPlayerStats.damages = playerStats.damages;
         return copiedPlayerStats;
     }
 
@@ -278,6 +301,9 @@ public class PlayerStatsManager : MonoBehaviour
                 break;
             case (EquipmentBonus.ToWound):
                 bonus = equipmentBonuses.toWound;
+                break;
+            case (EquipmentBonus.Damages):
+                bonus = equipmentBonuses.damages;
                 break;
         }
         return bonus;
@@ -320,6 +346,7 @@ public class PlayerStats
     public int endurance = 3;
     public int hitRolls = 1;
     public int scoreToHit = 5;
+    public int damages = 1;
 }
 
 public class EquipmentBonuses
@@ -331,5 +358,6 @@ public class EquipmentBonuses
     public int vitality = 0;
     public int strength = 0;
     public int endurance = 0;
+    public int damages = 0;
 }
 

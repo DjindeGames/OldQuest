@@ -7,6 +7,8 @@ public class DiceActionManager : MonoBehaviour
     public delegate void actionPerformed(ThrowActionType actionType, int result);
     public event actionPerformed onActionPerformed;
 
+    private ThrowAction bufferedCompletedAction;
+
     void Awake()
     {
         Instance = this;
@@ -15,11 +17,13 @@ public class DiceActionManager : MonoBehaviour
     private void Start()
     {
         DiceBoardManager.Instance.throwIsComplete += onThrowComplete;
+        DiceBoardUI.Instance.onActionAknowledged += onActionAcknowledged;
     }
 
     private void OnDestroy()
     {
-        DiceBoardManager.Instance.throwIsComplete += onThrowComplete;
+        DiceBoardManager.Instance.throwIsComplete -= onThrowComplete;
+        DiceBoardUI.Instance.onActionAknowledged -= onActionAcknowledged;
     }
 
     public void performThrowAction(ThrowActionType type, int numberOfDices, int minimumValueNeeded)
@@ -51,17 +55,34 @@ public class DiceActionManager : MonoBehaviour
 
     public void onThrowComplete(ThrowAction action)
     {
-        switch(action.actionType)
+        bufferedCompletedAction = action;
+        switch (bufferedCompletedAction.actionType)
+        {
+            case (ThrowActionType.PlayerHit):
+            case (ThrowActionType.PlayerWound):
+            case (ThrowActionType.EnnemyHit):
+            case (ThrowActionType.EnnemyWound):
+                DiceBoardUI.Instance.showActionResult(bufferedCompletedAction.actionType, bufferedCompletedAction.result);
+                break;
+            default:
+                onActionAcknowledged();
+                break;
+        }
+    }
+
+    public void onActionAcknowledged()
+    {
+        switch (bufferedCompletedAction.actionType)
         {
             case (ThrowActionType.HealingPotion):
                 ScreenManager.Instance.switchToPreviousScreen();
-                PlayerStatsManager.Instance.addHealthPointsModifier(action.result);
+                PlayerStatsManager.Instance.addHealthPointsModifier(bufferedCompletedAction.result);
                 SoundManager.Instance.playSFX(SFXType.DrinkPotion);
                 break;
             default:
-                if(onActionPerformed != null)
+                if (onActionPerformed != null)
                 {
-                    onActionPerformed(action.actionType, action.result);
+                    onActionPerformed(bufferedCompletedAction.actionType, bufferedCompletedAction.result);
                 }
                 else
                 {

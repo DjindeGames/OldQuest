@@ -47,6 +47,8 @@ public class Dice : ConstrainedDraggableItem
     private DiceThrowType currentThrowType = DiceThrowType.None;
     private DiceOutlineType currentOutline;
     private bool selected = false;
+
+    private bool hasCollided = false;
     
     protected override void Awake()
     {
@@ -82,7 +84,7 @@ public class Dice : ConstrainedDraggableItem
         }
         else if (IsThrown)
         {
-            if (parentAction!= null && (int)Value > parentAction.minimumValueNeeded)
+            if (parentAction!= null && (int)Value >= parentAction.minimumValueNeeded)
             {
                 toggleOutline(true, DiceOutlineType.Success);
             }
@@ -131,7 +133,14 @@ public class Dice : ConstrainedDraggableItem
 
     public bool isMoving()
     {
-        return (Vector3.Magnitude(rb.velocity) >= GameConstants.Instance.diceMovingThreshold);
+        if (!hasCollided)
+        {
+            return true;
+        }
+        else
+        {
+            return (Vector3.Magnitude(rb.velocity) >= GameConstants.Instance.diceMovingThreshold);
+        }
     }
 
     public void notifyFaceDown(DiceValue face)
@@ -194,6 +203,7 @@ public class Dice : ConstrainedDraggableItem
     private void OnCollisionEnter(Collision collision)
     {
         SoundManager.Instance.playCollisionSound(source, collision.relativeVelocity.magnitude);
+        hasCollided = true;
     }
 
     protected override void OnItemGrabbed()

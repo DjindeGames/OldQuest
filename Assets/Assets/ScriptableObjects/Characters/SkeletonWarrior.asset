@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: SkeletonWarrior
   m_EditorClassIdentifier: 
   name: Skeleton Warrior
-  vitality: 10
-  strength: 6
+  vitality: 1
+  strength: 3
   endurance: 3
-  hitRolls: 6
-  scoreToHit: 1
+  hitRolls: 3
+  scoreToHit: 5
+  damages: 1
