@@ -8,6 +8,8 @@ public class PlayerStatsUI : MonoBehaviour
     [SerializeField]
     private OrbGauge healthGauge;
     [SerializeField]
+    private OrbGauge deathShardsGauge;
+    [SerializeField]
     private TMP_Text statsFrameVitality;
     [SerializeField]
     private TMP_Text statsFrameVitalityBonus;
@@ -43,9 +45,13 @@ public class PlayerStatsUI : MonoBehaviour
     {
         PlayerStatsManager.Instance.onHealthUpdated += onHealthUpdated;
         PlayerStatsManager.Instance.onVitalityUpdated += onVitalityUpdated;
+        SpellsManager.Instance.onDeathShardsUpdated += onDeathShardsUpdated;
+        SpellsManager.Instance.onMaxDeathShardsUpdated += onMaxDeathShardsUpdated;
         PlayerStatsManager.Instance.onStatsUpdated += onStatsUpdated;
         onHealthUpdated(PlayerStatsManager.Instance.Health);
         onVitalityUpdated(PlayerStatsManager.Instance.Vitality);
+        onDeathShardsUpdated(SpellsManager.Instance.DeathShards);
+        onMaxDeathShardsUpdated(SpellsManager.Instance.MaxDeathShards);
         onStatsUpdated();
     }
 
@@ -53,6 +59,9 @@ public class PlayerStatsUI : MonoBehaviour
     {
         PlayerStatsManager.Instance.onHealthUpdated -= onHealthUpdated;
         PlayerStatsManager.Instance.onVitalityUpdated -= onVitalityUpdated;
+        SpellsManager.Instance.onDeathShardsUpdated -= onDeathShardsUpdated;
+        SpellsManager.Instance.onMaxDeathShardsUpdated -= onMaxDeathShardsUpdated;
+        PlayerStatsManager.Instance.onStatsUpdated -= onStatsUpdated;
     }
 
     private void onHealthUpdated(int currentHealth)
@@ -63,6 +72,16 @@ public class PlayerStatsUI : MonoBehaviour
     private void onVitalityUpdated(int vitality)
     {
         healthGauge.setMaxValue(vitality);
+    }
+
+    private void onDeathShardsUpdated(int deathShards)
+    {
+        deathShardsGauge.setValue(deathShards);
+    }
+
+    private void onMaxDeathShardsUpdated(int maxDeathShards)
+    {
+        deathShardsGauge.setMaxValue(maxDeathShards);
     }
 
     private void onStatsUpdated()

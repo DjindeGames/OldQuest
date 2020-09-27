@@ -9,7 +9,7 @@ public abstract class Item : ScriptableObject
 
     public void Awake()
     {
-        Type = (ItemType)Enum.Parse(typeof(ItemType), GetType().ToString());
+        fetchType();
     }
 
     public void fetchType()

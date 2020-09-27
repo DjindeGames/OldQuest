@@ -94,16 +94,25 @@ public class InputManager : MonoBehaviour
 
     void checkInputDiceBoard()
     {
-        /*
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            ScreenManager.Instance.switchScreen(ScreenType.Inventory);
-            DiceBoardManager.Instance.removeAllDices();
-        }
-        */
         if (Input.GetKeyDown(KeyCode.Space))
         {
             DiceBoardManager.Instance.throwAll();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape) && DiceBoardUI.Instance.IsWaitingForAcknowledgement)
+        {
+            DiceBoardUI.Instance.acknowledge();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            DiceBoardUI.Instance.closeTabs();
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            DiceBoardUI.Instance.displayConsumables();
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            DiceBoardUI.Instance.displaySpells();
         }
     }
 

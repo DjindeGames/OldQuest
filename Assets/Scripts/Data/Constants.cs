@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public enum ItemType { Equipment, Readable, Valuable, Key, Potion, Oil }
+public enum ItemType { Equipment, Readable, Valuable, Key, Potion, Oil, Spell }
 public enum SFXType { ItemEquipped, PageChanged, OpenReadable, CloseReadable, OpenedChest, DrinkPotion, LootRevealed, ItemRemoved }
 public enum VolumeType { Music, Effects, Physics }
 public enum CameraType { Player, Inventory, FirstPerson, DiceBoard, Puppet }
@@ -13,6 +13,9 @@ public enum EquipmentBonus { Armor, HitRolls, ToHit, ToWound, Vitality, Strength
 public enum DoorState { Opened, Closed, Locked }
 public enum DiceValue { Broken = 0, One, Two, Three, Four, Five, Six }
 public enum DiceThrowType { None, Automatic, Manual, Thrown }
+public enum SpellBonusType { Reroll, ExtraHit, ExtraWound, ToHit, ToWound, Armor, Damages, HitRolls }
+public enum SpellType { BaldwynsBlessing, PoisonousBlade, GolemsForm }
+public enum EDiceBoardMenuTab { None, Consumables, Stats, SpellBook, All }
 public enum ThrowActionType { HealingPotion, StrengthPotion, LootChest, PlayerHit, PlayerWound, EnnemyHit, EnnemyWound }
 public enum ThrowActionPerformer { Player, Ennemy }
 public enum DiceColor { Red, Green, Blue, Black, White, Gold }
@@ -49,6 +52,7 @@ public static class Constants
     public static string SFSerializedDestroyedItemsField { get; private set; } = "DestroyedItems";
     public static string SFSerializedLitLightsField { get; private set; } = "LitLights";
     public static string SFSerializedOpenedChestsField { get; private set; } = "OpenedChests";
+    public static string SFSerializedKilledEnnemiesField { get; private set; } = "KilledEnnemies";
     public static string SFSerializedDoorsStatesField { get; private set; } = "DoorsStates";
     public static string SFSerializedUnlockedDoorsField { get; private set; } = "UnlockedDoors";
     public static string SFSerializedSpawnedItemsField { get; private set; } = "SpawnedItems";
@@ -67,4 +71,5 @@ public static class Constants
     public static string SFSerializedPlayerStatsHitRollsField { get; private set; } = "HitRolls";
     public static string SFSerializedPlayerStatsScoreToHitField { get; private set; } = "ScoreToHit";
     public static string SFSerializedPlayerStatsDamagesField { get; private set; } = "Damages";
+    public static string SFSerializedSpellsField { get; private set; } = "Spells";
 }

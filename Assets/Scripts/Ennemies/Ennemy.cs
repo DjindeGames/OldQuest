@@ -9,6 +9,8 @@ public class Ennemy : MonoBehaviour
     [Header("References")]
     [SerializeField]
     private EnnemyEquipmentSlot[] equipmentSlots;
+    [SerializeField]
+    private GameObject corpse;
 
     public delegate void ennemyDeath();
     public event ennemyDeath onEnnemyDeath;
@@ -78,7 +80,18 @@ public class Ennemy : MonoBehaviour
 
     public void onDeath()
     {
+        StateSave stateSave = GetComponent<StateSave>();
+        if (stateSave != null)
+        {
+            SaveManager.Instance.addKilledEnnemy(stateSave.id);
+        }
         dispatchLoot();
+    }
+
+    public void forceUnspawn()
+    {
+        spawnCorpse();
+        Destroy(gameObject);
     }
 
     private void dispatchLoot()
@@ -100,7 +113,13 @@ public class Ennemy : MonoBehaviour
             }
         }
         DiceBoardUI.Instance.showLootResults(loots);
+        spawnCorpse();
         Destroy(gameObject);
+    }
+
+    private void spawnCorpse()
+    {
+        Instantiate(corpse, transform.position, transform.rotation);
     }
 }
 

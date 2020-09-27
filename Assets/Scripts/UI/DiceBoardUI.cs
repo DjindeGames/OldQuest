@@ -3,9 +3,13 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using NaughtyAttributes;
 using TMPro;
+using System.Collections;
 
 public class DiceBoardUI : MonoBehaviour
 {
+    /**************************************************/
+    /************* Action Results Window **************/
+    /**************************************************/
     [BoxGroup("References")]
     [Header("Action Results")]
     [SerializeField]
@@ -13,6 +17,9 @@ public class DiceBoardUI : MonoBehaviour
     [BoxGroup("References")]
     [SerializeField]
     private TMP_Text textResult;
+    /**************************************************/
+    /************** Loot Results Window ***************/
+    /**************************************************/
     [BoxGroup("References")]
     [Header("Loot Results")]
     [SerializeField]
@@ -26,11 +33,47 @@ public class DiceBoardUI : MonoBehaviour
     [SerializeField]
     [BoxGroup("References")]
     private Button lootsResultWindowConfirm;
+    /**************************************************/
+    /******************* Menu Tabs ********************/
+    /**************************************************/
+    [BoxGroup("References")]
+    [Header("Menu Tabs")]
+    [SerializeField]
+    private DiceBoardMenuTab[] menuTabs;
+    [BoxGroup("References")]
+    [SerializeField]
+    private GameObject navigationBar;
+    [BoxGroup("References")]
+    [SerializeField]
+    private Color selectedTabColor;
+    [BoxGroup("References")]
+    [SerializeField]
+    private Color idleTabColor;
+   
+    /**************************************************/
+    /****************** Consumables *******************/
+    /**************************************************/
+    [Header("Consumables")]
+    [BoxGroup("References")]
+    [SerializeField]
+    private Transform consumablesParents;
+    [BoxGroup("References")]
+    [SerializeField]
+    private Transform currentConsumableName;
+    [BoxGroup("References")]
+    [SerializeField]
+    private Transform currentConsumableDescription;
+    [BoxGroup("References")]
+    [SerializeField]
+    private Button useButton;
 
     public delegate void actionAknowledged();
     public event actionAknowledged onActionAknowledged;
 
     public static DiceBoardUI Instance { get; private set; }
+
+    public bool IsWaitingForAcknowledgement { get; private set; } = false;
+
     private int totalLoots;
     private int lootsRevealed;
 
@@ -44,6 +87,7 @@ public class DiceBoardUI : MonoBehaviour
     {
         lootsResultWindow.SetActive(false);
         actionResultWindow.SetActive(false);
+        StartCoroutine(loadTabs());
     }
 
     public void close()
@@ -54,12 +98,14 @@ public class DiceBoardUI : MonoBehaviour
 
     public void acknowledge()
     {
+        IsWaitingForAcknowledgement = false;
         actionResultWindow.SetActive(false);
         onActionAknowledged?.Invoke();
     }
 
     public void showLootResults(List<Item> loots)
     {
+        closeTabs();
         resetLootList();
         totalLoots = loots.Count;
         lootsResultWindow.SetActive(true);
@@ -93,6 +139,7 @@ public class DiceBoardUI : MonoBehaviour
 
     public void showActionResult(ThrowActionType actionType, int result)
     {
+        closeTabs();
         switch(actionType)
         {
             case (ThrowActionType.PlayerHit):
@@ -137,5 +184,57 @@ public class DiceBoardUI : MonoBehaviour
                 break;
         }
         actionResultWindow.SetActive(true);
+        IsWaitingForAcknowledgement = true;
     }
+
+    public void displayTab(EDiceBoardMenuTab which, bool playSFX = true)
+    {
+        foreach(DiceBoardMenuTab menuTab in menuTabs)
+        {
+            bool selected = (menuTab.tabType == which) || (which == EDiceBoardMenuTab.All);
+            menuTab.tabContent.SetActive(selected);
+            menuTab.tab.color = selected ? selectedTabColor : idleTabColor;
+            if (playSFX)
+            {
+                if (which != EDiceBoardMenuTab.None)
+                {
+                    SoundManager.Instance.playSFX(SFXType.OpenReadable);
+                }
+                else
+                {
+                    SoundManager.Instance.playSFX(SFXType.CloseReadable);
+                }
+            }
+        }
+    }
+
+    public void displaySpells()
+    {
+        displayTab(EDiceBoardMenuTab.SpellBook);
+    }
+
+    public void displayConsumables()
+    {
+        displayTab(EDiceBoardMenuTab.Consumables);
+    }
+
+    public void closeTabs()
+    {
+        displayTab(EDiceBoardMenuTab.None);
+    }
+
+    private IEnumerator loadTabs()
+    {
+        displayTab(EDiceBoardMenuTab.All, false);
+        yield return new WaitForEndOfFrame();
+        displayTab(EDiceBoardMenuTab.None, false);
+    }
+}
+
+[System.Serializable]
+public class DiceBoardMenuTab
+{
+    public GameObject tabContent;
+    public Image tab;
+    public EDiceBoardMenuTab tabType;
 }

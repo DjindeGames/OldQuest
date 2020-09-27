@@ -56,7 +56,9 @@ public class LoadManager : MonoBehaviour
         restoreLights();
         restoreDoorsStates();
         openOpenedChests();
+        unspawnKilledEnnemies();
         loadSpawnedItems();
+        loadSpells();
     }
 
     private void restoreDoorsStates()
@@ -136,6 +138,22 @@ public class LoadManager : MonoBehaviour
         }
     }
 
+    private void unspawnKilledEnnemies()
+    {
+        foreach (int id in saveManager.KilledEnnemiesIds)
+        {
+            GameObject ennemyToKill = retrieveSavedGameObject(id);
+            if (ennemyToKill)
+            {
+                Ennemy ennemy = ennemyToKill.GetComponent<Ennemy>();
+                if (ennemy)
+                {
+                    ennemy.forceUnspawn();
+                }
+            }
+        }
+    }
+
     private void loadSpawnedItems()
     {
         //References can't be kept as we would compare an instantiated gameobject to it's prefab 
@@ -172,6 +190,14 @@ public class LoadManager : MonoBehaviour
         foreach (ReadableKey key in saveManager.Archives)
         {
             InventoryManager.Instance.addFileToArchives(key, false);
+        }
+    }
+
+    private void loadSpells()
+    {
+        foreach (SpellType spell in saveManager.LearntSpells)
+        {
+            SpellsManager.Instance.addSpell(spell);
         }
     }
 

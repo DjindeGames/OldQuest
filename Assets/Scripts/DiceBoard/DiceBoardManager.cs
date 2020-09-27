@@ -308,11 +308,14 @@ public class DiceBoardManager : MonoBehaviour
 
     public void throwAll()
     {
-        foreach(Dice dice in getCurrentThrowAction().dices)
+        if (getCurrentThrowAction() != null && getCurrentThrowAction().areDicesStopped())
         {
-            if (!dice.IsLocked)
+            foreach (Dice dice in getCurrentThrowAction().dices)
             {
-                dice.randomThrow();
+                if (!dice.IsLocked)
+                {
+                    dice.randomThrow();
+                }
             }
         }
     }

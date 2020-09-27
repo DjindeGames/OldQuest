@@ -26,6 +26,7 @@ public class SaveManager : MonoBehaviour
     public Dictionary<int, bool> DoorsStates { get; private set; }
     public List<int> UnlockedDoorsIds { get; private set; }
     public List<int> OpenedChestsIds { get; private set; }
+    public List<int> KilledEnnemiesIds { get; private set; }
     public List<Tuple<GameObject,Tuple<Vector3,Vector3>>> SpawnedItems { get; private set; } = new List<Tuple<GameObject, Tuple<Vector3, Vector3>>>();
 
     //INVENTORY
@@ -37,6 +38,7 @@ public class SaveManager : MonoBehaviour
 
     //PLAYER STATS
     public PlayerStats PlayerStats { get; private set; }
+    public List<SpellType> LearntSpells { get; private set; }
 
     private string savesPath;
     private int totalPlayTime = 0;
@@ -54,8 +56,10 @@ public class SaveManager : MonoBehaviour
         DestroyedItemsIds = new List<int>();
         LitLightsIds = new List<int>();
         OpenedChestsIds = new List<int>();
+        KilledEnnemiesIds = new List<int>();
         DoorsStates = new Dictionary<int,bool>();
         UnlockedDoorsIds = new List<int>();
+        LearntSpells = new List<SpellType>();
     }
 
     public void save(string fileName)
@@ -81,6 +85,11 @@ public class SaveManager : MonoBehaviour
     public void addOpenedChest(int id)
     {
         OpenedChestsIds.Add(id);
+    }
+
+    public void addKilledEnnemy(int id)
+    {
+        KilledEnnemiesIds.Add(id);
     }
 
     public void updateDoorState(int id, bool opened)
@@ -122,10 +131,12 @@ public class SaveManager : MonoBehaviour
         JSONObject archives = new JSONObject(JSONObject.Type.ARRAY);
         JSONObject litLights = new JSONObject(JSONObject.Type.ARRAY);
         JSONObject openedChests = new JSONObject(JSONObject.Type.ARRAY);
+        JSONObject killedEnnemies = new JSONObject(JSONObject.Type.ARRAY);
         JSONObject unlockedDoors = new JSONObject(JSONObject.Type.ARRAY);
         JSONObject doorsStates = new JSONObject(JSONObject.Type.ARRAY);
         JSONObject destroyedItems = new JSONObject(JSONObject.Type.ARRAY);
         JSONObject spawnedItems = new JSONObject(JSONObject.Type.ARRAY);
+        JSONObject learntSpells = new JSONObject(JSONObject.Type.ARRAY);
         JSONObject keys = new JSONObject(JSONObject.Type.ARRAY);
 
         //GETTING DATE AND PLAYTIME
@@ -151,6 +162,45 @@ public class SaveManager : MonoBehaviour
         playerStats.AddField(Constants.SFSerializedPlayerStatsScoreToHitField, copiedPlayerStats.scoreToHit);
         playerStats.AddField(Constants.SFSerializedPlayerStatsDamagesField, copiedPlayerStats.damages);
         serializedSave.AddField(Constants.SFSerializedPlayerStatsField, playerStats);
+
+        //SERIALIZING SPELLS
+        foreach (SpellType spell in SpellsManager.Instance.learntSpells)
+        {
+            learntSpells.Add(spell.ToString());
+        }
+        serializedSave.AddField(Constants.SFSerializedSpellsField, learntSpells);
+
+        //Archives
+        foreach (ReadableKey key in InventoryManager.Instance.archives)
+        {
+            archives.Add(key.ToString());
+        }
+        serializedSave.AddField(Constants.SFSerializedArchivesField, archives);
+
+        //SERIALIZING INVENTORY
+        serializedSave.AddField(Constants.SFSerializedOilAmountField, InventoryManager.Instance.OilAmount);
+        serializedSave.AddField(Constants.SFSerializedGoldAmountField, InventoryManager.Instance.GoldAmount);
+
+        //Keys
+        for(int i = 0; i < 3; i++)
+        {
+            InventoryKey key = InventoryManager.Instance.getKeyByMaterial((KeyMaterial)i);
+            if (key.isInInventory)
+            {
+                keys.Add(((KeyMaterial)i).ToString());
+            }
+        }
+        serializedSave.AddField(Constants.SFSerializedKeysField, keys);
+
+        //Items
+        foreach (Tuple<GameObject,bool> item in InventoryManager.Instance.inventoryContent)
+        {
+            JSONObject inventoryItem = new JSONObject(JSONObject.Type.ARRAY);
+            inventoryItem.Add(Constants.prefabsPath + item.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + item.Item1.name.Split('$')[0]);
+            inventoryItem.Add(item.Item2);
+            inventoryContent.Add(inventoryItem);
+        }
+        serializedSave.AddField(Constants.SFSerializedInventoryContentField, inventoryContent);
 
         //SERIALIZING SCENE STATE
         JSONObject position = new JSONObject();
@@ -182,6 +232,13 @@ public class SaveManager : MonoBehaviour
         }
         serializedSave.AddField(Constants.SFSerializedOpenedChestsField, openedChests);
 
+        //Killed ennemies
+        foreach (int id in KilledEnnemiesIds)
+        {
+            killedEnnemies.Add(id);
+        }
+        serializedSave.AddField(Constants.SFSerializedKilledEnnemiesField, killedEnnemies);
+
         //Doors state
         foreach (KeyValuePair<int, bool> door in DoorsStates)
         {
@@ -200,7 +257,7 @@ public class SaveManager : MonoBehaviour
         serializedSave.AddField(Constants.SFSerializedUnlockedDoorsField, unlockedDoors);
 
         //Spawned items
-        foreach (Tuple<GameObject,Tuple<Vector3,Vector3>> spawnedItem in SpawnedItems)
+        foreach (Tuple<GameObject, Tuple<Vector3, Vector3>> spawnedItem in SpawnedItems)
         {
             JSONObject serializedSpawnedItem = new JSONObject(JSONObject.Type.ARRAY);
             JSONObject spawnedItemCoordinates = new JSONObject();
@@ -226,38 +283,6 @@ public class SaveManager : MonoBehaviour
             spawnedItems.Add(serializedSpawnedItem);
         }
         serializedSave.AddField(Constants.SFSerializedSpawnedItemsField, spawnedItems);
-
-        //SERIALIZING INVENTORY
-        serializedSave.AddField(Constants.SFSerializedOilAmountField, InventoryManager.Instance.OilAmount);
-        serializedSave.AddField(Constants.SFSerializedGoldAmountField, InventoryManager.Instance.GoldAmount);
-
-        //Keys
-        for(int i = 0; i < 3; i++)
-        {
-            InventoryKey key = InventoryManager.Instance.getKeyByMaterial((KeyMaterial)i);
-            if (key.isInInventory)
-            {
-                keys.Add(((KeyMaterial)i).ToString());
-            }
-        }
-        serializedSave.AddField(Constants.SFSerializedKeysField, keys);
-
-        //Items
-        foreach (Tuple<GameObject,bool> item in InventoryManager.Instance.inventoryContent)
-        {
-            JSONObject inventoryItem = new JSONObject(JSONObject.Type.ARRAY);
-            inventoryItem.Add(Constants.prefabsPath + item.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + item.Item1.name.Split('$')[0]);
-            inventoryItem.Add(item.Item2);
-            inventoryContent.Add(inventoryItem);
-        }
-        serializedSave.AddField(Constants.SFSerializedInventoryContentField, inventoryContent);
-
-        //Archives
-        foreach (ReadableKey key in InventoryManager.Instance.archives)
-        {
-            archives.Add(key.ToString());
-        }
-        serializedSave.AddField(Constants.SFSerializedArchivesField, archives);
 
         //WRITING SAVE ON DISK
         Directory.CreateDirectory(savesPath + date);
@@ -311,6 +336,12 @@ public class SaveManager : MonoBehaviour
         foreach (JSONObject chest in saveFile.GetField(Constants.SFSerializedOpenedChestsField).list)
         {
             OpenedChestsIds.Add(Int32.Parse(chest.ToString()));
+        }
+
+        //Listing killedEnnemies
+        foreach (JSONObject ennemy in saveFile.GetField(Constants.SFSerializedKilledEnnemiesField).list)
+        {
+            KilledEnnemiesIds.Add(Int32.Parse(ennemy.ToString()));
         }
 
         //Listing UnlockedDoors
@@ -390,6 +421,15 @@ public class SaveManager : MonoBehaviour
         PlayerStats.scoreToHit = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsScoreToHitField).ToString());
         PlayerStats.damages = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsDamagesField).ToString());
 
+        //Restoring Player Spells
+        foreach (JSONObject spell in saveFile.GetField(Constants.SFSerializedSpellsField).list)
+        {
+            if (Enum.TryParse<SpellType>(spell.str, out SpellType key))
+            {
+                LearntSpells.Add(key);
+            }
+        }
+
         //Misc
         JSONObject playerPosition = saveFile.GetField(Constants.SFSerializedPlayerPositionField);
         PlayerPosition = new Vector3(float.Parse(playerPosition.GetField("x").str), float.Parse(playerPosition.GetField("y").str), float.Parse(playerPosition.GetField("z").str));
@@ -410,10 +450,12 @@ public class SaveManager : MonoBehaviour
         LitLightsIds.Clear();
         DestroyedItemsIds.Clear();
         OpenedChestsIds.Clear();
+        KilledEnnemiesIds.Clear();
         KeysInInventory.Clear();
         DoorsStates.Clear();
         UnlockedDoorsIds.Clear();
         Archives.Clear();
         SpawnedItems.Clear();
+        LearntSpells.Clear();
     }
 }
