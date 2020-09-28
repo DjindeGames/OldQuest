@@ -195,6 +195,8 @@ public class LoadManager : MonoBehaviour
 
     private void loadSpells()
     {
+        SpellsManager.Instance.DeathShards = SaveManager.Instance.DeathShards;
+        SpellsManager.Instance.MaxDeathShards = SaveManager.Instance.MaxDeathShards;
         foreach (SpellType spell in saveManager.LearntSpells)
         {
             SpellsManager.Instance.addSpell(spell);

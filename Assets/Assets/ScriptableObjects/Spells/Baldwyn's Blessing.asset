@@ -18,8 +18,6 @@ MonoBehaviour:
     and wound his ennemies. '
   type: 0
   bonuses:
-  - type: 5
-    value: 20
-  - type: 6
-    value: 2
+  - type: 3
+    value: -3
   cost: 1

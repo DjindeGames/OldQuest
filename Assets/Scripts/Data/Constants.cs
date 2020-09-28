@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public enum ItemType { Equipment, Readable, Valuable, Key, Potion, Oil, Spell }
-public enum SFXType { ItemEquipped, PageChanged, OpenReadable, CloseReadable, OpenedChest, DrinkPotion, LootRevealed, ItemRemoved }
+public enum SFXType { ItemEquipped, PageChanged, OpenReadable, CloseReadable, OpenedChest, DrinkPotion, LootRevealed, ItemRemoved, CastSpell }
 public enum VolumeType { Music, Effects, Physics }
 public enum CameraType { Player, Inventory, FirstPerson, DiceBoard, Puppet }
 public enum ScreenType { Main, Inventory, Menu, Archives, Puppet, DiceBoard }
@@ -72,4 +72,6 @@ public static class Constants
     public static string SFSerializedPlayerStatsScoreToHitField { get; private set; } = "ScoreToHit";
     public static string SFSerializedPlayerStatsDamagesField { get; private set; } = "Damages";
     public static string SFSerializedSpellsField { get; private set; } = "Spells";
+    public static string SFSerializedDeathShardsField { get; private set; } = "DeathShardsAmount";
+    public static string SFSerializedMaxDeathShardsField { get; private set; } = "MaxDeathShards";
 }

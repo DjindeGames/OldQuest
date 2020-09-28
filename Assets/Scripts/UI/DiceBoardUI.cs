@@ -124,7 +124,7 @@ public class DiceBoardUI : MonoBehaviour
         lootsResultWindowConfirm.interactable = false;
         for (int i = 0; i < lootsParent.childCount; i++)
         {
-            Destroy(lootsParent.GetChild(0).gameObject);
+            Destroy(lootsParent.GetChild(i).gameObject);
         }
     }
 
@@ -216,6 +216,11 @@ public class DiceBoardUI : MonoBehaviour
     public void displayConsumables()
     {
         displayTab(EDiceBoardMenuTab.Consumables);
+    }
+
+    public void displayStats()
+    {
+        displayTab(EDiceBoardMenuTab.Stats);
     }
 
     public void closeTabs()

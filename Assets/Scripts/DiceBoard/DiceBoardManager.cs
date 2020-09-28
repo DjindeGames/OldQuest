@@ -320,6 +320,11 @@ public class DiceBoardManager : MonoBehaviour
         }
     }
 
+    public void recomputeNeededScore()
+    {
+        getCurrentThrowAction().recomputeNeededScore();
+    }
+
     private GameObject GetDicePrefab(DiceColor which)
     {
         GameObject dice = null;
@@ -406,6 +411,19 @@ public class ThrowAction
                 break;
             default:
                 result = getValidSum();
+                break;
+        }
+    }
+
+    public void recomputeNeededScore()
+    {
+        switch(actionType)
+        {
+            case (ThrowActionType.PlayerHit):
+                minimumValueNeeded = PlayerStatsManager.Instance.ScoreToHit;
+                break;
+            case (ThrowActionType.PlayerWound):
+                minimumValueNeeded = CombatManager.Instance.getScoreToWoundCurrentEnnemy();
                 break;
         }
     }

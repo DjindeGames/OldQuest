@@ -38,6 +38,8 @@ public class SaveManager : MonoBehaviour
 
     //PLAYER STATS
     public PlayerStats PlayerStats { get; private set; }
+    public int DeathShards { get; private set; }
+    public int MaxDeathShards { get; private set; }
     public List<SpellType> LearntSpells { get; private set; }
 
     private string savesPath;
@@ -164,6 +166,8 @@ public class SaveManager : MonoBehaviour
         serializedSave.AddField(Constants.SFSerializedPlayerStatsField, playerStats);
 
         //SERIALIZING SPELLS
+        serializedSave.AddField(Constants.SFSerializedDeathShardsField, SpellsManager.Instance.DeathShards);
+        serializedSave.AddField(Constants.SFSerializedMaxDeathShardsField, SpellsManager.Instance.DeathShards);
         foreach (SpellType spell in SpellsManager.Instance.learntSpells)
         {
             learntSpells.Add(spell.ToString());
@@ -422,6 +426,8 @@ public class SaveManager : MonoBehaviour
         PlayerStats.damages = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsDamagesField).ToString());
 
         //Restoring Player Spells
+        DeathShards = Int32.Parse(playerStats.GetField(Constants.SFSerializedDeathShardsField).ToString());
+        MaxDeathShards = Int32.Parse(playerStats.GetField(Constants.SFSerializedMaxDeathShardsField).ToString());
         foreach (JSONObject spell in saveFile.GetField(Constants.SFSerializedSpellsField).list)
         {
             if (Enum.TryParse<SpellType>(spell.str, out SpellType key))

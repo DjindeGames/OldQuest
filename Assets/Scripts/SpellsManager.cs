@@ -12,6 +12,7 @@ public class SpellsManager : MonoBehaviour
     public static SpellsManager Instance { get; private set; }
 
     private List<SpellType> castedSpells = new List<SpellType>();
+    private List<SpellBonus> activeBonuses = new List<SpellBonus>();
 
     public int DeathShards
     {
@@ -54,6 +55,26 @@ public class SpellsManager : MonoBehaviour
         Instance = this;
     }
 
+    public int getTotalSpellBonusOfType(SpellBonusType type)
+    {
+        int bonusAmount = 0;
+        foreach(SpellBonus bonus in activeBonuses)
+        {
+            if (bonus.type == type)
+            {
+                bonusAmount += bonus.value;
+            }
+        }
+        return bonusAmount;
+    }
+
+    public void clearActiveBonuses()
+    {
+        castedSpells.Clear();
+        activeBonuses.Clear();
+        SpellBookUI.Instance.resetActiveSpells();
+    }
+
     public Spell getSpellFromDB(SpellType which)
     {
         Spell spell = null;
@@ -94,8 +115,19 @@ public class SpellsManager : MonoBehaviour
 
     public void castSpell(SpellType which)
     {
+        SoundManager.Instance.playSFX(SFXType.CastSpell);
         Spell spell = getSpellFromDB(which);
         DeathShards -= spell.cost;
         castedSpells.Add(which);
+        registerSpellBonuses(spell);
+        DiceBoardManager.Instance.recomputeNeededScore();
+    }
+
+    private void registerSpellBonuses(Spell spell)
+    {
+        foreach(SpellBonus bonus in spell.bonuses)
+        {
+            activeBonuses.Add(bonus);
+        }
     }
 }

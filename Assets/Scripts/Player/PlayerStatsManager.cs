@@ -70,7 +70,7 @@ public class PlayerStatsManager : MonoBehaviour
     {
         get
         {
-            int hitRolls = playerStats.hitRolls + equipmentBonuses.hitRolls;
+            int hitRolls = playerStats.hitRolls + equipmentBonuses.hitRolls + SpellsManager.Instance.getTotalSpellBonusOfType(SpellBonusType.ExtraHit);
             hitRolls = Mathf.Clamp(hitRolls, 1, int.MaxValue);
             return hitRolls;
         }
@@ -84,7 +84,7 @@ public class PlayerStatsManager : MonoBehaviour
     {
         get
         {
-            return equipmentBonuses.armor;
+            return equipmentBonuses.armor + SpellsManager.Instance.getTotalSpellBonusOfType(SpellBonusType.Armor);
         }
     }
 
@@ -92,7 +92,7 @@ public class PlayerStatsManager : MonoBehaviour
     {
         get
         {
-            int scoreToHit = playerStats.scoreToHit + equipmentBonuses.toHit;
+            int scoreToHit = playerStats.scoreToHit + equipmentBonuses.toHit + SpellsManager.Instance.getTotalSpellBonusOfType(SpellBonusType.ToHit);
             scoreToHit = Mathf.Clamp(scoreToHit, 1, 6);
             return scoreToHit;
         }
@@ -106,7 +106,7 @@ public class PlayerStatsManager : MonoBehaviour
     {
         get
         {
-            return playerStats.damages + equipmentBonuses.damages;
+            return playerStats.damages + equipmentBonuses.damages + SpellsManager.Instance.getTotalSpellBonusOfType(SpellBonusType.Damages);
         }
         private set
         {
@@ -118,7 +118,7 @@ public class PlayerStatsManager : MonoBehaviour
     {
         get
         {
-            return equipmentBonuses.toWound;
+            return equipmentBonuses.toWound + SpellsManager.Instance.getTotalSpellBonusOfType(SpellBonusType.ToWound);
         }
     }
 
@@ -334,7 +334,7 @@ public class PlayerStatsManager : MonoBehaviour
             scoreNeeded = 3;
         }
 
-        return scoreNeeded;
+        return scoreNeeded - BonusToWound;
     }
 }
 

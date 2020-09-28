@@ -30,6 +30,11 @@ public class CombatManager : MonoBehaviour
         DiceActionManager.Instance.performThrowAction(ThrowActionType.PlayerHit, PlayerStatsManager.Instance.HitRolls, PlayerStatsManager.Instance.ScoreToHit);
     }
 
+    public int getScoreToWoundCurrentEnnemy()
+    {
+        return PlayerStatsManager.Instance.getScoreToWoundAgainst(CurrentEnnemy.stats.endurance);
+    }
+
     private void onActionComplete(ThrowActionType actionType, int result)
     {
         switch(actionType)
@@ -74,12 +79,14 @@ public class CombatManager : MonoBehaviour
     private void onEnnemyDeath()
     {
         CurrentEnnemy.onDeath();
+        SpellsManager.Instance.clearActiveBonuses();
         DiceActionManager.Instance.onActionPerformed -= onActionComplete;
         CurrentEnnemy.onEnnemyDeath -= onEnnemyDeath;
     }
 
     private void onPlayerDeath()
     {
+        SpellsManager.Instance.clearActiveBonuses();
         SceneManager.LoadScene("Intro");
     }
 }

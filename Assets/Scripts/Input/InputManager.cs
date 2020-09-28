@@ -114,6 +114,10 @@ public class InputManager : MonoBehaviour
         {
             DiceBoardUI.Instance.displaySpells();
         }
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            DiceBoardUI.Instance.displayStats();
+        }
     }
 
     void onIntroCompleted()

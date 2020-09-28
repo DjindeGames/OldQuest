@@ -11,7 +11,7 @@ public class Spell : ScriptableObject
 }
 
 [System.Serializable]
-public struct SpellBonus
+public class SpellBonus
 {
     public SpellBonusType type;
     public int value;
