@@ -11,7 +11,7 @@ public class Puppet : MonoBehaviour
 
     private void Update()
     {
-        if (ScreenManager.Instance.ActiveScreen != ScreenType.Puppet)
+        if (ScreenManager.Instance.ActiveScreen != EScreenType.Puppet)
         {
             return;
         }
@@ -34,13 +34,13 @@ public class Puppet : MonoBehaviour
 
     void OnMouseOver()
     {
-        if (ScreenManager.Instance.ActiveScreen != ScreenType.Inventory)
+        if (ScreenManager.Instance.ActiveScreen != EScreenType.Inventory)
         {
             return;
         }
         if(Input.GetMouseButtonDown(0))
         {
-            ScreenManager.Instance.switchScreen(ScreenType.Puppet);
+            ScreenManager.Instance.switchScreen(EScreenType.Puppet);
         }
     }
 }

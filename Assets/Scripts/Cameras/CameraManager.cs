@@ -9,7 +9,7 @@ public class CameraManager : MonoBehaviour
     [SerializeField]
     private Image firstPersonCursor;
     [SerializeField]
-    private CameraType activeCamera = CameraType.Player;
+    private ECameraType activeCamera = ECameraType.Player;
 
     public static CameraManager Instance { get; private set; }
 
@@ -19,26 +19,26 @@ public class CameraManager : MonoBehaviour
     private void Awake()
     {
         FirstPersonViewActive = false;
-        FirstPersonCamera = getCamera(CameraType.FirstPerson);
+        FirstPersonCamera = getCamera(ECameraType.FirstPerson);
         Instance = this;
         toggleCamera(activeCamera);
         firstPersonCursor.enabled = false;
     }
 
-    public void switchCamera(CameraType which)
+    public void switchCamera(ECameraType which)
     {
-        CameraType actuallySwitched = which;
+        ECameraType actuallySwitched = which;
         switch (which)
         {
-            case CameraType.Player:
+            case ECameraType.Player:
                 if (FirstPersonViewActive)
                 {
-                    actuallySwitched = CameraType.FirstPerson;
+                    actuallySwitched = ECameraType.FirstPerson;
                     toggleFPCursor(true);
                 }
                 else
                 {
-                    actuallySwitched = CameraType.Player;
+                    actuallySwitched = ECameraType.Player;
                     toggleFPCursor(false);
                 }
                 break;
@@ -50,7 +50,7 @@ public class CameraManager : MonoBehaviour
         //Debug.Log("Switched Camera to " + activeCamera.name + " " + activeCamera.enabled);
     }
 
-    private void toggleCamera(CameraType which)
+    private void toggleCamera(ECameraType which)
     {
         for (int i = 0; i < cameras.Length; i++)
         {
@@ -67,7 +67,7 @@ public class CameraManager : MonoBehaviour
         }
     }
 
-    private Camera getCamera(CameraType which)
+    private Camera getCamera(ECameraType which)
     {
         Camera cam = null;
         for (int i = 0; i < cameras.Length; i++)
@@ -101,11 +101,11 @@ public class CameraManager : MonoBehaviour
         toggleFPCursor(FirstPersonViewActive);
         if (FirstPersonViewActive)
         {
-            activeCamera = CameraType.FirstPerson;
+            activeCamera = ECameraType.FirstPerson;
         }
         else
         {
-            activeCamera = CameraType.Player;
+            activeCamera = ECameraType.Player;
         }
         toggleCamera(activeCamera);
     }
@@ -115,6 +115,6 @@ public class CameraManager : MonoBehaviour
 public class CameraInstance
 {
     public Camera cam;
-    public CameraType type;
+    public ECameraType type;
     public AudioListener listener;
 }

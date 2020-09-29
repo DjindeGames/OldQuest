@@ -38,13 +38,13 @@ public class MainUI : MonoBehaviour
 
     public void displayMenu()
     {
-        ScreenManager.Instance.switchScreen(ScreenType.Menu);
+        ScreenManager.Instance.switchScreen(EScreenType.Menu);
     }
 
     public void displayInventory()
     {
         PlayerController.Instance.cancelMove();
-        ScreenManager.Instance.switchScreen(ScreenType.Inventory);
+        ScreenManager.Instance.switchScreen(EScreenType.Inventory);
     }
 
     public void displayDescription(string description)

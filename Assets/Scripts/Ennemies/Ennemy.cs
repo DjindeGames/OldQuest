@@ -49,7 +49,7 @@ public class Ennemy : MonoBehaviour
             Lootable lootable = item.prefab.GetComponent<Lootable>();
             if (lootable)
             {
-                if (lootable.item.Type == ItemType.Equipment)
+                if (lootable.item.Type == EItemType.Equipment)
                 {
                     Equipment equipment = (Equipment)lootable.item;
                     equipItem(equipment);
@@ -64,7 +64,7 @@ public class Ennemy : MonoBehaviour
         Instantiate(equipment.skin, slot.parent);
     }
 
-    private EnnemyEquipmentSlot getSlotByType(GearSlot type)
+    private EnnemyEquipmentSlot getSlotByType(EGearSlotType type)
     {
         EnnemyEquipmentSlot slot = null;
         foreach (EnnemyEquipmentSlot equipmentSlot in equipmentSlots)
@@ -134,6 +134,6 @@ public class EnnemyInventoryItem
 [System.Serializable]
 public class EnnemyEquipmentSlot
 {
-    public GearSlot type;
+    public EGearSlotType type;
     public Transform parent;
 }

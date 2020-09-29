@@ -7,7 +7,7 @@ public class AudioSync : MonoBehaviour
 {
     [Header("Parameters")]
     [SerializeField]
-    private VolumeType type;
+    private EVolumeType type;
 
     private AudioSource source;
 
@@ -26,19 +26,19 @@ public class AudioSync : MonoBehaviour
     {
         switch(type)
         {
-            case (VolumeType.Effects):
+            case (EVolumeType.Effects):
                 source.volume = SettingsManager.Instance.EffectsVolume;
                 break;
-            case (VolumeType.Music):
+            case (EVolumeType.Music):
                 source.volume = SettingsManager.Instance.MusicVolume;
                 break;
-            case (VolumeType.Physics):
+            case (EVolumeType.Physics):
                 source.volume = SettingsManager.Instance.PhysicsVolume;
                 break;
         }
     }
 
-    private void onVolumeChanged(VolumeType which, float value)
+    private void onVolumeChanged(EVolumeType which, float value)
     {
         if (which == type)
         {

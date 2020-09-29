@@ -24,25 +24,25 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        ScreenType activeScreen = ScreenManager.Instance.ActiveScreen;
+        EScreenType activeScreen = ScreenManager.Instance.ActiveScreen;
         switch(activeScreen)
         {
-            case (ScreenType.Main):
+            case (EScreenType.Main):
                 checkInputMain();
                 break;
-            case (ScreenType.Menu):
+            case (EScreenType.Menu):
                 checkInputMainMenu();
                 break;
-            case (ScreenType.Inventory):
+            case (EScreenType.Inventory):
                 checkInputInventory();
                 break;
-            case (ScreenType.Archives):
+            case (EScreenType.Archives):
                 checkInputArchives();
                 break;
-            case (ScreenType.DiceBoard):
+            case (EScreenType.DiceBoard):
                 checkInputDiceBoard();
                 break;
-            case (ScreenType.Puppet):
+            case (EScreenType.Puppet):
                 checkInputPuppet();
                 break;
         }
@@ -52,11 +52,11 @@ public class InputManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab) && introCompleted && !PlayerHelper.IsGrabbing)
         {
-            ScreenManager.Instance.switchScreen(ScreenType.Inventory);
+            ScreenManager.Instance.switchScreen(EScreenType.Inventory);
         }
         else if (Input.GetKeyDown(KeyCode.Escape) && introCompleted && !PlayerHelper.IsGrabbing)
         {
-             ScreenManager.Instance.switchScreen(ScreenType.Menu);
+             ScreenManager.Instance.switchScreen(EScreenType.Menu);
         }
     }
 
@@ -80,7 +80,7 @@ public class InputManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.Escape))
         {
-            ScreenManager.Instance.switchScreen(ScreenType.Main);
+            ScreenManager.Instance.switchScreen(EScreenType.Main);
         }
     }
 
@@ -88,7 +88,7 @@ public class InputManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(1))
         {
-            ScreenManager.Instance.switchScreen(ScreenType.Inventory);
+            ScreenManager.Instance.switchScreen(EScreenType.Inventory);
         }
     }
 

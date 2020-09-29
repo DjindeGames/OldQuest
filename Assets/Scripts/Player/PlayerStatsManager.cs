@@ -70,7 +70,7 @@ public class PlayerStatsManager : MonoBehaviour
     {
         get
         {
-            int hitRolls = playerStats.hitRolls + equipmentBonuses.hitRolls + SpellsManager.Instance.getTotalSpellBonusOfType(SpellBonusType.ExtraHit);
+            int hitRolls = playerStats.hitRolls + equipmentBonuses.hitRolls + SpellsManager.Instance.getTotalSpellBonusOfType(ESpellBonusType.ExtraHit);
             hitRolls = Mathf.Clamp(hitRolls, 1, int.MaxValue);
             return hitRolls;
         }
@@ -84,7 +84,7 @@ public class PlayerStatsManager : MonoBehaviour
     {
         get
         {
-            return equipmentBonuses.armor + SpellsManager.Instance.getTotalSpellBonusOfType(SpellBonusType.Armor);
+            return equipmentBonuses.armor + SpellsManager.Instance.getTotalSpellBonusOfType(ESpellBonusType.Armor);
         }
     }
 
@@ -92,7 +92,7 @@ public class PlayerStatsManager : MonoBehaviour
     {
         get
         {
-            int scoreToHit = playerStats.scoreToHit + equipmentBonuses.toHit + SpellsManager.Instance.getTotalSpellBonusOfType(SpellBonusType.ToHit);
+            int scoreToHit = playerStats.scoreToHit + equipmentBonuses.toHit + SpellsManager.Instance.getTotalSpellBonusOfType(ESpellBonusType.ToHit);
             scoreToHit = Mathf.Clamp(scoreToHit, 1, 6);
             return scoreToHit;
         }
@@ -106,7 +106,7 @@ public class PlayerStatsManager : MonoBehaviour
     {
         get
         {
-            return playerStats.damages + equipmentBonuses.damages + SpellsManager.Instance.getTotalSpellBonusOfType(SpellBonusType.Damages);
+            return playerStats.damages + equipmentBonuses.damages + SpellsManager.Instance.getTotalSpellBonusOfType(ESpellBonusType.Damages);
         }
         private set
         {
@@ -118,7 +118,7 @@ public class PlayerStatsManager : MonoBehaviour
     {
         get
         {
-            return equipmentBonuses.toWound + SpellsManager.Instance.getTotalSpellBonusOfType(SpellBonusType.ToWound);
+            return equipmentBonuses.toWound + SpellsManager.Instance.getTotalSpellBonusOfType(ESpellBonusType.ToWound);
         }
     }
 
@@ -154,27 +154,27 @@ public class PlayerStatsManager : MonoBehaviour
         }
     }
 
-    public void applyBaseStatModifier(BaseStat which, uint value)
+    public void applyBaseStatModifier(EBaseStatType which, uint value)
     {
         onStatsUpdated();
         switch (which)
         {
-            case (BaseStat.Vitality):
+            case (EBaseStatType.Vitality):
                 Vitality = playerStats.vitality + (int)value;
                 break;
-            case (BaseStat.Strength):
+            case (EBaseStatType.Strength):
                 playerStats.vitality += (int)value;
                 break;
-            case (BaseStat.Endurance):
+            case (EBaseStatType.Endurance):
                 playerStats.vitality += (int)value;
                 break;
-            case (BaseStat.HitRolls):
+            case (EBaseStatType.HitRolls):
                 playerStats.hitRolls += (int)value;
                 break;
-            case (BaseStat.ScoreToHit):
+            case (EBaseStatType.ScoreToHit):
                 playerStats.scoreToHit += (int)value;
                 break;
-            case (BaseStat.Damages):
+            case (EBaseStatType.Damages):
                 playerStats.damages += (int)value;
                 break;
         }
@@ -184,28 +184,28 @@ public class PlayerStatsManager : MonoBehaviour
     {
         switch (stats.type)
         {
-            case (EquipmentBonus.Armor):
+            case (EEquipmentBonus.Armor):
                 equipmentBonuses.armor += stats.value;
                 break;
-            case (EquipmentBonus.Endurance):
+            case (EEquipmentBonus.Endurance):
                 equipmentBonuses.endurance += stats.value;
                 break;
-            case (EquipmentBonus.HitRolls):
+            case (EEquipmentBonus.HitRolls):
                 equipmentBonuses.hitRolls += stats.value;
                 break;
-            case (EquipmentBonus.Strength):
+            case (EEquipmentBonus.Strength):
                 equipmentBonuses.strength += stats.value;
                 break;
-            case (EquipmentBonus.ToHit):
+            case (EEquipmentBonus.ToHit):
                 equipmentBonuses.toHit += stats.value;
                 break;
-            case (EquipmentBonus.ToWound):
+            case (EEquipmentBonus.ToWound):
                 equipmentBonuses.toWound += stats.value;
                 break;
-            case (EquipmentBonus.Damages):
+            case (EEquipmentBonus.Damages):
                 equipmentBonuses.damages += stats.value;
                 break;
-            case (EquipmentBonus.Vitality):
+            case (EEquipmentBonus.Vitality):
                 equipmentBonuses.vitality += stats.value;
                 int newHealthPoints = playerStats.healthPoints;
                 Mathf.Clamp(newHealthPoints, 0, Vitality);
@@ -220,32 +220,32 @@ public class PlayerStatsManager : MonoBehaviour
     {
         switch (stats.type)
         {
-            case (EquipmentBonus.Armor):
+            case (EEquipmentBonus.Armor):
                 equipmentBonuses.armor -= stats.value;
                 break;
-            case (EquipmentBonus.Endurance):
+            case (EEquipmentBonus.Endurance):
                 equipmentBonuses.endurance -= stats.value;
                 break;
-            case (EquipmentBonus.HitRolls):
+            case (EEquipmentBonus.HitRolls):
                 equipmentBonuses.hitRolls -= stats.value;
                 break;
-            case (EquipmentBonus.Strength):
+            case (EEquipmentBonus.Strength):
                 equipmentBonuses.strength -= stats.value;
                 break;
-            case (EquipmentBonus.ToHit):
+            case (EEquipmentBonus.ToHit):
                 equipmentBonuses.toHit -= stats.value;
                 break;
-            case (EquipmentBonus.ToWound):
+            case (EEquipmentBonus.ToWound):
                 equipmentBonuses.toWound -= stats.value;
                 break;
-            case (EquipmentBonus.Vitality):
+            case (EEquipmentBonus.Vitality):
                 equipmentBonuses.vitality -= stats.value;
                 int newHealthPoints = playerStats.healthPoints;
                 Mathf.Clamp(newHealthPoints, 0, Vitality);
                 Health = newHealthPoints;
                 onVitalityUpdated?.Invoke(Vitality);
                 break;
-            case (EquipmentBonus.Damages):
+            case (EEquipmentBonus.Damages):
                 equipmentBonuses.damages -= stats.value;
                 break;
         }
@@ -276,33 +276,33 @@ public class PlayerStatsManager : MonoBehaviour
         return copiedPlayerStats;
     }
 
-    public int getEquipmentBonus(EquipmentBonus which)
+    public int getEquipmentBonus(EEquipmentBonus which)
     {
         int bonus = 0;
         switch(which)
         {
-            case (EquipmentBonus.Vitality):
+            case (EEquipmentBonus.Vitality):
                 bonus = equipmentBonuses.vitality;
                 break;
-            case (EquipmentBonus.Strength):
+            case (EEquipmentBonus.Strength):
                 bonus = equipmentBonuses.strength;
                 break;
-            case (EquipmentBonus.Endurance):
+            case (EEquipmentBonus.Endurance):
                 bonus = equipmentBonuses.endurance;
                 break;
-            case (EquipmentBonus.Armor):
+            case (EEquipmentBonus.Armor):
                 bonus = equipmentBonuses.armor;
                 break;
-            case (EquipmentBonus.HitRolls):
+            case (EEquipmentBonus.HitRolls):
                 bonus = equipmentBonuses.hitRolls;
                 break;
-            case (EquipmentBonus.ToHit):
+            case (EEquipmentBonus.ToHit):
                 bonus = equipmentBonuses.toHit;
                 break;
-            case (EquipmentBonus.ToWound):
+            case (EEquipmentBonus.ToWound):
                 bonus = equipmentBonuses.toWound;
                 break;
-            case (EquipmentBonus.Damages):
+            case (EEquipmentBonus.Damages):
                 bonus = equipmentBonuses.damages;
                 break;
         }

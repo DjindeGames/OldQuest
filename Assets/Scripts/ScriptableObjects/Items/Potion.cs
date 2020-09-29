@@ -7,6 +7,6 @@ using UnityEngine;
 [CreateAssetMenu]
 public class Potion : Usable
 {
-    public PotionType type;
+    public EPotionType type;
     public int value;
 }

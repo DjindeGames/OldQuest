@@ -23,13 +23,13 @@ public class Chest : Highlightable
 
     protected override void activate()
     {
-        DiceActionManager.Instance.performThrowAction(ThrowActionType.LootChest, 6, 0);
+        DiceActionManager.Instance.performThrowAction(EThrowActionType.LootChest, 6, 0);
         DiceActionManager.Instance.onActionPerformed += onThrowComplete;
     }
 
-    private void onThrowComplete(ThrowActionType actionType, int score)
+    private void onThrowComplete(EThrowActionType actionType, int score)
     {
-        if (actionType == ThrowActionType.LootChest)
+        if (actionType == EThrowActionType.LootChest)
         {
             DiceActionManager.Instance.onActionPerformed -= onThrowComplete;
             StateSave stateSave = GetComponent<StateSave>();
@@ -57,7 +57,7 @@ public class Chest : Highlightable
             }
         }
         DiceBoardUI.Instance.showLootResults(lootedItems);
-        SoundManager.Instance.playSFX(SFXType.OpenedChest);
+        SoundManager.Instance.playSFX(ESFXType.OpenedChest);
     }
 
     private void openChest(int score, bool forced = false)

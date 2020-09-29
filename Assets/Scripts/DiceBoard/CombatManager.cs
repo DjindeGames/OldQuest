@@ -27,7 +27,7 @@ public class CombatManager : MonoBehaviour
         CurrentEnnemy = ennemy;
         CurrentEnnemy.onEnnemyDeath += onEnnemyDeath;
         DiceActionManager.Instance.onActionPerformed += onActionComplete;
-        DiceActionManager.Instance.performThrowAction(ThrowActionType.PlayerHit, PlayerStatsManager.Instance.HitRolls, PlayerStatsManager.Instance.ScoreToHit);
+        DiceActionManager.Instance.performThrowAction(EThrowActionType.PlayerHit, PlayerStatsManager.Instance.HitRolls, PlayerStatsManager.Instance.ScoreToHit);
     }
 
     public int getScoreToWoundCurrentEnnemy()
@@ -35,43 +35,43 @@ public class CombatManager : MonoBehaviour
         return PlayerStatsManager.Instance.getScoreToWoundAgainst(CurrentEnnemy.stats.endurance);
     }
 
-    private void onActionComplete(ThrowActionType actionType, int result)
+    private void onActionComplete(EThrowActionType actionType, int result)
     {
         switch(actionType)
         {
-            case (ThrowActionType.PlayerHit):
+            case (EThrowActionType.PlayerHit):
                 if (result > 0)
                 {
-                    DiceActionManager.Instance.performThrowAction(ThrowActionType.PlayerWound, result, PlayerStatsManager.Instance.getScoreToWoundAgainst(CurrentEnnemy.stats.endurance));
+                    DiceActionManager.Instance.performThrowAction(EThrowActionType.PlayerWound, result, PlayerStatsManager.Instance.getScoreToWoundAgainst(CurrentEnnemy.stats.endurance));
                 }
                 else
                 {
-                    DiceActionManager.Instance.performThrowAction(ThrowActionType.EnnemyHit, CurrentEnnemy.stats.hitRolls, CurrentEnnemy.stats.scoreToHit);
+                    DiceActionManager.Instance.performThrowAction(EThrowActionType.EnnemyHit, CurrentEnnemy.stats.hitRolls, CurrentEnnemy.stats.scoreToHit);
                 }
                 break;
-            case (ThrowActionType.PlayerWound):
+            case (EThrowActionType.PlayerWound):
                 if (CurrentEnnemy.resolveWounds(result))
                 {
                     onEnnemyDeath();
                 }
                 else
                 {
-                    DiceActionManager.Instance.performThrowAction(ThrowActionType.EnnemyHit, CurrentEnnemy.stats.hitRolls, CurrentEnnemy.stats.scoreToHit);
+                    DiceActionManager.Instance.performThrowAction(EThrowActionType.EnnemyHit, CurrentEnnemy.stats.hitRolls, CurrentEnnemy.stats.scoreToHit);
                 }
                 break;
-            case (ThrowActionType.EnnemyHit):
+            case (EThrowActionType.EnnemyHit):
                 if (result > 0)
                 {
-                    DiceActionManager.Instance.performThrowAction(ThrowActionType.EnnemyWound, result, PlayerStatsManager.Instance.getScoreToWoundAgainst(CurrentEnnemy.stats.endurance));
+                    DiceActionManager.Instance.performThrowAction(EThrowActionType.EnnemyWound, result, PlayerStatsManager.Instance.getScoreToWoundAgainst(CurrentEnnemy.stats.endurance));
                 }
                 else
                 {
-                    DiceActionManager.Instance.performThrowAction(ThrowActionType.PlayerHit, PlayerStatsManager.Instance.HitRolls, PlayerStatsManager.Instance.ScoreToHit);
+                    DiceActionManager.Instance.performThrowAction(EThrowActionType.PlayerHit, PlayerStatsManager.Instance.HitRolls, PlayerStatsManager.Instance.ScoreToHit);
                 }
                 break;
-            case (ThrowActionType.EnnemyWound):
+            case (EThrowActionType.EnnemyWound):
                 PlayerStatsManager.Instance.addHealthPointsModifier(-result);
-                DiceActionManager.Instance.performThrowAction(ThrowActionType.PlayerHit, PlayerStatsManager.Instance.HitRolls, PlayerStatsManager.Instance.ScoreToHit);
+                DiceActionManager.Instance.performThrowAction(EThrowActionType.PlayerHit, PlayerStatsManager.Instance.HitRolls, PlayerStatsManager.Instance.ScoreToHit);
                 break;
         }
     }

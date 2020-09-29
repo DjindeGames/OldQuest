@@ -7,7 +7,7 @@ public class DiceBoardManager : MonoBehaviour
 {
     public Collider TableCollider { get; private set; }
 
-    public ThrowActionPerformer currentPerformer
+    public EThrowActionPerformer currentPerformer
     {
         get
         {
@@ -72,7 +72,7 @@ public class DiceBoardManager : MonoBehaviour
             }
             else
             {
-                if (currentThrowAction.actionPerformer == ThrowActionPerformer.Player)
+                if (currentThrowAction.actionPerformer == EThrowActionPerformer.Player)
                 {
                     performPlayerAction();
                 }
@@ -236,7 +236,7 @@ public class DiceBoardManager : MonoBehaviour
 
     public void StartThrowAction(ThrowAction action)
     {
-        ScreenManager.Instance.switchScreen(ScreenType.DiceBoard);
+        ScreenManager.Instance.switchScreen(EScreenType.DiceBoard);
         pushThrowAction(action);
         addDices(action);
         resetThrowCooldown();
@@ -325,7 +325,7 @@ public class DiceBoardManager : MonoBehaviour
         getCurrentThrowAction().recomputeNeededScore();
     }
 
-    private GameObject GetDicePrefab(DiceColor which)
+    private GameObject GetDicePrefab(EDiceColor which)
     {
         GameObject dice = null;
         for (int i = 0; i < dicesPrefabs.Length; i++)
@@ -343,15 +343,15 @@ public class DiceBoardManager : MonoBehaviour
 [System.Serializable]
 public class ColoredDicePrefab
 {
-    public DiceColor color;
+    public EDiceColor color;
     public GameObject dice;
 }
 
 public class ThrowAction
 {
-    public ThrowActionType actionType;
-    public ThrowActionPerformer actionPerformer;
-    public DiceColor color;
+    public EThrowActionType actionType;
+    public EThrowActionPerformer actionPerformer;
+    public EDiceColor color;
     public int numberOfDices;
     public int minimumValueNeeded;
     public int result;
@@ -405,8 +405,8 @@ public class ThrowAction
     {
         switch (actionType)
         {
-            case (ThrowActionType.HealingPotion):
-            case (ThrowActionType.LootChest):
+            case (EThrowActionType.HealingPotion):
+            case (EThrowActionType.LootChest):
                 result = getValueSum();
                 break;
             default:
@@ -419,10 +419,10 @@ public class ThrowAction
     {
         switch(actionType)
         {
-            case (ThrowActionType.PlayerHit):
+            case (EThrowActionType.PlayerHit):
                 minimumValueNeeded = PlayerStatsManager.Instance.ScoreToHit;
                 break;
-            case (ThrowActionType.PlayerWound):
+            case (EThrowActionType.PlayerWound):
                 minimumValueNeeded = CombatManager.Instance.getScoreToWoundCurrentEnnemy();
                 break;
         }

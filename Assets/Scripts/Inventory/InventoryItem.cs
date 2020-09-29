@@ -21,7 +21,7 @@ public class InventoryItem : ConstrainedDraggableItem
 
     protected override void OnMouseEnter()
     {
-        if (ScreenManager.Instance.ActiveScreen != ScreenType.Inventory)
+        if (ScreenManager.Instance.ActiveScreen != EScreenType.Inventory)
         {
             return;
         }
@@ -31,7 +31,7 @@ public class InventoryItem : ConstrainedDraggableItem
 
     protected override void OnMouseExit()
     {
-        if (ScreenManager.Instance.ActiveScreen != ScreenType.Inventory)
+        if (ScreenManager.Instance.ActiveScreen != EScreenType.Inventory)
         {
             return;
         }
@@ -41,7 +41,7 @@ public class InventoryItem : ConstrainedDraggableItem
 
     protected override void OnMouseDrag()
     {
-        if (ScreenManager.Instance.ActiveScreen != ScreenType.Inventory)
+        if (ScreenManager.Instance.ActiveScreen != EScreenType.Inventory)
         {
             return;
         }

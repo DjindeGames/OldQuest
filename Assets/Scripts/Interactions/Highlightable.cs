@@ -4,7 +4,7 @@ public abstract class Highlightable : Interactable
 {
     [Header("Settings")]
     [SerializeField]
-    private LootableOutlineType outlineType;
+    private ELootableOutlineType outlineType;
 
     private Material[] baseMaterials;
     private Material[] outlinedMaterials;

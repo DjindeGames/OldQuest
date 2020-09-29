@@ -28,7 +28,7 @@ public class FirstPersonCamera : MonoBehaviour
 
     void Update()
     {
-        if (firstPersonCamera.enabled && ScreenManager.Instance.ActiveScreen == ScreenType.Main)
+        if (firstPersonCamera.enabled && ScreenManager.Instance.ActiveScreen == EScreenType.Main)
         {
             //Player rotates with camera
             player.eulerAngles = new Vector3(player.rotation.x, firstPersonCamera.transform.eulerAngles.y, player.rotation.z);

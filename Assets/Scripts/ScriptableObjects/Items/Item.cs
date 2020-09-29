@@ -4,8 +4,8 @@ using UnityEngine;
 public abstract class Item : ScriptableObject
 {
     public string description;
-    public ItemType Type { get; private set; }
-    public LootableOutlineType rarity;
+    public EItemType Type { get; private set; }
+    public ELootableOutlineType rarity;
 
     public void Awake()
     {
@@ -14,6 +14,6 @@ public abstract class Item : ScriptableObject
 
     public void fetchType()
     {
-        Type =  (ItemType)Enum.Parse(typeof(ItemType), GetType().ToString());
+        Type =  (EItemType)Enum.Parse(typeof(EItemType), GetType().ToString());
     }
 }

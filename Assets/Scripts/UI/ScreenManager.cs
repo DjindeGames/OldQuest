@@ -5,12 +5,12 @@ public class ScreenManager : MonoBehaviour
 {
     public static ScreenManager Instance { get; private set; }
 
-    public ScreenType ActiveScreen { get; private set; } = ScreenType.Main;
+    public EScreenType ActiveScreen { get; private set; } = EScreenType.Main;
 
-    public delegate void screenChange(ScreenType current);
+    public delegate void screenChange(EScreenType current);
     public event screenChange screenHasChanged;
 
-    private ScreenType previousScreen;
+    private EScreenType previousScreen;
 
     private void Awake()
     {
@@ -20,12 +20,12 @@ public class ScreenManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ActiveScreen = ScreenType.Main;
+        ActiveScreen = EScreenType.Main;
         previousScreen = ActiveScreen;
         //switchScreen(ScreenType.Main);
     }
     
-    public void switchScreen (ScreenType which)
+    public void switchScreen (EScreenType which)
     {
         if (which == ActiveScreen)
         {
@@ -36,36 +36,36 @@ public class ScreenManager : MonoBehaviour
         //Debug.Log("Switched Screen to " + ActiveScreen.ToString());
         switch (which)
         {
-            case ScreenType.Main:
-                UIManager.Instance.switchUI(UIType.Main);
-                CameraManager.Instance.switchCamera(CameraType.Player);
+            case EScreenType.Main:
+                UIManager.Instance.switchUI(EUIType.Main);
+                CameraManager.Instance.switchCamera(ECameraType.Player);
                 TimeManager.Instance.resumeTime();
                 TimeManager.Instance.resumeEllapsedTime();
                 break;
-            case ScreenType.Menu:
-                UIManager.Instance.switchUI(UIType.Menu);
+            case EScreenType.Menu:
+                UIManager.Instance.switchUI(EUIType.Menu);
                 CameraManager.Instance.toggleFPCursor(false);
                 TimeManager.Instance.pauseTime();
                 TimeManager.Instance.pauseEllapsedTime();
                 break;
-            case ScreenType.Inventory:
-                UIManager.Instance.switchUI(UIType.Inventory);
-                CameraManager.Instance.switchCamera(CameraType.Inventory);
+            case EScreenType.Inventory:
+                UIManager.Instance.switchUI(EUIType.Inventory);
+                CameraManager.Instance.switchCamera(ECameraType.Inventory);
                 CameraManager.Instance.toggleFPCursor(false);
                 TimeManager.Instance.resumeTime();
                 break;
-            case ScreenType.Archives:
-                UIManager.Instance.switchUI(UIType.Archives);
+            case EScreenType.Archives:
+                UIManager.Instance.switchUI(EUIType.Archives);
                 CameraManager.Instance.toggleFPCursor(false);
                 TimeManager.Instance.pauseTime();
                 break;
-            case ScreenType.Puppet:
-                UIManager.Instance.switchUI(UIType.Puppet);
-                CameraManager.Instance.switchCamera(CameraType.Puppet);
+            case EScreenType.Puppet:
+                UIManager.Instance.switchUI(EUIType.Puppet);
+                CameraManager.Instance.switchCamera(ECameraType.Puppet);
                 break;
-            case ScreenType.DiceBoard:
-                UIManager.Instance.switchUI(UIType.DiceBoard);
-                CameraManager.Instance.switchCamera(CameraType.DiceBoard);
+            case EScreenType.DiceBoard:
+                UIManager.Instance.switchUI(EUIType.DiceBoard);
+                CameraManager.Instance.switchCamera(ECameraType.DiceBoard);
                 break;
         }
         if (screenHasChanged != null)

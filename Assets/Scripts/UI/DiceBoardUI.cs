@@ -137,12 +137,12 @@ public class DiceBoardUI : MonoBehaviour
         }
     }
 
-    public void showActionResult(ThrowActionType actionType, int result)
+    public void showActionResult(EThrowActionType actionType, int result)
     {
         closeTabs();
         switch(actionType)
         {
-            case (ThrowActionType.PlayerHit):
+            case (EThrowActionType.PlayerHit):
                 if (result == 0)
                 {
                     textResult.text = "You have missed all your attacks.";
@@ -152,7 +152,7 @@ public class DiceBoardUI : MonoBehaviour
                     textResult.text = "You have hit the ennemy " + result + " times.";
                 }
                 break;
-            case (ThrowActionType.PlayerWound):
+            case (EThrowActionType.PlayerWound):
                 if (result == 0)
                 {
                     textResult.text = "You have not managed to wound the ennemy.";
@@ -162,7 +162,7 @@ public class DiceBoardUI : MonoBehaviour
                     textResult.text = "You have wounded the ennemy " + result + " times for a total of " + PlayerStatsManager.Instance.Damages * result + " points of damages.";
                 }
                 break;
-            case (ThrowActionType.EnnemyHit):
+            case (EThrowActionType.EnnemyHit):
                 if (result == 0)
                 {
                     textResult.text = "The ennemy missed all of his attacks.";
@@ -172,7 +172,7 @@ public class DiceBoardUI : MonoBehaviour
                     textResult.text = "The ennemy has hit you " + result + " times.";
                 }
                 break;
-            case (ThrowActionType.EnnemyWound):
+            case (EThrowActionType.EnnemyWound):
                 if (result == 0)
                 {
                     textResult.text = "The ennemy has not managed to wound you.";
@@ -198,11 +198,11 @@ public class DiceBoardUI : MonoBehaviour
             {
                 if (which != EDiceBoardMenuTab.None)
                 {
-                    SoundManager.Instance.playSFX(SFXType.OpenReadable);
+                    SoundManager.Instance.playSFX(ESFXType.OpenReadable);
                 }
                 else
                 {
-                    SoundManager.Instance.playSFX(SFXType.CloseReadable);
+                    SoundManager.Instance.playSFX(ESFXType.CloseReadable);
                 }
             }
         }

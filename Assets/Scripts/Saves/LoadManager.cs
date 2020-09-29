@@ -30,9 +30,9 @@ public class LoadManager : MonoBehaviour
         if (files.Length > 0)
         {
             JSONObject preferences = new JSONObject(System.IO.File.ReadAllText(files[0]));
-            SettingsManager.Instance.setVolume(VolumeType.Music, float.Parse(preferences.GetField("MusicVolume").str));
-            SettingsManager.Instance.setVolume(VolumeType.Effects, float.Parse(preferences.GetField("EffectsVolume").str));
-            SettingsManager.Instance.setVolume(VolumeType.Physics, float.Parse(preferences.GetField("PhysicsVolume").str));
+            SettingsManager.Instance.setVolume(EVolumeType.Music, float.Parse(preferences.GetField("MusicVolume").str));
+            SettingsManager.Instance.setVolume(EVolumeType.Effects, float.Parse(preferences.GetField("EffectsVolume").str));
+            SettingsManager.Instance.setVolume(EVolumeType.Physics, float.Parse(preferences.GetField("PhysicsVolume").str));
             SettingsManager.Instance.setFirstPersonMouseSensitivity(float.Parse(preferences.GetField("FirstPersonMouseSensitivity").str));
         }
         else
@@ -197,7 +197,7 @@ public class LoadManager : MonoBehaviour
     {
         SpellsManager.Instance.DeathShards = SaveManager.Instance.DeathShards;
         SpellsManager.Instance.MaxDeathShards = SaveManager.Instance.MaxDeathShards;
-        foreach (SpellType spell in saveManager.LearntSpells)
+        foreach (ESpellType spell in saveManager.LearntSpells)
         {
             SpellsManager.Instance.addSpell(spell);
         }

@@ -40,7 +40,7 @@ public class SaveManager : MonoBehaviour
     public PlayerStats PlayerStats { get; private set; }
     public int DeathShards { get; private set; }
     public int MaxDeathShards { get; private set; }
-    public List<SpellType> LearntSpells { get; private set; }
+    public List<ESpellType> LearntSpells { get; private set; }
 
     private string savesPath;
     private int totalPlayTime = 0;
@@ -61,7 +61,7 @@ public class SaveManager : MonoBehaviour
         KilledEnnemiesIds = new List<int>();
         DoorsStates = new Dictionary<int,bool>();
         UnlockedDoorsIds = new List<int>();
-        LearntSpells = new List<SpellType>();
+        LearntSpells = new List<ESpellType>();
     }
 
     public void save(string fileName)
@@ -167,8 +167,9 @@ public class SaveManager : MonoBehaviour
 
         //SERIALIZING SPELLS
         serializedSave.AddField(Constants.SFSerializedDeathShardsField, SpellsManager.Instance.DeathShards);
-        serializedSave.AddField(Constants.SFSerializedMaxDeathShardsField, SpellsManager.Instance.DeathShards);
-        foreach (SpellType spell in SpellsManager.Instance.learntSpells)
+        serializedSave.AddField(Constants.SFSerializedMaxDeathShardsField, SpellsManager.Instance.MaxDeathShards);
+
+        foreach (ESpellType spell in SpellsManager.Instance.learntSpells)
         {
             learntSpells.Add(spell.ToString());
         }
@@ -200,7 +201,7 @@ public class SaveManager : MonoBehaviour
         foreach (Tuple<GameObject,bool> item in InventoryManager.Instance.inventoryContent)
         {
             JSONObject inventoryItem = new JSONObject(JSONObject.Type.ARRAY);
-            inventoryItem.Add(Constants.prefabsPath + item.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + item.Item1.name.Split('$')[0]);
+            inventoryItem.Add(Constants.PrefabsPath + item.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + item.Item1.name.Split('$')[0]);
             inventoryItem.Add(item.Item2);
             inventoryContent.Add(inventoryItem);
         }
@@ -270,7 +271,7 @@ public class SaveManager : MonoBehaviour
             Vector3 itemPosition = spawnedItem.Item1.transform.position;
             Vector3 itemRotation = spawnedItem.Item1.transform.rotation.eulerAngles;
             //Prefab Path
-            serializedSpawnedItem.Add(Constants.prefabsPath + spawnedItem.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + spawnedItem.Item1.name.Split('$')[0]);
+            serializedSpawnedItem.Add(Constants.PrefabsPath + spawnedItem.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + spawnedItem.Item1.name.Split('$')[0]);
             //Position
             spawnedItemPosition.AddField("x", itemPosition.x.ToString());
             spawnedItemPosition.AddField("y", itemPosition.y.ToString());
@@ -426,11 +427,11 @@ public class SaveManager : MonoBehaviour
         PlayerStats.damages = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsDamagesField).ToString());
 
         //Restoring Player Spells
-        DeathShards = Int32.Parse(playerStats.GetField(Constants.SFSerializedDeathShardsField).ToString());
-        MaxDeathShards = Int32.Parse(playerStats.GetField(Constants.SFSerializedMaxDeathShardsField).ToString());
+        DeathShards = Int32.Parse(saveFile.GetField(Constants.SFSerializedDeathShardsField).ToString());
+        MaxDeathShards = Int32.Parse(saveFile.GetField(Constants.SFSerializedMaxDeathShardsField).ToString());
         foreach (JSONObject spell in saveFile.GetField(Constants.SFSerializedSpellsField).list)
         {
-            if (Enum.TryParse<SpellType>(spell.str, out SpellType key))
+            if (Enum.TryParse<ESpellType>(spell.str, out ESpellType key))
             {
                 LearntSpells.Add(key);
             }
@@ -445,7 +446,7 @@ public class SaveManager : MonoBehaviour
         SaveLoaded = true;
         if (ScreenManager.Instance != null)
         {
-            ScreenManager.Instance.switchScreen(ScreenType.Main);
+            ScreenManager.Instance.switchScreen(EScreenType.Main);
         }
         SceneManager.LoadScene(saveFile.GetField(Constants.SFSerializedSceneField).str);
     }

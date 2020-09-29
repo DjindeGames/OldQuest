@@ -4,7 +4,7 @@ public class DiceFace : MonoBehaviour
 {
     [SerializeField]
     [Header("Settings")]
-    private DiceValue value;
+    private EDiceValue value;
 
     private Dice dice;
 

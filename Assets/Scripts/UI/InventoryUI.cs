@@ -33,14 +33,14 @@ public class InventoryUI : MonoBehaviour
 
     public void exit()
     {
-        ScreenManager.Instance.switchScreen(ScreenType.Main);
+        ScreenManager.Instance.switchScreen(EScreenType.Main);
     }
 
     public void showItemDetails(Usable which)
     {
         itemName.text = which.name;
         itemDetails.text = which.details;
-        if (which.Type == ItemType.Equipment)
+        if (which.Type == EItemType.Equipment)
         {
             Equipment equipment = (Equipment)which;
             itemDetails.text += "\n\nBonuses:";

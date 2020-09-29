@@ -19,12 +19,12 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        activeUI = getCanvas(UIType.Main);
-        toggleSwitchableUI(UIType.Main);
-        togglePersistentUI(UIType.All);
+        activeUI = getCanvas(EUIType.Main);
+        toggleSwitchableUI(EUIType.Main);
+        togglePersistentUI(EUIType.All);
     }
 
-    public void switchUI(UIType which)
+    public void switchUI(EUIType which)
     {
         activeUI.enabled = false;
         activeUI = getCanvas(which);
@@ -37,7 +37,7 @@ public class UIManager : MonoBehaviour
         activeUI.enabled = on;
     }
 
-    private Canvas getCanvas(UIType which)
+    private Canvas getCanvas(EUIType which)
     {
         Canvas canvas = null;
         for (int i = 0; i < switchableUis.Length; i++)
@@ -51,11 +51,11 @@ public class UIManager : MonoBehaviour
         return canvas;
     }
 
-    private void toggleSwitchableUI(UIType which)
+    private void toggleSwitchableUI(EUIType which)
     {
         for (int i = 0; i < switchableUis.Length; i++)
         {
-            if (switchableUis[i].type == which || which == UIType.All)
+            if (switchableUis[i].type == which || which == EUIType.All)
             {
                 switchableUis[i].canvas.enabled = true;
             }
@@ -66,11 +66,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void togglePersistentUI(UIType which)
+    private void togglePersistentUI(EUIType which)
     {
         for (int i = 0; i < persistentUis.Length; i++)
         {
-            if (persistentUis[i].type == which || which == UIType.All)
+            if (persistentUis[i].type == which || which == EUIType.All)
             {
                 persistentUis[i].canvas.enabled = true;
             }
@@ -86,12 +86,12 @@ public class UIManager : MonoBehaviour
         if (on)
         {
             activeUI.enabled = true;
-            togglePersistentUI(UIType.All);
+            togglePersistentUI(EUIType.All);
         }
         else
         {
-            toggleSwitchableUI(UIType.None);
-            togglePersistentUI(UIType.None);
+            toggleSwitchableUI(EUIType.None);
+            togglePersistentUI(EUIType.None);
         }
     }
 }
@@ -99,6 +99,6 @@ public class UIManager : MonoBehaviour
 [System.Serializable]
 public class UIInstance
 {
-    public UIType type;
+    public EUIType type;
     public Canvas canvas;
 }

@@ -13,7 +13,7 @@ public class Door : Interactable
     [SerializeField]
     private bool revert = true;
     [SerializeField]
-    private DoorState state = DoorState.Closed;
+    private EDoorState state = EDoorState.Closed;
     [SerializeField]
     private KeyMaterial material;
 
@@ -34,7 +34,7 @@ public class Door : Interactable
         {
             rotationSpeed = -rotationSpeed;
         }
-        if (state == DoorState.Opened)
+        if (state == EDoorState.Opened)
         {
             StartCoroutine(rotateDoor());
         }
@@ -51,7 +51,7 @@ public class Door : Interactable
         {
             switch(state)
             {
-                case (DoorState.Locked):
+                case (EDoorState.Locked):
                     if (InventoryManager.Instance.hasKey(material))
                     {
                         if (stateSave)
@@ -59,25 +59,25 @@ public class Door : Interactable
                             SaveManager.Instance.addUnlockedDoor(stateSave.id);
                         }
                         MainUI.Instance.writeLog("Opened the door using the " + material.ToString().ToLower() + " key.");
-                        state = DoorState.Opened;
+                        state = EDoorState.Opened;
                     }
                     else
                     {
                         MainUI.Instance.writeLog("The door is locked, the handle seems to be made of " + material.ToString().ToLower() + "...");
                     }
                     break;
-                case (DoorState.Opened):
-                    state = DoorState.Closed;
+                case (EDoorState.Opened):
+                    state = EDoorState.Closed;
                     break;
-                case (DoorState.Closed):
-                    state = DoorState.Opened;
+                case (EDoorState.Closed):
+                    state = EDoorState.Opened;
                     break;
             }
-            if (state != DoorState.Locked)
+            if (state != EDoorState.Locked)
             {
                 if (stateSave)
                 {
-                    if (state == DoorState.Opened)
+                    if (state == EDoorState.Opened)
                     {
                         SaveManager.Instance.updateDoorState(stateSave.id, true);
                     }
@@ -94,16 +94,16 @@ public class Door : Interactable
 
     public void restoreState(bool isOpened)
     {
-        if (isOpened && state != DoorState.Opened)
+        if (isOpened && state != EDoorState.Opened)
         {
-            state = DoorState.Opened;
+            state = EDoorState.Opened;
             StartCoroutine(rotateDoor());
         }
     }
 
     public void unlock()
     {
-        state = DoorState.Closed;
+        state = EDoorState.Closed;
     }
 
     //TO BE CHANGED
@@ -127,7 +127,7 @@ public class Door : Interactable
         animationInProgress = false;
     }
 
-    private AudioClip getSoundByState(DoorState state)
+    private AudioClip getSoundByState(EDoorState state)
     {
         AudioClip clip = null;
         for (int i = 0; i < stateSounds.Length; i++)
@@ -145,6 +145,6 @@ public class Door : Interactable
 [System.Serializable]
 public class DoorStateSound
 {
-    public DoorState state;
+    public EDoorState state;
     public AudioClip sound;
 }

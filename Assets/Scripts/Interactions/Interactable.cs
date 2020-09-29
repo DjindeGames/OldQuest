@@ -3,7 +3,7 @@
 public abstract class Interactable : MonoBehaviour
 {
     [SerializeField]
-    private ScreenType associatedScreen = ScreenType.Main;
+    private EScreenType associatedScreen = EScreenType.Main;
      
     private bool enabled = true;
 
@@ -67,7 +67,7 @@ public abstract class Interactable : MonoBehaviour
         }
     }
 
-    private void onScreenChanged(ScreenType which)
+    private void onScreenChanged(EScreenType which)
     {
         if (which != associatedScreen)
         {

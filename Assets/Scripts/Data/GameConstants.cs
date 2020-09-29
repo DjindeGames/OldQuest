@@ -63,7 +63,7 @@ public class GameConstants : MonoBehaviour
         Instance = this;   
     }
 
-    public Material getLootableOutlineMaterialByType(LootableOutlineType which)
+    public Material getLootableOutlineMaterialByType(ELootableOutlineType which)
     {
         Material material = null;
         for (int i = 0; i < lootableOutlines.Length; i++)
@@ -76,7 +76,7 @@ public class GameConstants : MonoBehaviour
         return material;
     }
 
-    public Color getLootableRarityColorByType(LootableOutlineType which)
+    public Color getLootableRarityColorByType(ELootableOutlineType which)
     {
         Color outlineColor = Color.black;
         for (int i = 0; i < lootableOutlines.Length; i++)
@@ -90,7 +90,7 @@ public class GameConstants : MonoBehaviour
         return outlineColor;
     }
 
-    public Material getDiceOutlineMaterialByType(DiceOutlineType which)
+    public Material getDiceOutlineMaterialByType(EDiceOutlineType which)
     {
         Material material = null;
         for (int i = 0; i < dicesOutlines.Length; i++)
@@ -107,13 +107,13 @@ public class GameConstants : MonoBehaviour
 [System.Serializable]
 public class LootableOutline
 {
-    public LootableOutlineType type;
+    public ELootableOutlineType type;
     public Material material;
 }
 
 [System.Serializable]
 public class DiceOutline
 {
-    public DiceOutlineType type;
+    public EDiceOutlineType type;
     public Material material;
 }

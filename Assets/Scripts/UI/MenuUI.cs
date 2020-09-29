@@ -87,7 +87,7 @@ public class MenuUI : MonoBehaviour
         closeSaveInput();
         discardConfirmExit();
         closeLoadManager();
-        ScreenManager.Instance.switchScreen(ScreenType.Main);
+        ScreenManager.Instance.switchScreen(EScreenType.Main);
     }
 
     public void displayOptions()
@@ -171,17 +171,17 @@ public class MenuUI : MonoBehaviour
 
     public void updatePhysicsVolume(Slider slider)
     {
-        SettingsManager.Instance.setVolume(VolumeType.Physics, slider.value);
+        SettingsManager.Instance.setVolume(EVolumeType.Physics, slider.value);
     }
 
     public void updateEffectsVolume(Slider slider)
     {
-        SettingsManager.Instance.setVolume(VolumeType.Effects, slider.value);
+        SettingsManager.Instance.setVolume(EVolumeType.Effects, slider.value);
     }
 
     public void updateMusicsVolume(Slider slider)
     {
-        SettingsManager.Instance.setVolume(VolumeType.Music, slider.value);
+        SettingsManager.Instance.setVolume(EVolumeType.Music, slider.value);
     }
 
     public void updateFirstPersonMouseSensitivity(Slider slider)

@@ -4,7 +4,7 @@ public class DiceActionManager : MonoBehaviour
 {
     public static DiceActionManager Instance { get; private set; }
 
-    public delegate void actionPerformed(ThrowActionType actionType, int result);
+    public delegate void actionPerformed(EThrowActionType actionType, int result);
     public event actionPerformed onActionPerformed;
 
     private ThrowAction bufferedCompletedAction;
@@ -26,26 +26,26 @@ public class DiceActionManager : MonoBehaviour
         DiceBoardUI.Instance.onActionAknowledged -= onActionAcknowledged;
     }
 
-    public void performThrowAction(ThrowActionType type, int numberOfDices, int minimumValueNeeded)
+    public void performThrowAction(EThrowActionType type, int numberOfDices, int minimumValueNeeded)
     {
         ThrowAction action = new ThrowAction();
         action.actionType = type;
         switch(type)
         {
-            case (ThrowActionType.HealingPotion):
-            case (ThrowActionType.PlayerHit):
-            case (ThrowActionType.PlayerWound):
-                action.actionPerformer = ThrowActionPerformer.Player;
-                action.color = DiceColor.Green;
+            case (EThrowActionType.HealingPotion):
+            case (EThrowActionType.PlayerHit):
+            case (EThrowActionType.PlayerWound):
+                action.actionPerformer = EThrowActionPerformer.Player;
+                action.color = EDiceColor.Green;
                 break;
-            case (ThrowActionType.EnnemyHit):
-            case (ThrowActionType.EnnemyWound):
-                action.actionPerformer = ThrowActionPerformer.Ennemy;
-                action.color = DiceColor.Red;
+            case (EThrowActionType.EnnemyHit):
+            case (EThrowActionType.EnnemyWound):
+                action.actionPerformer = EThrowActionPerformer.Ennemy;
+                action.color = EDiceColor.Red;
                 break;
             default:
-                action.actionPerformer = ThrowActionPerformer.Player;
-                action.color = DiceColor.Black;
+                action.actionPerformer = EThrowActionPerformer.Player;
+                action.color = EDiceColor.Black;
                 break;
         }
         action.numberOfDices = numberOfDices;
@@ -58,10 +58,10 @@ public class DiceActionManager : MonoBehaviour
         bufferedCompletedAction = action;
         switch (bufferedCompletedAction.actionType)
         {
-            case (ThrowActionType.PlayerHit):
-            case (ThrowActionType.PlayerWound):
-            case (ThrowActionType.EnnemyHit):
-            case (ThrowActionType.EnnemyWound):
+            case (EThrowActionType.PlayerHit):
+            case (EThrowActionType.PlayerWound):
+            case (EThrowActionType.EnnemyHit):
+            case (EThrowActionType.EnnemyWound):
                 DiceBoardUI.Instance.showActionResult(bufferedCompletedAction.actionType, bufferedCompletedAction.result);
                 break;
             default:
@@ -74,10 +74,10 @@ public class DiceActionManager : MonoBehaviour
     {
         switch (bufferedCompletedAction.actionType)
         {
-            case (ThrowActionType.HealingPotion):
+            case (EThrowActionType.HealingPotion):
                 ScreenManager.Instance.switchToPreviousScreen();
                 PlayerStatsManager.Instance.addHealthPointsModifier(bufferedCompletedAction.result);
-                SoundManager.Instance.playSFX(SFXType.DrinkPotion);
+                SoundManager.Instance.playSFX(ESFXType.DrinkPotion);
                 break;
             default:
                 if (onActionPerformed != null)

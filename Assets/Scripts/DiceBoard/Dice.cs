@@ -4,17 +4,17 @@ using UnityEngine;
 public class Dice : ConstrainedDraggableItem
 {
     [SerializeField]
-    private DiceValue faceUp;
+    private EDiceValue faceUp;
 
     public bool IsThrown
     {
         get
         {
-            return currentThrowType == DiceThrowType.Thrown;
+            return currentThrowType == EDiceThrowType.Thrown;
         }
     }
 
-    public DiceValue Value
+    public EDiceValue Value
     {
         get
         {
@@ -44,8 +44,8 @@ public class Dice : ConstrainedDraggableItem
     private Renderer renderer;
 
     private Coroutine currentLockingCoroutine = null;
-    private DiceThrowType currentThrowType = DiceThrowType.None;
-    private DiceOutlineType currentOutline;
+    private EDiceThrowType currentThrowType = EDiceThrowType.None;
+    private EDiceOutlineType currentOutline;
     private bool selected = false;
 
     private bool hasCollided = false;
@@ -53,7 +53,7 @@ public class Dice : ConstrainedDraggableItem
     protected override void Awake()
     {
         base.Awake();
-        interactable = DiceBoardManager.Instance.currentPerformer == ThrowActionPerformer.Player;
+        interactable = DiceBoardManager.Instance.currentPerformer == EThrowActionPerformer.Player;
         source = GetComponent<AudioSource>();
         startPosition = transform.position;
         startRotation = transform.rotation;
@@ -75,22 +75,22 @@ public class Dice : ConstrainedDraggableItem
         base.Update();
         if (selected)
         {
-            toggleOutline(true, DiceOutlineType.Selected);
+            toggleOutline(true, EDiceOutlineType.Selected);
             constrainBounds();
         }
-        else if (Value == DiceValue.Broken)
+        else if (Value == EDiceValue.Broken)
         {
-            toggleOutline(true, DiceOutlineType.Broken);
+            toggleOutline(true, EDiceOutlineType.Broken);
         }
         else if (IsThrown)
         {
             if (parentAction!= null && (int)Value >= parentAction.minimumValueNeeded)
             {
-                toggleOutline(true, DiceOutlineType.Success);
+                toggleOutline(true, EDiceOutlineType.Success);
             }
             else
             {
-                toggleOutline(true, DiceOutlineType.Failure);
+                toggleOutline(true, EDiceOutlineType.Failure);
             }
         }
         else
@@ -104,14 +104,14 @@ public class Dice : ConstrainedDraggableItem
         Vector3 throwDirection;
         switch (currentThrowType)
         {
-            case (DiceThrowType.Manual):
-                currentThrowType = DiceThrowType.Thrown;
+            case (EDiceThrowType.Manual):
+                currentThrowType = EDiceThrowType.Thrown;
                 throwDirection = new Vector3(Input.GetAxis("Mouse X"), -0.5f, Input.GetAxis("Mouse Y"));
                 rb.AddForce(throwDirection * GameConstants.Instance.dicesThrowForce, ForceMode.Force);
                 rb.AddTorque(Vector3.one * GameConstants.Instance.dicesThrowTorque, ForceMode.Force);
                 break;
-            case (DiceThrowType.Automatic):
-                currentThrowType = DiceThrowType.Thrown;
+            case (EDiceThrowType.Automatic):
+                currentThrowType = EDiceThrowType.Thrown;
                 throwDirection = new Vector3(Random.Range(-1, 1), 1, Random.Range(-1, 1));
                 rb.AddForce(throwDirection * GameConstants.Instance.dicesThrowForce * 2, ForceMode.Force);
                 rb.AddTorque(Vector3.one * GameConstants.Instance.dicesThrowTorque, ForceMode.Force);
@@ -143,24 +143,24 @@ public class Dice : ConstrainedDraggableItem
         }
     }
 
-    public void notifyFaceDown(DiceValue face)
+    public void notifyFaceDown(EDiceValue face)
     {
         Value = 7 - face;
         if (currentLockingCoroutine != null)
         {
             StopCoroutine(currentLockingCoroutine);
         }
-        if (IsThrown && face != DiceValue.Broken)
+        if (IsThrown && face != EDiceValue.Broken)
         {
             currentLockingCoroutine = StartCoroutine(lockCoroutine());
         }
     }
 
-    public void notifyFaceUp(DiceValue face)
+    public void notifyFaceUp(EDiceValue face)
     {
         if (Value == 7 - face)
         {
-            Value = DiceValue.Broken;
+            Value = EDiceValue.Broken;
         }
     }
 
@@ -222,12 +222,12 @@ public class Dice : ConstrainedDraggableItem
     protected override void OnItemReleased()
     {
         base.OnItemReleased();
-        currentThrowType = DiceThrowType.Manual;
+        currentThrowType = EDiceThrowType.Manual;
     }
 
     public void randomThrow()
     {
-        currentThrowType = DiceThrowType.Automatic;
+        currentThrowType = EDiceThrowType.Automatic;
     }
 
     public void restorePosition()
@@ -237,7 +237,7 @@ public class Dice : ConstrainedDraggableItem
         rb.velocity = Vector3.zero;
     }
 
-    private void toggleOutline(bool on, DiceOutlineType which = DiceOutlineType.None)
+    private void toggleOutline(bool on, EDiceOutlineType which = EDiceOutlineType.None)
     {
         if (on && which != currentOutline)
         {
@@ -245,14 +245,14 @@ public class Dice : ConstrainedDraggableItem
             renderer.materials = outlinedMaterials;
             currentOutline = which;
         }
-        else if (!on && currentOutline != DiceOutlineType.None) 
+        else if (!on && currentOutline != EDiceOutlineType.None) 
         {
             renderer.materials = baseMaterials;
-            currentOutline = DiceOutlineType.None;
+            currentOutline = EDiceOutlineType.None;
         }
     }
 
-    private void initializeOutlinedMaterials(DiceOutlineType which)
+    private void initializeOutlinedMaterials(EDiceOutlineType which)
     {
         outlinedMaterials = new Material[baseMaterials.Length];
         Material baseOutline = GameConstants.Instance.getDiceOutlineMaterialByType(which);

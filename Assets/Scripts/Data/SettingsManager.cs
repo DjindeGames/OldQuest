@@ -9,7 +9,7 @@ public class SettingsManager : MonoBehaviour
     public float EffectsVolume { get; private set; } = 0.5f;
     public float FirstPersonMouseSensitivity { get; private set; } = 10f;
 
-    public delegate void volumeChanged(VolumeType which, float value);
+    public delegate void volumeChanged(EVolumeType which, float value);
     public event volumeChanged volumeHasChanged;
 
     public static SettingsManager Instance { get; private set; }
@@ -19,17 +19,17 @@ public class SettingsManager : MonoBehaviour
         Instance = this;
     }
 
-    public void setVolume(VolumeType which, float value)
+    public void setVolume(EVolumeType which, float value)
     {
         switch (which)
         {
-            case (VolumeType.Music):
+            case (EVolumeType.Music):
                 MusicVolume = value;
                 break;
-            case (VolumeType.Physics):
+            case (EVolumeType.Physics):
                 PhysicsVolume = value;
                 break;
-            case (VolumeType.Effects):
+            case (EVolumeType.Effects):
                 EffectsVolume = value;
                 break;
         }

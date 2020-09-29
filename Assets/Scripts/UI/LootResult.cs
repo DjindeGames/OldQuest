@@ -28,7 +28,7 @@ public class LootResult : MonoBehaviour
             revealed = true;
             description.text = name;
             outline.effectColor = outlineColor;
-            SoundManager.Instance.playSFX(SFXType.LootRevealed);
+            SoundManager.Instance.playSFX(ESFXType.LootRevealed);
             DiceBoardUI.Instance.notifyLootRevealed();
         }
     }

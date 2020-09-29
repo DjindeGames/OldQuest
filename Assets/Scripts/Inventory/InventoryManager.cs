@@ -72,20 +72,20 @@ public class InventoryManager : MonoBehaviour
         Item item = looted.item;
         switch (item.Type)
         {
-            case ItemType.Valuable:
+            case EItemType.Valuable:
                 SoundManager.Instance.playLootSound(item.Type);
                 retrieveSurroundingValuables(looted);
                 return;
-            case ItemType.Oil:
+            case EItemType.Oil:
                 OilAmount++;
                 break;
-            case ItemType.Key:
+            case EItemType.Key:
                 addKey(((Key)item).material);
                 break;
-            case ItemType.Readable:
+            case EItemType.Readable:
                 //ReadableUI.Instance.open(((Readable)item).contentKey);
                 addFileToArchives(((Readable)item).contentKey);
-                ScreenManager.Instance.switchScreen(ScreenType.Archives);
+                ScreenManager.Instance.switchScreen(EScreenType.Archives);
                 break;
             default:
                 success = (inventoryContent.Count < inventorySlots);
@@ -140,7 +140,7 @@ public class InventoryManager : MonoBehaviour
 
                 SaveManager.Instance.addSpawnedItem(item);
 
-                SoundManager.Instance.playSFX(SFXType.ItemRemoved);
+                SoundManager.Instance.playSFX(ESFXType.ItemRemoved);
                 MainUI.Instance.writeLog(inventoryItem.LinkedItem.name + " removed from inventory.");
             }
             //Item is consumed
@@ -179,7 +179,7 @@ public class InventoryManager : MonoBehaviour
         for (int i = 0; i < hits.Length; i++)
         {
             Lootable looted = hits[i].collider.GetComponent<Lootable>();
-            if (looted && looted.item.Type == ItemType.Valuable)
+            if (looted && looted.item.Type == EItemType.Valuable)
             {
                 goldFound += ((Valuable)looted.item).value;
                 StateSave stateSave = looted.GetComponent<StateSave>();
@@ -225,7 +225,7 @@ public class InventoryManager : MonoBehaviour
         Item item = inventoryItem.GetComponent<Lootable>().item;
         switch (item.Type)
         {
-            case (ItemType.Equipment):
+            case (EItemType.Equipment):
                 Equipment equipment = ((Equipment)item);
                 StateSave stateSave = inventoryItem.GetComponent<StateSave>();
                 for (int i = 0; i < equipment.slots.Length; i++)
@@ -243,7 +243,7 @@ public class InventoryManager : MonoBehaviour
                         if (!restored)
                         {
                             writeEquipmentLog(0, equippedSlot.type, inventoryItem.LinkedItem.name);
-                            SoundManager.Instance.playSFX(SFXType.ItemEquipped);
+                            SoundManager.Instance.playSFX(ESFXType.ItemEquipped);
                         }
                         break;
                     }
@@ -253,7 +253,7 @@ public class InventoryManager : MonoBehaviour
                         if (!associatedSlot.isUsed)
                         {
                             associatedSlot.equip(inventoryItem);
-                            GameObject skin = Resources.Load<GameObject>(Constants.skinsPath + inventoryItem.name.Split('$')[0]);
+                            GameObject skin = equipment.skin;
                             PuppetSlot pupperSlot = getPuppetSlot(associatedSlot.type);
                             Instantiate(skin, associatedSlot.parent);
                             Instantiate(skin, pupperSlot.parent);
@@ -262,7 +262,7 @@ public class InventoryManager : MonoBehaviour
                             if (!restored)
                             {
                                 writeEquipmentLog(1, equipment.slots[i], inventoryItem.LinkedItem.name);
-                                SoundManager.Instance.playSFX(SFXType.ItemEquipped);
+                                SoundManager.Instance.playSFX(ESFXType.ItemEquipped);
                             }
                             break;
                         }
@@ -273,9 +273,9 @@ public class InventoryManager : MonoBehaviour
                     }
                 }
                 break;
-            case (ItemType.Potion):
+            case (EItemType.Potion):
                 Potion potion = (Potion)item;
-                if (potion.type == PotionType.Health && PlayerStatsManager.Instance.HasFullHealth)
+                if (potion.type == EPotionType.Health && PlayerStatsManager.Instance.HasFullHealth)
                 {
                     MainUI.Instance.writeLog("It would be a waste!");
                 }
@@ -305,18 +305,18 @@ public class InventoryManager : MonoBehaviour
 
     private void usePotion(Potion potion)
     {
-        DiceActionManager.Instance.performThrowAction(ThrowActionType.HealingPotion, potion.value, 0);
+        DiceActionManager.Instance.performThrowAction(EThrowActionType.HealingPotion, potion.value, 0);
     }
 
-    private void writeEquipmentLog(int equipped, GearSlot slot, string equipmentName)
+    private void writeEquipmentLog(int equipped, EGearSlotType slot, string equipmentName)
     {
         string formattedSlot = slot.ToString().ToLower();
         switch(slot)
         {
-            case (GearSlot.LeftHand):
+            case (EGearSlotType.LeftHand):
                 formattedSlot = "left hand";
                 break;
-            case (GearSlot.RightHand):
+            case (EGearSlotType.RightHand):
                 formattedSlot = "right hand";
                 break;
         }
@@ -358,7 +358,7 @@ public class InventoryManager : MonoBehaviour
         return tuple;
     }
 
-    private EquipmentSlot getEquipmentSlot(GearSlot which)
+    private EquipmentSlot getEquipmentSlot(EGearSlotType which)
     {
         EquipmentSlot slot = null;
         for (int i = 0; i < equipmentSlots.Length; i++)
@@ -372,7 +372,7 @@ public class InventoryManager : MonoBehaviour
         return slot;
     }
 
-    private PuppetSlot getPuppetSlot(GearSlot which)
+    private PuppetSlot getPuppetSlot(EGearSlotType which)
     {
         PuppetSlot slot = null;
         for (int i = 0; i < puppetSlots.Length; i++)
@@ -428,7 +428,7 @@ public class InventoryManager : MonoBehaviour
 [System.Serializable]
 public class EquipmentSlot
 {
-    public GearSlot type;
+    public EGearSlotType type;
     public Transform parent;
     public bool isUsed = false;
     public InventoryItem currentlyEquipped;
@@ -449,7 +449,7 @@ public class EquipmentSlot
 [System.Serializable]
 public class PuppetSlot
 {
-    public GearSlot type;
+    public EGearSlotType type;
     public Transform parent;
 }
 

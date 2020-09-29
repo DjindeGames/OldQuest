@@ -70,9 +70,9 @@ public class ThirdPersonCamera : MonoBehaviour
         }
     }
 
-    private void onScreenChange(ScreenType current)
+    private void onScreenChange(EScreenType current)
     {
-        if (current == ScreenType.Main)
+        if (current == EScreenType.Main)
         {
             active = true;
         }

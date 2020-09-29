@@ -4,13 +4,13 @@
 public class Equipment : Usable
 {
     public GameObject skin;
-    public GearSlot[] slots;
+    public EGearSlotType[] slots;
     public GearStats[] stats;
 }
 
 [System.Serializable]
 public class GearStats
 {
-    public EquipmentBonus type;
+    public EEquipmentBonus type;
     public int value;
 }

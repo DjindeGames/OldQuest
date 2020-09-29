@@ -18,7 +18,7 @@ public class SoundManager : MonoBehaviour
         Instance = this;
     }
 
-    public void playSFX(SFXType type)
+    public void playSFX(ESFXType type)
     {
         GameObject oneShotSource = Instantiate(audioSourcePrefab);
         AudioSource source = oneShotSource.GetComponent<AudioSource>();
@@ -26,7 +26,7 @@ public class SoundManager : MonoBehaviour
         source.Play();
     }
 
-    public void playLootSound(ItemType type)
+    public void playLootSound(EItemType type)
     {
         GameObject oneShotSource = Instantiate(audioSourcePrefab);
         AudioSource source = oneShotSource.GetComponent<AudioSource>();
@@ -41,7 +41,7 @@ public class SoundManager : MonoBehaviour
         source.Play();
     }
 
-    private AudioClip getLootSound(ItemType which)
+    private AudioClip getLootSound(EItemType which)
     {
         AudioClip clip = null;
         for (int i = 0; i < lootSounds.Length; i++)
@@ -55,7 +55,7 @@ public class SoundManager : MonoBehaviour
         return clip;
     }
 
-    private AudioClip getSFX(SFXType which)
+    private AudioClip getSFX(ESFXType which)
     {
         AudioClip[] clips = null;
         for (int i = 0; i < SFXsounds.Length; i++)
@@ -77,13 +77,13 @@ public class SoundManager : MonoBehaviour
 [System.Serializable]
 public class LootSound
 {
-    public ItemType type;
+    public EItemType type;
     public AudioClip clip;
 }
 
 [System.Serializable]
 public class SoundEffect
 {
-    public SFXType type;
+    public ESFXType type;
     public AudioClip[] clips;
 }

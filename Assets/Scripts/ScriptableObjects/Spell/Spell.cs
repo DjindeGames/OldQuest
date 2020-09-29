@@ -5,7 +5,7 @@ public class Spell : ScriptableObject
 {
     public new string name;
     public string description;
-    public SpellType type;
+    public ESpellType type;
     public SpellBonus[] bonuses;
     public int cost;
 }
@@ -13,6 +13,6 @@ public class Spell : ScriptableObject
 [System.Serializable]
 public class SpellBonus
 {
-    public SpellBonusType type;
+    public ESpellBonusType type;
     public int value;
 }

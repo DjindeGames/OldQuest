@@ -6,7 +6,7 @@ public class Archives : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            ScreenManager.Instance.switchScreen(ScreenType.Archives);
+            ScreenManager.Instance.switchScreen(EScreenType.Archives);
         }
     }
 }

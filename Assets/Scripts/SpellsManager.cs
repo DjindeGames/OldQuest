@@ -7,11 +7,11 @@ public class SpellsManager : MonoBehaviour
     [Header("Spells")]
     [SerializeField]
     private Spell[] spellsDB;
-    public List<SpellType> learntSpells = new List<SpellType>();
+    public List<ESpellType> learntSpells = new List<ESpellType>();
 
     public static SpellsManager Instance { get; private set; }
 
-    private List<SpellType> castedSpells = new List<SpellType>();
+    private List<ESpellType> castedSpells = new List<ESpellType>();
     private List<SpellBonus> activeBonuses = new List<SpellBonus>();
 
     public int DeathShards
@@ -55,7 +55,7 @@ public class SpellsManager : MonoBehaviour
         Instance = this;
     }
 
-    public int getTotalSpellBonusOfType(SpellBonusType type)
+    public int getTotalSpellBonusOfType(ESpellBonusType type)
     {
         int bonusAmount = 0;
         foreach(SpellBonus bonus in activeBonuses)
@@ -75,7 +75,7 @@ public class SpellsManager : MonoBehaviour
         SpellBookUI.Instance.resetActiveSpells();
     }
 
-    public Spell getSpellFromDB(SpellType which)
+    public Spell getSpellFromDB(ESpellType which)
     {
         Spell spell = null;
         foreach (Spell DBSpell in spellsDB)
@@ -89,7 +89,7 @@ public class SpellsManager : MonoBehaviour
         return spell;
     }
 
-    public void addSpell(SpellType which)
+    public void addSpell(ESpellType which)
     {
         if (!learntSpells.Contains(which))
         {
@@ -107,15 +107,15 @@ public class SpellsManager : MonoBehaviour
         MaxDeathShards += amount;
     }
 
-    public bool canSpellBeCasted(SpellType which)
+    public bool canSpellBeCasted(ESpellType which)
     {
         Spell spell = getSpellFromDB(which);
         return spell.cost <= DeathShards && !castedSpells.Contains(which);
     }
 
-    public void castSpell(SpellType which)
+    public void castSpell(ESpellType which)
     {
-        SoundManager.Instance.playSFX(SFXType.CastSpell);
+        SoundManager.Instance.playSFX(ESFXType.CastSpell);
         Spell spell = getSpellFromDB(which);
         DeathShards -= spell.cost;
         castedSpells.Add(which);

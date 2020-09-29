@@ -39,7 +39,7 @@ public class SpellBookUI : MonoBehaviour
 
     private void loadSpells()
     {
-        foreach (SpellType spell in SpellsManager.Instance.learntSpells)
+        foreach (ESpellType spell in SpellsManager.Instance.learntSpells)
         {
             GameObject spellListItem = Instantiate(spellPrefab, spellsParent);
             UISpell uiSpell = spellListItem.GetComponent<UISpell>();
@@ -52,11 +52,11 @@ public class SpellBookUI : MonoBehaviour
         }
     }
 
-    public void onSpellSelected(SpellType which, bool playSFX = true)
+    public void onSpellSelected(ESpellType which, bool playSFX = true)
     {
         if (playSFX)
         {
-            SoundManager.Instance.playSFX(SFXType.PageChanged);
+            SoundManager.Instance.playSFX(ESFXType.PageChanged);
         }
         Spell spell = SpellsManager.Instance.getSpellFromDB(which);
         currentSpellName.text = spell.name;
@@ -72,7 +72,7 @@ public class SpellBookUI : MonoBehaviour
         unselectAllBut(which);
     }
 
-    private void unselectAllBut(SpellType which)
+    private void unselectAllBut(ESpellType which)
     {
         foreach (UISpell spell in spells)
         {
@@ -83,7 +83,7 @@ public class SpellBookUI : MonoBehaviour
         }
     }
 
-    public void castSpell(SpellType which)
+    public void castSpell(ESpellType which)
     {
         Spell spell = SpellsManager.Instance.getSpellFromDB(which);
         SpellsManager.Instance.castSpell(which);

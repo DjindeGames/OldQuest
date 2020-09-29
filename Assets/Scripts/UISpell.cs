@@ -13,7 +13,7 @@ public class UISpell : MonoBehaviour
     private Color selectedSpellColor;
 
     private Image backgroundImage;
-    public SpellType type;
+    public ESpellType type;
     private bool selected = false;
 
     private void Awake()
