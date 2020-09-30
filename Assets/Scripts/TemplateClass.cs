@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class SelectableListItem_Save : SelectableListItem
+public class TemplateClass : MonoBehaviour
 {
     #region Events
 
@@ -37,12 +37,4 @@ public class SelectableListItem_Save : SelectableListItem
 
 
     #endregion
-}
-
-public class SelectableListItem_SaveData : SelectableListItemData
-{
-    public int _number;
-    public string _filePath;
-    public string _details;
-    public Sprite _screenshot;
 }

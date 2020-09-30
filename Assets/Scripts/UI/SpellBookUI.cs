@@ -20,13 +20,21 @@ public class SpellBookUI : MonoBehaviour
     private GameObject spellPrefab;
     [SerializeField]
     private TMP_Text activeSpells;
+    [SerializeField]
+    private SelectableList _spellsList;
 
     public static SpellBookUI Instance { get; private set; }
-    private List<UISpell> spells = new List<UISpell>();
+    private List<SelectableListItem_Spell> spells = new List<SelectableListItem_Spell>();
 
     private void Awake()
     {
         Instance = this;
+        _spellsList.OnItemSelectedEvent += OnSpellSelected;
+    }
+
+    private void OnDestroy()
+    {
+        _spellsList.OnItemSelectedEvent -= OnSpellSelected;
     }
 
     private void Start()
@@ -39,26 +47,20 @@ public class SpellBookUI : MonoBehaviour
 
     private void loadSpells()
     {
-        foreach (ESpellType spell in SpellsManager.Instance.learntSpells)
+        foreach (ESpellType spellType in SpellsManager.Instance.learntSpells)
         {
-            GameObject spellListItem = Instantiate(spellPrefab, spellsParent);
-            UISpell uiSpell = spellListItem.GetComponent<UISpell>();
-            uiSpell.setData(SpellsManager.Instance.getSpellFromDB(spell));
-            spells.Add(uiSpell);
-        }
-        if (spells.Count > 0)
-        {
-            spells[0].onSelect(false);
+            Spell spell = SpellsManager.Instance.getSpellFromDB(spellType);
+            SelectableListItem_SpellData data = new SelectableListItem_SpellData();
+            data._label = spell.name;
+            data._spellType = spell.type;
+            _spellsList.AddItem(data);
         }
     }
 
-    public void onSpellSelected(ESpellType which, bool playSFX = true)
+    public void OnSpellSelected(SelectableListItem listItem)
     {
-        if (playSFX)
-        {
-            SoundManager.Instance.playSFX(ESFXType.PageChanged);
-        }
-        Spell spell = SpellsManager.Instance.getSpellFromDB(which);
+        SelectableListItem_SpellData data = (SelectableListItem_SpellData)listItem._Data;
+        Spell spell = SpellsManager.Instance.getSpellFromDB(data._spellType);
         currentSpellName.text = spell.name;
         currentSpellDescription.text = spell.description;
         foreach(SpellBonus spellBonus in spell.bonuses)
@@ -67,20 +69,8 @@ public class SpellBookUI : MonoBehaviour
         }
         currentSpellCost.text = spell.cost.ToString();
         castButton.onClick.RemoveAllListeners();
-        castButton.onClick.AddListener(delegate () { castSpell(which); });
-        castButton.interactable = SpellsManager.Instance.canSpellBeCasted(which);
-        unselectAllBut(which);
-    }
-
-    private void unselectAllBut(ESpellType which)
-    {
-        foreach (UISpell spell in spells)
-        {
-            if (spell.type != which)
-            {
-                spell.unselect();
-            }
-        }
+        castButton.onClick.AddListener(delegate () { castSpell(spell.type); });
+        castButton.interactable = SpellsManager.Instance.canSpellBeCasted(spell.type);
     }
 
     public void castSpell(ESpellType which)

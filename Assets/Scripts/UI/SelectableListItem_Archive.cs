@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
-public class SelectableListItem_Save : SelectableListItem
+public class SelectableListItem_Archive : SelectableListItem
 {
     #region Events
 
@@ -39,10 +40,11 @@ public class SelectableListItem_Save : SelectableListItem
     #endregion
 }
 
-public class SelectableListItem_SaveData : SelectableListItemData
+public class SelectableListItem_ArchiveData : SelectableListItemData
 {
-    public int _number;
-    public string _filePath;
-    public string _details;
-    public Sprite _screenshot;
+    #region Attributes
+
+    public ReadableKey _readableKey;
+
+    #endregion
 }

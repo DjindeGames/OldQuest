@@ -20,10 +20,13 @@ public class SoundManager : MonoBehaviour
 
     public void playSFX(ESFXType type)
     {
-        GameObject oneShotSource = Instantiate(audioSourcePrefab);
-        AudioSource source = oneShotSource.GetComponent<AudioSource>();
-        source.clip = getSFX(type);
-        source.Play();
+        if (type != ESFXType.None)
+        {
+            GameObject oneShotSource = Instantiate(audioSourcePrefab);
+            AudioSource source = oneShotSource.GetComponent<AudioSource>();
+            source.clip = getSFX(type);
+            source.Play();
+        }
     }
 
     public void playLootSound(EItemType type)

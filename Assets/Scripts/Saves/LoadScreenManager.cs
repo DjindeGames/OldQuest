@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using TMPro;
@@ -10,10 +9,6 @@ public class LoadScreenManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField]
-    private Transform filesParent;
-    [SerializeField]
-    private GameObject filePrefab;
-    [SerializeField]
     private Image screenShot;
     [SerializeField]
     private TMP_Text chapter;
@@ -23,52 +18,41 @@ public class LoadScreenManager : MonoBehaviour
     private Button deleteButton;
     [SerializeField]
     private GameObject confirmDelete;
-
-    [Header("Parameters")]
     [SerializeField]
-    private Color normalColor;
-    [SerializeField]
-    private Color selectedColor;
-
-    private List<SaveFile> files;
-
-
-    private string savesPath;
-    private SaveFile currentSelectedFile;
-    private int filesNumber = 0;
-
+    private SelectableList _saveList;
 
     public static LoadScreenManager Instance { get; private set; }
+
+    private SelectableListItem_SaveData _selectedSaveData;
 
     private void Awake()
     {
         Instance = this;
         confirmDelete.SetActive(false);
+        _saveList.OnItemSelectedEvent += OnSaveFileSelected;
         refreshList();
+    }
+
+    private void OnDestroy()
+    {
+        _saveList.OnItemSelectedEvent -= OnSaveFileSelected;
     }
 
     public void refreshList()
     {
-        clearFiles();
-        files = new List<SaveFile>();
-        
         try
         {
             string[] saveFilesNames = Directory.GetFiles(Constants.SaveFilesPath, "*" + Constants.ZippedSavesExtension);
-
-            filesNumber = saveFilesNames.Length;
-
 
             Array.Sort(saveFilesNames);
 
             clearTemp();
 
-            for (int i = filesNumber - 1; i >= 0; i--)
+            for (int i = saveFilesNames.Length - 1; i >= 0; i--)
             {
 
                 ZipFile.ExtractToDirectory(saveFilesNames[i], Constants.TemporaryExtractedSavesPath);
                 JSONObject saveFile = new JSONObject(System.IO.File.ReadAllText(Directory.GetFiles(Constants.TemporaryExtractedSavesPath, "*" + Constants.SaveFilesExtension)[0]));
-                SaveFile fileInstance;
 
                 // Generating screenshot
                 byte[] byteArray = System.IO.File.ReadAllBytes(Directory.GetFiles(Constants.TemporaryExtractedSavesPath, "*" + Constants.ScreenshotsExtension)[0]);
@@ -76,21 +60,13 @@ public class LoadScreenManager : MonoBehaviour
                 screenshot.LoadImage(byteArray);
 
                 // Generating file prefabs
-                GameObject file = Instantiate(filePrefab, filesParent);
-                fileInstance = file.GetComponent<SaveFile>();
-                fileInstance.FilePath = saveFilesNames[i];
-                fileInstance.Name = saveFile.GetField(Constants.SFSerializedNameField).str + "\n" + saveFile.GetField(Constants.SFSerializedDateField).str;
-                fileInstance.Details = saveFile.GetField(Constants.SFSerializedChapterField).str + " (Played Time: " + formatPlayedTime(Int32.Parse(saveFile.GetField(Constants.SFSerializedPlayTimeField).ToString())) + ")";
-                fileInstance.ScreenShot = Sprite.Create(screenshot, new Rect(0, 0, screenshot.width, screenshot.height), new Vector2(0, 0), 100);
-                fileInstance.label.text = fileInstance.Name;
-                file.GetComponent<Button>().onClick.AddListener(delegate () { select(fileInstance); });
-
-                files.Add(fileInstance);
+                SelectableListItem_SaveData data = new SelectableListItem_SaveData();
+                data._label = saveFile.GetField(Constants.SFSerializedNameField).str + "\n" + saveFile.GetField(Constants.SFSerializedDateField).str;
+                data._filePath = saveFilesNames[i];
+                data._details = saveFile.GetField(Constants.SFSerializedChapterField).str + " (Played Time: " + formatPlayedTime(Int32.Parse(saveFile.GetField(Constants.SFSerializedPlayTimeField).ToString())) + ")";
+                data._screenshot = Sprite.Create(screenshot, new Rect(0, 0, screenshot.width, screenshot.height), new Vector2(0, 0), 100);
+                _saveList.AddItem(data).OnSelect();
                 clearTemp();
-            }
-            if (files.Count > 0)
-            {
-                select(files[0]);
             }
         }
         catch (DirectoryNotFoundException)
@@ -109,76 +85,50 @@ public class LoadScreenManager : MonoBehaviour
         confirmDelete.SetActive(false);
     }
 
-    public void select(SaveFile file)
+    public void OnSaveFileSelected(SelectableListItem listItem)
     {
-        //Unselecting previous
-        if (currentSelectedFile)
-        {
-            currentSelectedFile.GetComponent<Image>().color = normalColor;
-        }
+        SelectableListItem_SaveData data = (SelectableListItem_SaveData)listItem._Data;
+        _selectedSaveData = data;
 
-        //Updating current
-        currentSelectedFile = file;
-
-        if (currentSelectedFile)
-        {
-            // Enabling right part
-            screenShot.color = Color.white;
-            loadButton.interactable = true;
-            deleteButton.interactable = true;
-            //Selecting new file
-            currentSelectedFile.gameObject.GetComponent<Image>().color = selectedColor;
-            screenShot.sprite = currentSelectedFile.ScreenShot;
-            chapter.text = currentSelectedFile.Details;
-        }
-        else
-        {
-            screenShot.color = Color.black;
-            loadButton.interactable = false;
-            deleteButton.interactable = false;
-            chapter.text = "No available save file!";
-        }
+        // Enabling right part
+        screenShot.color = Color.white;
+        loadButton.interactable = true;
+        deleteButton.interactable = true;
+        screenShot.sprite = data._screenshot;
+        chapter.text = data._details;
     }
 
-    private void clearFiles()
+    private void ResetSelection()
     {
-        if (files != null)
-        {
-            foreach (SaveFile file in files)
-            {
-                Destroy(file.gameObject);
-            }
-            files.Clear();
-        }
+        screenShot.color = Color.black;
+        loadButton.interactable = false;
+        deleteButton.interactable = false;
+        chapter.text = "No available save file!";
     }
 
     public void load()
     {
-        SaveManager.Instance.load(currentSelectedFile.FilePath);
+        SaveManager.Instance.load(_selectedSaveData._filePath);
     }
 
     public void delete()
     {
-        SaveFile nextSelectedFile = getNextAvailableFile();
         closeConfirm();
-        System.IO.File.Delete(currentSelectedFile.FilePath);
-        files.Remove(currentSelectedFile);
-        Destroy(currentSelectedFile.gameObject);
-        select(nextSelectedFile);
-    }
-
-    
-    private SaveFile getNextAvailableFile()
-    {
-        SaveFile nextAvailable = null;
-        int currentIndex = files.IndexOf(currentSelectedFile);
-        if (currentIndex > 0)
+        SelectableListItem currentSelectedFile = _saveList.GetSelectedItem();
+        SelectableListItem nextSelectedItem = null;
+        if (currentSelectedFile != null)
         {
-            nextAvailable = files[currentIndex - 1];
-        } else if (files.Count > 1) {
-            nextAvailable = files[currentIndex + 1];
+            nextSelectedItem = _saveList.GetItemAfter(currentSelectedFile);
+            if (nextSelectedItem == null)
+            {
+                nextSelectedItem = _saveList.GetItemBefore(currentSelectedFile);
+            }
         }
-        return nextAvailable;
+        if (nextSelectedItem != null)
+        {
+            OnSaveFileSelected(nextSelectedItem);
+        }
+        _saveList.RemoveItem(currentSelectedFile);        
     }
 
     private void clearTemp()

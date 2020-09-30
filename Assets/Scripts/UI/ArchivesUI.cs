@@ -8,10 +8,6 @@ public class ArchivesUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField]
-    private GameObject filePrefab;
-    [SerializeField]
-    private Transform filesContainer;
-    [SerializeField]
     private TMP_Text title;
     [SerializeField]
     private TMP_Text content;
@@ -23,15 +19,10 @@ public class ArchivesUI : MonoBehaviour
     private Button buttonPrevious;
     [SerializeField]
     private Button buttonNext;
-    [Header("Parameters")]
     [SerializeField]
-    private Color normalColor;
-    [SerializeField]
-    private Color selectedColor;
+    private SelectableList _archivesList;
 
     private string cachedContent;
-
-    private ArchiveFile currentlySelected;
 
     private int charsPerPage;
     private int currentPageIndex;
@@ -50,6 +41,12 @@ public class ArchivesUI : MonoBehaviour
         content.text = "";
         currentPage.text = "";
         totalPages.text = "";
+        _archivesList.OnItemSelectedEvent += OnArchiveSelected;
+    }
+
+    void OnDestroy()
+    {
+        _archivesList.OnItemSelectedEvent -= OnArchiveSelected;
     }
 
     public void close()
@@ -60,43 +57,26 @@ public class ArchivesUI : MonoBehaviour
 
     public void addFile(ReadableKey key, bool withSelection = true)
     {
-        GameObject newFile = Instantiate(filePrefab, filesContainer);
-        newFile.transform.SetAsFirstSibling();
-        ArchiveFile file = newFile.GetComponent<ArchiveFile>();
-        file.key = key;
-        file.label.text = ReadableTextsDB.getTitleByKey(key);
-        newFile.GetComponent<Button>().onClick.AddListener(delegate () { this.select(file); });
+        SelectableListItem_ArchiveData data = new SelectableListItem_ArchiveData();
+        data._label = ReadableTextsDB.getTitleByKey(key);
+        data._readableKey = key;
+        SelectableListItem listItem = _archivesList.AddItem(data);
         if (withSelection)
         {
-            this.select(file);
+            listItem.OnSelect();
         }
     }
 
-    public void select(ArchiveFile file)
+    public void OnArchiveSelected(SelectableListItem listItem)
     {
-        if (currentlySelected)
-        {
-            if (currentlySelected == file)
-            {
-                return;
-            }
-            currentlySelected.GetComponent<Image>().color = normalColor;
-        }
-        
-        currentlySelected = file;
-        currentlySelected.GetComponent<Image>().color = selectedColor;
-
-        ReadableKey key = file.key;
+        SelectableListItem_ArchiveData data = (SelectableListItem_ArchiveData)listItem._Data;
+        ReadableKey key = data._readableKey;
         currentPageIndex = 0;
         startIndexByPage.Clear();
         cachedContent = ReadableTextsDB.getTextByKey(key);
-
         title.text = ReadableTextsDB.getTitleByKey(key);
         content.text = cachedContent;
         startIndexByPage.Add(0);
-
-        SoundManager.Instance.playSFX(ESFXType.OpenReadable);
-
         StartCoroutine(computeNumberOfPages());
     }
 

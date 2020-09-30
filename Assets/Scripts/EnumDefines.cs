@@ -144,6 +144,7 @@ public enum EGearSlotType
 
 public enum ESFXType
 {
+    None,
     ItemEquipped,
     PageChanged,
     OpenReadable,

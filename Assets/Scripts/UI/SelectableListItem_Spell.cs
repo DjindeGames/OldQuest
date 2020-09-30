@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class SelectableListItem_Save : SelectableListItem
+﻿public class SelectableListItem_Spell : SelectableListItem
 {
     #region Events
 
@@ -39,10 +37,11 @@ public class SelectableListItem_Save : SelectableListItem
     #endregion
 }
 
-public class SelectableListItem_SaveData : SelectableListItemData
+public class SelectableListItem_SpellData : SelectableListItemData
 {
-    public int _number;
-    public string _filePath;
-    public string _details;
-    public Sprite _screenshot;
+    #region Attributes
+
+    public ESpellType _spellType;
+
+    #endregion
 }
