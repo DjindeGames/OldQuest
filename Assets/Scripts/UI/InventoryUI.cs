@@ -38,7 +38,7 @@ public class InventoryUI : MonoBehaviour
 
     public void showItemDetails(Usable which)
     {
-        itemName.text = which.name;
+        itemName.text = which.label;
         itemDetails.text = which.details;
         if (which.Type == EItemType.Equipment)
         {

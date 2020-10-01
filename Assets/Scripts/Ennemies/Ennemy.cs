@@ -46,22 +46,24 @@ public class Ennemy : MonoBehaviour
     {
         foreach (EnnemyInventoryItem item in inventoryContent)
         {
-            Lootable lootable = item.prefab.GetComponent<Lootable>();
-            if (lootable)
+            if (item._equipped && Utils.TryCast<Equipment>(item.item, out Equipment equipment))
             {
-                if (lootable.item.Type == EItemType.Equipment)
-                {
-                    Equipment equipment = (Equipment)lootable.item;
-                    equipItem(equipment);
-                }
+                equipItem(equipment);
             }
         }
     }
 
     private void equipItem(Equipment equipment)
     {
-        EnnemyEquipmentSlot slot = getSlotByType(equipment.slots[0]);
-        Instantiate(equipment.skin, slot.parent);
+        foreach(EGearSlotType slotType in equipment.slots)
+        {
+            EnnemyEquipmentSlot slot = getSlotByType(slotType);
+            if (slot.parent.childCount == 0)
+            {
+                Instantiate(equipment.skin, slot.parent);
+                break;
+            }
+        }
     }
 
     private EnnemyEquipmentSlot getSlotByType(EGearSlotType type)
@@ -101,14 +103,16 @@ public class Ennemy : MonoBehaviour
         {
             if (Random.Range(1, 101) <= inventoryItem.dropRate)
             {
-                GameObject prefab = inventoryItem.prefab;
-                Lootable lootable = prefab.GetComponent<Lootable>();
-                if (lootable)
+                if (Utils.TryGetLootablePrefabFromItem(inventoryItem.item, out GameObject prefab))
                 {
-                    loots.Add(lootable.item);
-                    GameObject instantiated = Instantiate(prefab, transform.position, Quaternion.identity);
-                    Destroy(instantiated.GetComponent<StateSave>());
-                    SaveManager.Instance.addSpawnedItem(instantiated);
+                    Lootable lootable = prefab.GetComponent<Lootable>();
+                    if (lootable)
+                    {
+                        loots.Add(lootable.item);
+                        GameObject instantiated = Instantiate(prefab, transform.position, Quaternion.identity);
+                        Destroy(instantiated.GetComponent<StateSave>());
+                        SaveManager.Instance.addSpawnedItem(instantiated);
+                    }
                 }
             }
         }
@@ -126,7 +130,8 @@ public class Ennemy : MonoBehaviour
 [System.Serializable]
 public class EnnemyInventoryItem
 {
-    public GameObject prefab;
+    public Item item;
+    public bool _equipped = true;
     [RangeAttribute(0, 100)]
     public int dropRate;
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 
@@ -8,7 +8,7 @@ public class IntroMovie : MonoBehaviour
 {
     [Header("References")]
     [SerializeField]
-    private string nextScene;
+    private SceneAsset nextScene;
 
     VideoPlayer vp;
     bool ready = false;
@@ -27,7 +27,7 @@ public class IntroMovie : MonoBehaviour
         {
             if (!vp.isPlaying || Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.KeypadEnter))
             {
-                SceneManager.LoadScene(nextScene);
+                SceneManager.LoadScene(nextScene.name);
             }
         }
     }

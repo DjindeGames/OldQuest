@@ -122,7 +122,7 @@ public class InventoryManager : MonoBehaviour
         if (isAlreadyEquipped(inventoryItem, out EquipmentSlot slot))
         {
             //writeEquipmentLog(-2, slot.type, inventoryItem.LinkedItem.name);
-            MainUI.Instance.writeLog("Cannot remove the " + inventoryItem.LinkedItem.name + " from inventory: unequip it first.");
+            MainUI.Instance.writeLog("Cannot remove the " + inventoryItem.LinkedItem.label + " from inventory: unequip it first.");
         }
         else
         {
@@ -141,7 +141,7 @@ public class InventoryManager : MonoBehaviour
                 SaveManager.Instance.addSpawnedItem(item);
 
                 SoundManager.Instance.playSFX(ESFXType.ItemRemoved);
-                MainUI.Instance.writeLog(inventoryItem.LinkedItem.name + " removed from inventory.");
+                MainUI.Instance.writeLog(inventoryItem.LinkedItem.label + " removed from inventory.");
             }
             //Item is consumed
             else
@@ -242,7 +242,7 @@ public class InventoryManager : MonoBehaviour
                         updateEquipmentBonuses(equipment, false);
                         if (!restored)
                         {
-                            writeEquipmentLog(0, equippedSlot.type, inventoryItem.LinkedItem.name);
+                            writeEquipmentLog(0, equippedSlot.type, inventoryItem.LinkedItem.label);
                             SoundManager.Instance.playSFX(ESFXType.ItemEquipped);
                         }
                         break;
@@ -261,14 +261,14 @@ public class InventoryManager : MonoBehaviour
                             updateEquipmentBonuses(equipment, true);
                             if (!restored)
                             {
-                                writeEquipmentLog(1, equipment.slots[i], inventoryItem.LinkedItem.name);
+                                writeEquipmentLog(1, equipment.slots[i], inventoryItem.LinkedItem.label);
                                 SoundManager.Instance.playSFX(ESFXType.ItemEquipped);
                             }
                             break;
                         }
                         else if (!slotsRemaining)
                         {
-                            writeEquipmentLog(-1, equipment.slots[i], inventoryItem.LinkedItem.name);
+                            writeEquipmentLog(-1, equipment.slots[i], inventoryItem.LinkedItem.label);
                         }
                     }
                 }

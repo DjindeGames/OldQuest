@@ -201,7 +201,7 @@ public class SaveManager : MonoBehaviour
         foreach (Tuple<GameObject,bool> item in InventoryManager.Instance.inventoryContent)
         {
             JSONObject inventoryItem = new JSONObject(JSONObject.Type.ARRAY);
-            inventoryItem.Add(Constants.PrefabsPath + item.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + item.Item1.name.Split('$')[0]);
+            inventoryItem.Add(Constants.PrefabsPath + item.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + item.Item1.name.Split(Constants.LootableEndCharacter)[0]);
             inventoryItem.Add(item.Item2);
             inventoryContent.Add(inventoryItem);
         }
@@ -271,7 +271,7 @@ public class SaveManager : MonoBehaviour
             Vector3 itemPosition = spawnedItem.Item1.transform.position;
             Vector3 itemRotation = spawnedItem.Item1.transform.rotation.eulerAngles;
             //Prefab Path
-            serializedSpawnedItem.Add(Constants.PrefabsPath + spawnedItem.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + spawnedItem.Item1.name.Split('$')[0]);
+            serializedSpawnedItem.Add(Constants.PrefabsPath + spawnedItem.Item1.GetComponent<Lootable>().item.Type.ToString() + "/" + spawnedItem.Item1.name.Split(Constants.LootableEndCharacter)[0]);
             //Position
             spawnedItemPosition.AddField("x", itemPosition.x.ToString());
             spawnedItemPosition.AddField("y", itemPosition.y.ToString());
@@ -314,7 +314,7 @@ public class SaveManager : MonoBehaviour
         }
 
         //REFRESH SAVES LIST
-        LoadScreenManager.Instance.refreshList();
+        LoadScreenManager.Instance.RefreshFilesList();
     }
 
     public void load(string file)
@@ -381,7 +381,7 @@ public class SaveManager : MonoBehaviour
                 float.Parse(serializedSpawnedItemRotation.GetField("z").str)
                 );
             SpawnedItems.Add(
-                new Tuple<GameObject, Tuple<Vector3, Vector3>>(Resources.Load<GameObject>(spawnedItem[0].str + "$"), 
+                new Tuple<GameObject, Tuple<Vector3, Vector3>>(Resources.Load<GameObject>(spawnedItem[0].str + Constants.LootableEndCharacter), 
                 new Tuple<Vector3, Vector3>(spawnedItemPosition, spawnedItemRotation))
                 );
         }
@@ -393,7 +393,7 @@ public class SaveManager : MonoBehaviour
         {
             if (bool.TryParse(item[1].ToString(), out bool state))
             {
-                InventoryContent.Add(new Tuple<GameObject, bool>(Resources.Load<GameObject>(item[0].str + "$"), state));
+                InventoryContent.Add(new Tuple<GameObject, bool>(Resources.Load<GameObject>(item[0].str + Constants.LootableEndCharacter), state));
             }
         }
 

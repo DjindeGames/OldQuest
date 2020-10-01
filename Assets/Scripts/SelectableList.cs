@@ -75,7 +75,7 @@ public class SelectableList : MonoBehaviour
         listItem = addedItem.GetComponent<SelectableListItem>();
         listItem.SetData(data);
         listItem.SetParentList(this);
-        _listContent.Add(listItem);
+        _listContent.Insert(0, listItem);
         return listItem;
     }
 
@@ -100,6 +100,14 @@ public class SelectableList : MonoBehaviour
     {
         int index = _listContent.IndexOf(item);
         return (index > 0) ? _listContent[index - 1] : null;
+    }
+
+    public void SelectItem(SelectableListItem item)
+    {
+        if (_listContent.Contains(item))
+        {
+            item.OnSelect();
+        }
     }
 
     public void ClearList()

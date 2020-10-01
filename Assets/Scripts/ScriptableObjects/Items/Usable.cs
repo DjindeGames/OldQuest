@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class Usable : Item
 {
-    public new string name;
+    public string label;
     public string details;
 }

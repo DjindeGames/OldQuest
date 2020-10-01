@@ -17,7 +17,7 @@ public class LootResult : MonoBehaviour
     public void setData(Item item)
     {
         Usable usable = (Usable)item;
-        name = usable.name;
+        name = usable.label;
         outlineColor = GameConstants.Instance.getLootableRarityColorByType(usable.rarity);
     }
 

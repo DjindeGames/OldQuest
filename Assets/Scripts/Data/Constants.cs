@@ -8,6 +8,7 @@ public class Constants
     public static string TemporaryExtractedSavesPath { get; private set; } = SaveFilesPath + "/Temp";
     public static string PreferencesFilePath { get; private set; } = Application.persistentDataPath;
     public static string PrefabsPath { get; private set; } = "Prefabs/Lootables/";
+    public static char LootableEndCharacter { get; private set; } = '$';
     public static string PreferencesFilename { get; private set; } = "userprefs.json";
     //extensions
     public static string SaveFilesExtension { get; private set; } = ".json";

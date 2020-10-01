@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 public class Utils
 {
@@ -23,6 +24,25 @@ public class Utils
         }
     }
 
+    public static void LogError(object obj, string desc)
+    {
+        Debug.LogError(obj.GetType().ToString() + ": " + desc);
+    }
 
+    public static void LogWarning(object obj, string desc)
+    {
+        Debug.LogWarning(obj.GetType().ToString() + ": " + desc);
+    }
+
+    public static void Log(object obj, string desc)
+    {
+        Debug.Log(obj.GetType().ToString() + ": " + desc);
+    }
+
+    public static bool TryGetLootablePrefabFromItem(Item item, out GameObject prefab)
+    {
+        prefab = Resources.Load<GameObject>(Constants.PrefabsPath + item.Type.ToString() + "/" + item.name + "$");
+        return (prefab != null);
+    }
     #endregion
 }
