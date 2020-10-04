@@ -98,23 +98,23 @@ public class PlayerStatsUI : MonoBehaviour
         statsFrameBonusToWound.text = playerStatsManager.BonusToWound.ToString();
 
         //Modifiers
-        int vitalityBonus = playerStatsManager.getEquipmentBonus(EEquipmentBonus.Vitality);
+        int vitalityBonus = playerStatsManager.getEquipmentBonus(EStatBonusType.Vitality);
         statsFrameVitalityBonus.text = "[" + ((vitalityBonus >= 0) ? "+" : "") + vitalityBonus + "]";
         statsFrameVitalityBonus.color = getBonusColor(vitalityBonus);
 
-        int strengthBonus = playerStatsManager.getEquipmentBonus(EEquipmentBonus.Strength);
+        int strengthBonus = playerStatsManager.getEquipmentBonus(EStatBonusType.Strength);
         statsFrameStrengthBonus.text = "[" + ((strengthBonus >= 0) ? "+" : "") + strengthBonus + "]";
         statsFrameStrengthBonus.color = getBonusColor(strengthBonus);
 
-        int enduranceBonus = playerStatsManager.getEquipmentBonus(EEquipmentBonus.Endurance);
+        int enduranceBonus = playerStatsManager.getEquipmentBonus(EStatBonusType.Endurance);
         statsFrameEnduranceBonus.text = "[" + ((enduranceBonus >= 0) ? "+" : "") + enduranceBonus + "]";
         statsFrameEnduranceBonus.color = getBonusColor(enduranceBonus);
 
-        int hitRollsBonus = playerStatsManager.getEquipmentBonus(EEquipmentBonus.HitRolls);
+        int hitRollsBonus = playerStatsManager.getEquipmentBonus(EStatBonusType.HitRolls);
         statsFrameHitRollsBonus.text = "[" + ((hitRollsBonus >= 0) ? "+" : "") + hitRollsBonus + "]";
         statsFrameHitRollsBonus.color = getBonusColor(hitRollsBonus);
 
-        int scoreToHitBonus = playerStatsManager.getEquipmentBonus(EEquipmentBonus.ToHit);
+        int scoreToHitBonus = playerStatsManager.getEquipmentBonus(EStatBonusType.ToHit);
         statsFrameScoreToHitBonus.text = "[" + ((scoreToHitBonus >= 0) ? "+" : "") + scoreToHitBonus + "]";
         statsFrameScoreToHitBonus.color = getBonusColor(scoreToHitBonus, true);
     }

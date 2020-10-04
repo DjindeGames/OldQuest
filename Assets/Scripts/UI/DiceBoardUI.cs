@@ -26,13 +26,10 @@ public class DiceBoardUI : MonoBehaviour
     private GameObject lootsResultWindow;
     [SerializeField]
     [BoxGroup("References")]
-    private Transform lootsParent;
-    [SerializeField]
-    [BoxGroup("References")]
-    private GameObject lootPrefab;
-    [SerializeField]
-    [BoxGroup("References")]
     private Button lootsResultWindowConfirm;
+    [SerializeField]
+    [BoxGroup("References")]
+    private SelectableList_Loot _lootList;
     /**************************************************/
     /******************* Menu Tabs ********************/
     /**************************************************/
@@ -74,15 +71,19 @@ public class DiceBoardUI : MonoBehaviour
 
     public bool IsWaitingForAcknowledgement { get; private set; } = false;
 
-    private int totalLoots;
-    private int lootsRevealed;
+    
 
     private void Awake()
     {
         Instance = this;
+        _lootList.OnLootsFullyRevealedEvent += OnLootsFullyRevealed;
     }
 
-    // Start is called before the first frame update
+    private void OnDestroy()
+    {
+        _lootList.OnLootsFullyRevealedEvent -= OnLootsFullyRevealed;
+    }
+
     void Start()
     {
         lootsResultWindow.SetActive(false);
@@ -106,35 +107,21 @@ public class DiceBoardUI : MonoBehaviour
     public void showLootResults(List<Item> loots)
     {
         closeTabs();
-        resetLootList();
-        totalLoots = loots.Count;
+        _lootList.ClearList();
+        lootsResultWindowConfirm.interactable = false;
         lootsResultWindow.SetActive(true);
         foreach (Item item in loots)
         {
-            GameObject instantiated = Instantiate(lootPrefab, lootsParent);
-            LootResult lootResult = instantiated.GetComponent<LootResult>();
-            lootResult.setData(item);
+            SelectableListItem_LootData data = new SelectableListItem_LootData();
+            data._label = item.description;
+            data._outlineColor = GameConstants.Instance.getLootableRarityColorByType(item.rarity);
+            _lootList.AddItem(data);
         }
     }
 
-    private void resetLootList()
+    private void OnLootsFullyRevealed()
     {
-        totalLoots = 0;
-        lootsRevealed = 0;
-        lootsResultWindowConfirm.interactable = false;
-        for (int i = 0; i < lootsParent.childCount; i++)
-        {
-            Destroy(lootsParent.GetChild(i).gameObject);
-        }
-    }
-
-    public void notifyLootRevealed()
-    {
-        lootsRevealed++;
-        if (lootsRevealed == totalLoots)
-        {
-            lootsResultWindowConfirm.interactable = true;
-        }
+        lootsResultWindowConfirm.interactable = true;
     }
 
     public void showActionResult(EThrowActionType actionType, int result)

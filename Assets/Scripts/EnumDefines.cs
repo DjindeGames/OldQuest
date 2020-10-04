@@ -97,7 +97,7 @@ public enum EBaseStatType
     Damages
 }
 
-public enum EEquipmentBonus
+public enum EStatBonusType
 {
     Armor,
     HitRolls,

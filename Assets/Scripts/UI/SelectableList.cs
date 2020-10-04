@@ -32,9 +32,8 @@ public class SelectableList : MonoBehaviour
             return _listContent.Count;
         }
     }
-
+    protected List<SelectableListItem> _listContent = new List<SelectableListItem>();
     private SelectableListItem _currentSelectedItem;
-    private List<SelectableListItem> _listContent = new List<SelectableListItem>();
 
     #endregion
 
@@ -110,7 +109,7 @@ public class SelectableList : MonoBehaviour
         }
     }
 
-    public void ClearList()
+    public virtual void ClearList()
     {
         for(int i = 0; i < _listContent.Count; i++)
         {
@@ -119,7 +118,7 @@ public class SelectableList : MonoBehaviour
         _listContent.Clear();
     }
 
-    public void OnItemSelected(SelectableListItem item)
+    public virtual void OnItemSelected(SelectableListItem item)
     {
         SoundManager.Instance.playSFX(_onItemSelectedSFX);
         if (_currentSelectedItem != null)

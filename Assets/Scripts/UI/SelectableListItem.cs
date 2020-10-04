@@ -10,7 +10,7 @@ public class SelectableListItem : MonoBehaviour
     [SerializeField]
     private Image _background;
     [SerializeField]
-    private TMP_Text _label;
+    protected TMP_Text _label;
     [Header("Parameters")]
     [SerializeField]
     private Color _selectedColor;
@@ -18,7 +18,7 @@ public class SelectableListItem : MonoBehaviour
     private Color _idleColor;
     [Header("Data")]
     [SerializeField]
-    private SelectableListItemData _data;
+    protected SelectableListItemData _data;
 
     #endregion
 
@@ -52,13 +52,13 @@ public class SelectableListItem : MonoBehaviour
         _parentList = parentList;
     }
 
-    public void SetData(SelectableListItemData data)
+    public virtual void SetData(SelectableListItemData data)
     {
         _data = data;
         _label.text = data._label;
     }
 
-    public void OnSelect()
+    public virtual void OnSelect()
     {
         if (!_isSelected)
         {
