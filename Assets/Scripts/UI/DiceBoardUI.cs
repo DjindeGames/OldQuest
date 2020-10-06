@@ -146,7 +146,7 @@ public class DiceBoardUI : MonoBehaviour
                 }
                 else
                 {
-                    textResult.text = "You have wounded the ennemy " + result + " times for a total of " + PlayerStatsManager.Instance.Damages * result + " points of damages.";
+                    textResult.text = "You have wounded the ennemy " + result + " times for a total of " + PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Damages) * result + " points of damages.";
                 }
                 break;
             case (EThrowActionType.EnnemyHit):
@@ -166,7 +166,7 @@ public class DiceBoardUI : MonoBehaviour
                 }
                 else
                 {
-                    textResult.text = "The ennemy has wounded you " + result + " times for a total of " + CombatManager.Instance.CurrentEnnemy.stats.damages * result + " points of damages.";
+                    textResult.text = "The ennemy has wounded you " + result + " times for a total of " + CombatManager.Instance.CurrentEnnemy.stats.GetPassiveStatOfType(EPassiveStatType.Damages) * result + " points of damages.";
                 }
                 break;
         }

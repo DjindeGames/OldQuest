@@ -63,9 +63,13 @@ public class SpellBookUI : MonoBehaviour
         Spell spell = SpellsManager.Instance.getSpellFromDB(data._spellType);
         currentSpellName.text = spell.name;
         currentSpellDescription.text = spell.description;
-        foreach(SpellBonus spellBonus in spell.bonuses)
+        foreach(ActiveBonus activeBonus in spell._activeBonuses)
         {
-            currentSpellDescription.text += "\n" + spellBonus.type.ToString() + ": " + spellBonus.value.ToString();
+            currentSpellDescription.text += "\n" + activeBonus.type.ToString();
+        }
+        foreach(PassiveBonus passiveBonus in spell._passiveBonuses)
+        {
+            currentSpellDescription.text += "\n" + passiveBonus.type.ToString() + ": " + passiveBonus.value.ToString();
         }
         currentSpellCost.text = spell.cost.ToString();
         castButton.onClick.RemoveAllListeners();
@@ -78,16 +82,9 @@ public class SpellBookUI : MonoBehaviour
         Spell spell = SpellsManager.Instance.getSpellFromDB(which);
         SpellsManager.Instance.castSpell(which);
         castButton.interactable = false;
-        activeSpells.text += "...................................................\n<u>" + spell.name + "</u>";
-        foreach(SpellBonus bonus in spell.bonuses)
-        {
-            activeSpells.text += "\n\t" + bonus.type.ToString() + ": " + bonus.value.ToString();
-        }
-        activeSpells.text += "\n";
     }
 
     public void resetActiveSpells()
     {
-        activeSpells.text = "";
     }
 }

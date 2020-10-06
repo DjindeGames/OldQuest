@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu]
-public class CharacterStats : ScriptableObject
+public class BaseStats : ScriptableObject
 {
     public new string name;
     public int vitality = 3;

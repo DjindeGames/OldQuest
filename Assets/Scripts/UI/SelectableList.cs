@@ -50,14 +50,21 @@ public class SelectableList : MonoBehaviour
 
     private void InitList()
     {
-        //Fill list with container's content
-        for (int i = 0; i < _itemsContainer.childCount; i++)
+        if (_itemsContainer == null)
         {
-            SelectableListItem item = _itemsContainer.GetChild(i).GetComponent<SelectableListItem>();
-            if (item != null)
+            Utils.LogError(this, "Items container is null!");
+        }
+        else
+        {
+            //Fill list with container's content
+            for (int i = 0; i < _itemsContainer.childCount; i++)
             {
-                item.SetParentList(this);
-                _listContent.Add(item);
+                SelectableListItem item = _itemsContainer.GetChild(i).GetComponent<SelectableListItem>();
+                if (item != null)
+                {
+                    item.SetParentList(this);
+                    _listContent.Add(item);
+                }
             }
         }
     }

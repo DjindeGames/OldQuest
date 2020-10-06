@@ -6,13 +6,7 @@ public class Spell : ScriptableObject
     public new string name;
     public string description;
     public ESpellType type;
-    public SpellBonus[] bonuses;
+    public PassiveBonus[] _passiveBonuses;
+    public ActiveBonus[] _activeBonuses;
     public int cost;
-}
-
-[System.Serializable]
-public class SpellBonus
-{
-    public ESpellBonusType type;
-    public int value;
 }

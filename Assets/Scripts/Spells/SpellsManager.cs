@@ -11,8 +11,7 @@ public class SpellsManager : MonoBehaviour
 
     public static SpellsManager Instance { get; private set; }
 
-    private List<ESpellType> castedSpells = new List<ESpellType>();
-    private List<SpellBonus> activeBonuses = new List<SpellBonus>();
+    private List<Spell> castedSpells = new List<Spell>();
 
     public int DeathShards
     {
@@ -55,23 +54,13 @@ public class SpellsManager : MonoBehaviour
         Instance = this;
     }
 
-    public int getTotalSpellBonusOfType(ESpellBonusType type)
-    {
-        int bonusAmount = 0;
-        foreach(SpellBonus bonus in activeBonuses)
-        {
-            if (bonus.type == type)
-            {
-                bonusAmount += bonus.value;
-            }
-        }
-        return bonusAmount;
-    }
-
     public void clearActiveBonuses()
     {
+        foreach(Spell spell in castedSpells)
+        {
+            UnregisterSpellBonuses(spell);
+        }
         castedSpells.Clear();
-        activeBonuses.Clear();
         SpellBookUI.Instance.resetActiveSpells();
     }
 
@@ -110,7 +99,7 @@ public class SpellsManager : MonoBehaviour
     public bool canSpellBeCasted(ESpellType which)
     {
         Spell spell = getSpellFromDB(which);
-        return spell.cost <= DeathShards && !castedSpells.Contains(which);
+        return spell.cost <= DeathShards && !castedSpells.Contains(spell);
     }
 
     public void castSpell(ESpellType which)
@@ -118,16 +107,32 @@ public class SpellsManager : MonoBehaviour
         SoundManager.Instance.playSFX(ESFXType.CastSpell);
         Spell spell = getSpellFromDB(which);
         DeathShards -= spell.cost;
-        castedSpells.Add(which);
-        registerSpellBonuses(spell);
+        castedSpells.Add(spell);
+        RegisterSpellBonuses(spell);
         DiceBoardManager.Instance.recomputeNeededScore();
     }
 
-    private void registerSpellBonuses(Spell spell)
+    private void RegisterSpellBonuses(Spell spell)
     {
-        foreach(SpellBonus bonus in spell.bonuses)
+        foreach(ActiveBonus bonus in spell._activeBonuses)
         {
-            activeBonuses.Add(bonus);
+            PlayerStatsManager._Instance._PlayerStats.RegisterActiveBonus(bonus);
+        }
+        foreach (PassiveBonus bonus in spell._passiveBonuses)
+        {
+            PlayerStatsManager._Instance._PlayerStats.RegisterPassiveBonus(bonus);
+        }
+    }
+
+    private void UnregisterSpellBonuses(Spell spell)
+    {
+        foreach (ActiveBonus bonus in spell._activeBonuses)
+        {
+            PlayerStatsManager._Instance._PlayerStats.UnregisterActiveBonus(bonus);
+        }
+        foreach (PassiveBonus bonus in spell._passiveBonuses)
+        {
+            PlayerStatsManager._Instance._PlayerStats.UnregisterPassiveBonus(bonus);
         }
     }
 }

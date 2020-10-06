@@ -26,7 +26,7 @@ public class Utils
 
     public static void LogError(object obj, string desc)
     {
-        Debug.LogError(obj.GetType().ToString() + ": " + desc);
+        Debug.LogError(obj.GetType().ToString() + " [" + ((MonoBehaviour)obj).name + "]" + ": " + desc);
     }
 
     public static void LogWarning(object obj, string desc)

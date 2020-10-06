@@ -77,6 +77,7 @@ GameObject:
   - component: {fileID: 1127072935012410700}
   - component: {fileID: 983402131}
   - component: {fileID: 6226115628621086265}
+  - component: {fileID: 2419925448108191098}
   m_Layer: 2
   m_Name: Skeleton1
   m_TagString: Savable
@@ -274,7 +275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4170d48a388cc624f8ece5b27fcaf5e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: f3266de3f11c96d4db79cfe4318c2748, type: 2}
+  stats: {fileID: 2419925448108191098}
   inventoryContent:
   - item: {fileID: 11400000, guid: 58101e658c468294a89e5f56cbda9992, type: 2}
     _equipped: 1
@@ -311,6 +312,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: -1
+--- !u!114 &2419925448108191098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 356098461561281966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e24b383077de66b4ea014bea774f7720, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseCharacterStats:
+    _healthPoints: 3
+    _vitality: 3
+    _strength: 3
+    _endurance: 3
+    _hitRolls: 1
+    _scoreToHit: 5
+    _damages: 1
 --- !u!1 &589720682935900580
 GameObject:
   m_ObjectHideFlags: 0

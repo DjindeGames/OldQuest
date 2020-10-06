@@ -37,7 +37,7 @@ public class SaveManager : MonoBehaviour
     public List<ReadableKey> Archives { get; private set; } = new List<ReadableKey>();
 
     //PLAYER STATS
-    public PlayerStats PlayerStats { get; private set; }
+    public BaseCharacterStats PlayerStats { get; private set; }
     public int DeathShards { get; private set; }
     public int MaxDeathShards { get; private set; }
     public List<ESpellType> LearntSpells { get; private set; }
@@ -155,14 +155,14 @@ public class SaveManager : MonoBehaviour
         serializedSave.AddField(Constants.SFSerializedSceneField, SceneManager.GetActiveScene().name);
 
         //SERIALIZING PLAYER STATS
-        PlayerStats copiedPlayerStats = PlayerStatsManager.Instance.getPlayerStats();
-        playerStats.AddField(Constants.SFSerializedPlayerStatsHealthPointsField, copiedPlayerStats.healthPoints);
-        playerStats.AddField(Constants.SFSerializedPlayerStatsVitalityField, copiedPlayerStats.vitality);
-        playerStats.AddField(Constants.SFSerializedPlayerStatsStrengthField, copiedPlayerStats.strength);
-        playerStats.AddField(Constants.SFSerializedPlayerStatsEnduranceField, copiedPlayerStats.endurance);
-        playerStats.AddField(Constants.SFSerializedPlayerStatsHitRollsField, copiedPlayerStats.hitRolls);
-        playerStats.AddField(Constants.SFSerializedPlayerStatsScoreToHitField, copiedPlayerStats.scoreToHit);
-        playerStats.AddField(Constants.SFSerializedPlayerStatsDamagesField, copiedPlayerStats.damages);
+        PlayerCharacterStats copiedPlayerStats = PlayerStatsManager._Instance._PlayerStats;
+        playerStats.AddField(Constants.SFSerializedPlayerStatsHealthPointsField, copiedPlayerStats.GetCurrentHealth());
+        playerStats.AddField(Constants.SFSerializedPlayerStatsVitalityField, copiedPlayerStats.GetPassiveStatOfType(EPassiveStatType.Vitality));
+        playerStats.AddField(Constants.SFSerializedPlayerStatsStrengthField, copiedPlayerStats.GetPassiveStatOfType(EPassiveStatType.Strength));
+        playerStats.AddField(Constants.SFSerializedPlayerStatsEnduranceField, copiedPlayerStats.GetPassiveStatOfType(EPassiveStatType.Endurance));
+        playerStats.AddField(Constants.SFSerializedPlayerStatsHitRollsField, copiedPlayerStats.GetPassiveStatOfType(EPassiveStatType.HitRolls));
+        playerStats.AddField(Constants.SFSerializedPlayerStatsScoreToHitField, copiedPlayerStats.GetPassiveStatOfType(EPassiveStatType.ScoreToHit));
+        playerStats.AddField(Constants.SFSerializedPlayerStatsDamagesField, copiedPlayerStats.GetPassiveStatOfType(EPassiveStatType.Damages));
         serializedSave.AddField(Constants.SFSerializedPlayerStatsField, playerStats);
 
         //SERIALIZING SPELLS
@@ -417,14 +417,14 @@ public class SaveManager : MonoBehaviour
 
         //Restoring Player stats
         JSONObject playerStats = saveFile.GetField(Constants.SFSerializedPlayerStatsField);
-        PlayerStats = new PlayerStats();
-        PlayerStats.healthPoints = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsHealthPointsField).ToString());
-        PlayerStats.vitality = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsVitalityField).ToString());
-        PlayerStats.strength = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsStrengthField).ToString());
-        PlayerStats.endurance = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsEnduranceField).ToString());
-        PlayerStats.hitRolls = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsHitRollsField).ToString());
-        PlayerStats.scoreToHit = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsScoreToHitField).ToString());
-        PlayerStats.damages = Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsDamagesField).ToString());
+        PlayerStats = new BaseCharacterStats();
+        PlayerStats.SetCurrentHealth(Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsHealthPointsField).ToString()));
+        PlayerStats.SetStat(EPassiveStatType.Vitality, Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsVitalityField).ToString()));
+        PlayerStats.SetStat(EPassiveStatType.Strength, Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsStrengthField).ToString()));
+        PlayerStats.SetStat(EPassiveStatType.Endurance, Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsEnduranceField).ToString()));
+        PlayerStats.SetStat(EPassiveStatType.HitRolls, Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsHitRollsField).ToString()));
+        PlayerStats.SetStat(EPassiveStatType.ScoreToHit, Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsScoreToHitField).ToString()));
+        PlayerStats.SetStat(EPassiveStatType.Damages, Int32.Parse(playerStats.GetField(Constants.SFSerializedPlayerStatsDamagesField).ToString()));
 
         //Restoring Player Spells
         DeathShards = Int32.Parse(saveFile.GetField(Constants.SFSerializedDeathShardsField).ToString());

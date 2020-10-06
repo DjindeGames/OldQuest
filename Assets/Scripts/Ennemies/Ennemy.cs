@@ -15,18 +15,9 @@ public class Ennemy : MonoBehaviour
     public delegate void ennemyDeath();
     public event ennemyDeath onEnnemyDeath;
 
-    private int health;
-
     private void Start()
     {
-        health = stats.vitality;
         equipItems();
-    }
-
-    public bool resolveWounds(int amount)
-    {
-        health -= amount;
-        return (health <= 0);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -132,6 +123,7 @@ public class EnnemyInventoryItem
 {
     public Item item;
     public bool _equipped = true;
+    public bool _applyBonuses = true;
     [RangeAttribute(0, 100)]
     public int dropRate;
 }

@@ -5,12 +5,19 @@ public class Equipment : Usable
 {
     public GameObject skin;
     public EGearSlotType[] slots;
-    public GearStats[] stats;
+    public PassiveBonus[] _passiveBonuses;
+    public ActiveBonus[] _activeBonuses;
 }
 
 [System.Serializable]
-public class GearStats
+public class PassiveBonus
 {
-    public EEquipmentBonus type;
+    public EPassiveStatType type;
     public int value;
+}
+
+[System.Serializable]
+public class ActiveBonus
+{
+    public EActiveBonusType type;
 }

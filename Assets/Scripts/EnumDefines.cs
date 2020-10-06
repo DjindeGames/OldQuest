@@ -87,38 +87,27 @@ public enum EPotionType
 
 /******************************* STATS ****************************/
 
-public enum EBaseStatType
+public enum EPassiveStatType
 {
     Vitality,
     Strength,
     Endurance,
     HitRolls,
     ScoreToHit,
-    Damages
-}
-
-public enum EStatBonusType
-{
-    Armor,
-    HitRolls,
-    ToHit,
-    ToWound,
-    Vitality,
-    Strength,
-    Endurance,
-    Damages
-}
-
-public enum ESpellBonusType
-{
-    Reroll,
-    ExtraHit,
-    ExtraWound,
-    ToHit,
-    ToWound,
-    Armor,
     Damages,
-    HitRolls
+    //Not Vanilla
+    Armor,
+    BonusToWound
+}
+
+public enum EActiveBonusType
+{
+    RerollOnes,
+    RerollTwos,
+    RerollThrees,
+    RerollFours,
+    RerollFives,
+    RerollFailed,
 }
 
 public enum ESpellType

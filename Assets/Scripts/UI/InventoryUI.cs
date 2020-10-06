@@ -44,9 +44,9 @@ public class InventoryUI : MonoBehaviour
         {
             Equipment equipment = (Equipment)which;
             itemDetails.text += "\n\nBonuses:";
-            for (int i = 0; i < equipment.stats.Length; i++)
+            for (int i = 0; i < equipment._passiveBonuses.Length; i++)
             {
-                itemDetails.text += "\n" + equipment.stats[i].type.ToString() + ": " + equipment.stats[i].value.ToString();
+                itemDetails.text += "\n" + equipment._passiveBonuses[i].type.ToString() + ": " + equipment._passiveBonuses[i].value.ToString();
             }
         }
     }

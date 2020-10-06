@@ -275,7 +275,7 @@ public class InventoryManager : MonoBehaviour
                 break;
             case (EItemType.Potion):
                 Potion potion = (Potion)item;
-                if (potion.type == EPotionType.Health && PlayerStatsManager.Instance.HasFullHealth)
+                if (potion.type == EPotionType.Health && PlayerStatsManager._Instance._PlayerStats._HasFullHealth)
                 {
                     MainUI.Instance.writeLog("It would be a waste!");
                 }
@@ -290,15 +290,26 @@ public class InventoryManager : MonoBehaviour
 
     private void updateEquipmentBonuses(Equipment equipment, bool apply)
     {
-        for (int i = 0; i < equipment.stats.Length; i++)
+        foreach(PassiveBonus passiveBonus in equipment._passiveBonuses)
         {
             if (apply)
             {
-                PlayerStatsManager.Instance.applyEquipmentBonus(equipment.stats[i]);
+                PlayerStatsManager._Instance._PlayerStats.RegisterPassiveBonus(passiveBonus);
             }
             else
             {
-                PlayerStatsManager.Instance.unapplyEquipmentBonus(equipment.stats[i]);
+                PlayerStatsManager._Instance._PlayerStats.UnregisterPassiveBonus(passiveBonus);
+            }
+        }
+        foreach (ActiveBonus activeBonus in equipment._activeBonuses)
+        {
+            if (apply)
+            {
+                PlayerStatsManager._Instance._PlayerStats.RegisterActiveBonus(activeBonus);
+            }
+            else
+            {
+                PlayerStatsManager._Instance._PlayerStats.UnregisterActiveBonus(activeBonus);
             }
         }
     }

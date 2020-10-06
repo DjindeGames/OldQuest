@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
+using System.Collections.Generic;
 using TMPro;
 
 public class PlayerStatsUI : MonoBehaviour
@@ -10,29 +10,9 @@ public class PlayerStatsUI : MonoBehaviour
     [SerializeField]
     private OrbGauge deathShardsGauge;
     [SerializeField]
-    private TMP_Text statsFrameVitality;
+    private List<StatValueLabel> _passiveStatLabels = new List<StatValueLabel>();
     [SerializeField]
-    private TMP_Text statsFrameVitalityBonus;
-    [SerializeField]
-    private TMP_Text statsFrameStrength;
-    [SerializeField]
-    private TMP_Text statsFrameStrengthBonus;
-    [SerializeField]
-    private TMP_Text statsFrameEndurance;
-    [SerializeField]
-    private TMP_Text statsFrameEnduranceBonus;
-    [SerializeField]
-    private TMP_Text statsFrameArmor;
-    [SerializeField]
-    private TMP_Text statsFrameHitRolls;
-    [SerializeField]
-    private TMP_Text statsFrameHitRollsBonus;
-    [SerializeField]
-    private TMP_Text statsFrameScoreToHit;
-    [SerializeField]
-    private TMP_Text statsFrameScoreToHitBonus;
-    [SerializeField]
-    private TMP_Text statsFrameBonusToWound;
+    private List<StatValueLabel> _passiveStatBonusLabels = new List<StatValueLabel>();
 
     public static PlayerStatsUI Instance { get; private set; }
 
@@ -43,30 +23,35 @@ public class PlayerStatsUI : MonoBehaviour
 
     private void Start()
     {
-        PlayerStatsManager.Instance.onHealthUpdated += onHealthUpdated;
-        PlayerStatsManager.Instance.onVitalityUpdated += onVitalityUpdated;
+        PlayerStatsManager._Instance._PlayerStats.OnPassiveStatUpdated += OnPassiveStatUpdated;
+        PlayerStatsManager._Instance._PlayerStats.OnHealthUpdatedEvent += OnHealthUpdated;
         SpellsManager.Instance.onDeathShardsUpdated += onDeathShardsUpdated;
         SpellsManager.Instance.onMaxDeathShardsUpdated += onMaxDeathShardsUpdated;
-        PlayerStatsManager.Instance.onStatsUpdated += onStatsUpdated;
-        onHealthUpdated(PlayerStatsManager.Instance.Health);
-        onVitalityUpdated(PlayerStatsManager.Instance.Vitality);
+
         onDeathShardsUpdated(SpellsManager.Instance.DeathShards);
         onMaxDeathShardsUpdated(SpellsManager.Instance.MaxDeathShards);
-        onStatsUpdated();
+        OnHealthUpdated(PlayerStatsManager._Instance._PlayerStats.GetCurrentHealth());
+        OnPassiveStatUpdated(EPassiveStatType.Vitality, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Vitality));
+        OnPassiveStatUpdated(EPassiveStatType.Strength, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Strength));
+        OnPassiveStatUpdated(EPassiveStatType.Endurance, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Endurance));
+        OnPassiveStatUpdated(EPassiveStatType.HitRolls, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.HitRolls));
+        OnPassiveStatUpdated(EPassiveStatType.ScoreToHit, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.ScoreToHit));
+        OnPassiveStatUpdated(EPassiveStatType.Damages, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Damages));
+        OnPassiveStatUpdated(EPassiveStatType.Armor, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Armor));
+        OnPassiveStatUpdated(EPassiveStatType.BonusToWound, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.BonusToWound));
     }
 
     private void OnDestroy()
     {
-        PlayerStatsManager.Instance.onHealthUpdated -= onHealthUpdated;
-        PlayerStatsManager.Instance.onVitalityUpdated -= onVitalityUpdated;
+        PlayerStatsManager._Instance._PlayerStats.OnPassiveStatUpdated -= OnPassiveStatUpdated;
+        PlayerStatsManager._Instance._PlayerStats.OnHealthUpdatedEvent -= OnHealthUpdated;
         SpellsManager.Instance.onDeathShardsUpdated -= onDeathShardsUpdated;
         SpellsManager.Instance.onMaxDeathShardsUpdated -= onMaxDeathShardsUpdated;
-        PlayerStatsManager.Instance.onStatsUpdated -= onStatsUpdated;
     }
 
-    private void onHealthUpdated(int currentHealth)
+    private void OnHealthUpdated(int newValue)
     {
-        healthGauge.setValue(currentHealth);
+        healthGauge.setValue(newValue);
     }
 
     private void onVitalityUpdated(int vitality)
@@ -84,52 +69,89 @@ public class PlayerStatsUI : MonoBehaviour
         deathShardsGauge.setMaxValue(maxDeathShards);
     }
 
-    private void onStatsUpdated()
+    private void OnPassiveStatUpdated(EPassiveStatType type, int newValue)
     {
-        PlayerStatsManager playerStatsManager = PlayerStatsManager.Instance;
+        PlayerCharacterStats playerStats = PlayerStatsManager._Instance._PlayerStats;
 
-        //Final Stats
-        statsFrameVitality.text = playerStatsManager.Vitality.ToString();
-        statsFrameStrength.text = playerStatsManager.Strength.ToString();
-        statsFrameEndurance.text = playerStatsManager.Endurance.ToString();
-        statsFrameArmor.text = playerStatsManager.Armor.ToString();
-        statsFrameHitRolls.text = playerStatsManager.HitRolls.ToString();
-        statsFrameScoreToHit.text = playerStatsManager.ScoreToHit.ToString();
-        statsFrameBonusToWound.text = playerStatsManager.BonusToWound.ToString();
-
-        //Modifiers
-        int vitalityBonus = playerStatsManager.getEquipmentBonus(EStatBonusType.Vitality);
-        statsFrameVitalityBonus.text = "[" + ((vitalityBonus >= 0) ? "+" : "") + vitalityBonus + "]";
-        statsFrameVitalityBonus.color = getBonusColor(vitalityBonus);
-
-        int strengthBonus = playerStatsManager.getEquipmentBonus(EStatBonusType.Strength);
-        statsFrameStrengthBonus.text = "[" + ((strengthBonus >= 0) ? "+" : "") + strengthBonus + "]";
-        statsFrameStrengthBonus.color = getBonusColor(strengthBonus);
-
-        int enduranceBonus = playerStatsManager.getEquipmentBonus(EStatBonusType.Endurance);
-        statsFrameEnduranceBonus.text = "[" + ((enduranceBonus >= 0) ? "+" : "") + enduranceBonus + "]";
-        statsFrameEnduranceBonus.color = getBonusColor(enduranceBonus);
-
-        int hitRollsBonus = playerStatsManager.getEquipmentBonus(EStatBonusType.HitRolls);
-        statsFrameHitRollsBonus.text = "[" + ((hitRollsBonus >= 0) ? "+" : "") + hitRollsBonus + "]";
-        statsFrameHitRollsBonus.color = getBonusColor(hitRollsBonus);
-
-        int scoreToHitBonus = playerStatsManager.getEquipmentBonus(EStatBonusType.ToHit);
-        statsFrameScoreToHitBonus.text = "[" + ((scoreToHitBonus >= 0) ? "+" : "") + scoreToHitBonus + "]";
-        statsFrameScoreToHitBonus.color = getBonusColor(scoreToHitBonus, true);
+        StatValueLabel label = GetStatValueLabelByType(type);
+        if (label != null)
+        {
+            label._label.text = newValue.ToString();
+        }
+        StatValueLabel bonusLabel = GetStatBonusValueLabelByType(type);
+        if (bonusLabel != null)
+        {
+            bonusLabel._label.text = "[" + ((newValue >= 0) ? "+" : "") + newValue + "]";
+            bonusLabel._label.color = GetAppropriateBonusColorByTypeAndValue(type, newValue);
+        }
     }
 
-    private Color getBonusColor(int value, bool lessIsMore = false)
+    private StatValueLabel GetStatValueLabelByType(EPassiveStatType which)
+    {
+        StatValueLabel foundLabel = null;
+        foreach(StatValueLabel label in _passiveStatLabels)
+        {
+            if (label._type == which)
+            {
+                foundLabel = label;
+                break;
+            }
+        }
+        return foundLabel;
+    }
+
+    private StatValueLabel GetStatBonusValueLabelByType(EPassiveStatType which)
+    {
+        StatValueLabel foundLabel = null;
+        foreach (StatValueLabel label in _passiveStatBonusLabels)
+        {
+            if (label._type == which)
+            {
+                foundLabel = label;
+                break;
+            }
+        }
+        return foundLabel;
+    }
+
+    private Color GetAppropriateBonusColorByTypeAndValue(EPassiveStatType type, int value)
     {
         Color bonusColor = Color.black;
-        if (value > 0)
+        switch(type)
         {
-            bonusColor = lessIsMore ? Color.red : Color.green;
-        }
-        else if (value < 0)
-        {
-            bonusColor = lessIsMore ? Color.green : Color.red;
+            case (EPassiveStatType.Vitality):
+            case (EPassiveStatType.Endurance):
+            case (EPassiveStatType.Strength):
+            case (EPassiveStatType.HitRolls):
+            case (EPassiveStatType.Damages):
+            case (EPassiveStatType.Armor):
+                if (value > 0)
+                {
+                    bonusColor = Color.green;
+                }
+                else if (value < 0)
+                {
+                    bonusColor = Color.red;
+                }
+                break;
+            case (EPassiveStatType.ScoreToHit):
+                if (value > 0)
+                {
+                    bonusColor = Color.red;
+                }
+                else if (value < 0)
+                {
+                    bonusColor = Color.green;
+                }
+                break;
         }
         return bonusColor;
     }
+}
+
+[System.Serializable]
+public class StatValueLabel
+{
+    public EPassiveStatType _type;
+    public TMP_Text _label;
 }
