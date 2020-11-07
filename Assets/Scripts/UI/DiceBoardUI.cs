@@ -146,7 +146,7 @@ public class DiceBoardUI : MonoBehaviour
                 }
                 else
                 {
-                    textResult.text = "You have wounded the ennemy " + result + " times for a total of " + PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Damages) * result + " points of damages.";
+                    textResult.text = "You have wounded the ennemy " + result + " times for a total of " + PlayerFastAccess._CharacterStats.GetPassiveStatOfType(EPassiveStatType.Damages) * result + " points of damages.";
                 }
                 break;
             case (EThrowActionType.EnnemyHit):

@@ -49,7 +49,7 @@ public class LoadManager : MonoBehaviour
         //Restoring inventory
         loadInventoryContent();
         //Restoring playerStats
-        PlayerStatsManager._Instance._PlayerStats.LoadStats(SaveManager.Instance.PlayerStats);
+        PlayerFastAccess._CharacterStats.LoadStats(SaveManager.Instance.PlayerStats);
         //Restoring scene state
         PlayerController.Instance.gameObject.transform.position = saveManager.PlayerPosition;
         removeDestroyedItems();

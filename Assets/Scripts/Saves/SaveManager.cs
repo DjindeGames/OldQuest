@@ -155,7 +155,7 @@ public class SaveManager : MonoBehaviour
         serializedSave.AddField(Constants.SFSerializedSceneField, SceneManager.GetActiveScene().name);
 
         //SERIALIZING PLAYER STATS
-        PlayerCharacterStats copiedPlayerStats = PlayerStatsManager._Instance._PlayerStats;
+        PlayerCharacterStats copiedPlayerStats = PlayerFastAccess._CharacterStats;
         playerStats.AddField(Constants.SFSerializedPlayerStatsHealthPointsField, copiedPlayerStats.GetCurrentHealth());
         playerStats.AddField(Constants.SFSerializedPlayerStatsVitalityField, copiedPlayerStats.GetPassiveStatOfType(EPassiveStatType.Vitality));
         playerStats.AddField(Constants.SFSerializedPlayerStatsStrengthField, copiedPlayerStats.GetPassiveStatOfType(EPassiveStatType.Strength));

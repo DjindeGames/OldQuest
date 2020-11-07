@@ -23,28 +23,28 @@ public class PlayerStatsUI : MonoBehaviour
 
     private void Start()
     {
-        PlayerStatsManager._Instance._PlayerStats.OnPassiveStatUpdated += OnPassiveStatUpdated;
-        PlayerStatsManager._Instance._PlayerStats.OnHealthUpdatedEvent += OnHealthUpdated;
+        PlayerFastAccess._CharacterStats.OnPassiveStatUpdated += OnPassiveStatUpdated;
+        PlayerFastAccess._CharacterStats.OnHealthUpdatedEvent += OnHealthUpdated;
         SpellsManager.Instance.onDeathShardsUpdated += onDeathShardsUpdated;
         SpellsManager.Instance.onMaxDeathShardsUpdated += onMaxDeathShardsUpdated;
 
         onDeathShardsUpdated(SpellsManager.Instance.DeathShards);
         onMaxDeathShardsUpdated(SpellsManager.Instance.MaxDeathShards);
-        OnHealthUpdated(PlayerStatsManager._Instance._PlayerStats.GetCurrentHealth());
-        OnPassiveStatUpdated(EPassiveStatType.Vitality, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Vitality));
-        OnPassiveStatUpdated(EPassiveStatType.Strength, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Strength));
-        OnPassiveStatUpdated(EPassiveStatType.Endurance, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Endurance));
-        OnPassiveStatUpdated(EPassiveStatType.HitRolls, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.HitRolls));
-        OnPassiveStatUpdated(EPassiveStatType.ScoreToHit, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.ScoreToHit));
-        OnPassiveStatUpdated(EPassiveStatType.Damages, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Damages));
-        OnPassiveStatUpdated(EPassiveStatType.Armor, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.Armor));
-        OnPassiveStatUpdated(EPassiveStatType.BonusToWound, PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.BonusToWound));
+        OnHealthUpdated(PlayerFastAccess._CharacterStats.GetCurrentHealth());
+        OnPassiveStatUpdated(EPassiveStatType.Vitality, PlayerFastAccess._CharacterStats.GetPassiveStatOfType(EPassiveStatType.Vitality));
+        OnPassiveStatUpdated(EPassiveStatType.Strength, PlayerFastAccess._CharacterStats.GetPassiveStatOfType(EPassiveStatType.Strength));
+        OnPassiveStatUpdated(EPassiveStatType.Endurance, PlayerFastAccess._CharacterStats.GetPassiveStatOfType(EPassiveStatType.Endurance));
+        OnPassiveStatUpdated(EPassiveStatType.HitRolls, PlayerFastAccess._CharacterStats.GetPassiveStatOfType(EPassiveStatType.HitRolls));
+        OnPassiveStatUpdated(EPassiveStatType.ScoreToHit, PlayerFastAccess._CharacterStats.GetPassiveStatOfType(EPassiveStatType.ScoreToHit));
+        OnPassiveStatUpdated(EPassiveStatType.Damages, PlayerFastAccess._CharacterStats.GetPassiveStatOfType(EPassiveStatType.Damages));
+        OnPassiveStatUpdated(EPassiveStatType.Armor, PlayerFastAccess._CharacterStats.GetPassiveStatOfType(EPassiveStatType.Armor));
+        OnPassiveStatUpdated(EPassiveStatType.BonusToWound, PlayerFastAccess._CharacterStats.GetPassiveStatOfType(EPassiveStatType.BonusToWound));
     }
 
     private void OnDestroy()
     {
-        PlayerStatsManager._Instance._PlayerStats.OnPassiveStatUpdated -= OnPassiveStatUpdated;
-        PlayerStatsManager._Instance._PlayerStats.OnHealthUpdatedEvent -= OnHealthUpdated;
+        PlayerFastAccess._CharacterStats.OnPassiveStatUpdated -= OnPassiveStatUpdated;
+        PlayerFastAccess._CharacterStats.OnHealthUpdatedEvent -= OnHealthUpdated;
         SpellsManager.Instance.onDeathShardsUpdated -= onDeathShardsUpdated;
         SpellsManager.Instance.onMaxDeathShardsUpdated -= onMaxDeathShardsUpdated;
     }
@@ -71,18 +71,30 @@ public class PlayerStatsUI : MonoBehaviour
 
     private void OnPassiveStatUpdated(EPassiveStatType type, int newValue)
     {
-        PlayerCharacterStats playerStats = PlayerStatsManager._Instance._PlayerStats;
+        PlayerCharacterStats playerStats = PlayerFastAccess._CharacterStats;
 
         StatValueLabel label = GetStatValueLabelByType(type);
         if (label != null)
         {
-            label._label.text = newValue.ToString();
+            foreach(TMP_Text text in label._labels)
+            {
+                text.text = newValue.ToString();
+            }
         }
         StatValueLabel bonusLabel = GetStatBonusValueLabelByType(type);
         if (bonusLabel != null)
         {
-            bonusLabel._label.text = "[" + ((newValue >= 0) ? "+" : "") + newValue + "]";
-            bonusLabel._label.color = GetAppropriateBonusColorByTypeAndValue(type, newValue);
+            int bonusValue = PlayerFastAccess._CharacterStats.GetPassiveBonusOfType(type);
+            foreach (TMP_Text text in bonusLabel._labels)
+            {
+                text.text = bonusValue.ToString();
+                text.text = "[" + ((bonusValue >= 0) ? "+" : "") + bonusValue + "]";
+                text.color = GetAppropriateBonusColorByTypeAndValue(type, bonusValue);
+            }
+        }
+        if (type == EPassiveStatType.Vitality)
+        {
+            healthGauge.setMaxValue(newValue);
         }
     }
 
@@ -153,5 +165,5 @@ public class PlayerStatsUI : MonoBehaviour
 public class StatValueLabel
 {
     public EPassiveStatType _type;
-    public TMP_Text _label;
+    public TMP_Text[] _labels;
 }

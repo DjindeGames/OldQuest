@@ -32,6 +32,12 @@ public class TemplateClass : MonoBehaviour
 
     #endregion
 
+    #region Protected Methods
+
+
+
+    #endregion
+
     #region Public Methods
 
 

@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: An iron dagger.
   rarity: 2
-  name: Iron Dagger
+  label: 
   details: Short, rusty, useless...
   skin: {fileID: 4228643790387667576, guid: ddaf66dad70d17c4d8a9376f22213865, type: 3}
   slots: 0200000003000000
-  stats:
-  - type: 1
+  _passiveBonuses:
+  - type: 3
     value: 1
+  _activeBonuses: []

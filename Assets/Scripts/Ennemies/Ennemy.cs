@@ -8,16 +8,24 @@ public class Ennemy : MonoBehaviour
     private EnnemyInventoryItem[] inventoryContent;
     [Header("References")]
     [SerializeField]
-    private EnnemyEquipmentSlot[] equipmentSlots;
-    [SerializeField]
     private GameObject corpse;
+
+    private EquipmentHolder _equipmentHolder;
 
     public delegate void ennemyDeath();
     public event ennemyDeath onEnnemyDeath;
 
     private void Start()
     {
-        equipItems();
+        _equipmentHolder = GetComponent<EquipmentHolder>();
+        if (_equipmentHolder != null)
+        {
+            equipItems();
+        }
+        else
+        {
+            Utils.LogWarning(this, "No EquipmentHolder on " + name);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -37,38 +45,11 @@ public class Ennemy : MonoBehaviour
     {
         foreach (EnnemyInventoryItem item in inventoryContent)
         {
-            if (item._equipped && Utils.TryCast<Equipment>(item.item, out Equipment equipment))
+            if (item._equipped && item._applyBonuses && Utils.TryCast(item.item.item, out Equipment equipment))
             {
-                equipItem(equipment);
+                _equipmentHolder.TryToEquip(item.item);
             }
         }
-    }
-
-    private void equipItem(Equipment equipment)
-    {
-        foreach(EGearSlotType slotType in equipment.slots)
-        {
-            EnnemyEquipmentSlot slot = getSlotByType(slotType);
-            if (slot.parent.childCount == 0)
-            {
-                Instantiate(equipment.skin, slot.parent);
-                break;
-            }
-        }
-    }
-
-    private EnnemyEquipmentSlot getSlotByType(EGearSlotType type)
-    {
-        EnnemyEquipmentSlot slot = null;
-        foreach (EnnemyEquipmentSlot equipmentSlot in equipmentSlots)
-        {
-            if (equipmentSlot.type == type)
-            {
-                slot = equipmentSlot;
-                break;
-            }
-        }
-        return slot;
     }
 
     public void onDeath()
@@ -94,16 +75,13 @@ public class Ennemy : MonoBehaviour
         {
             if (Random.Range(1, 101) <= inventoryItem.dropRate)
             {
-                if (Utils.TryGetLootablePrefabFromItem(inventoryItem.item, out GameObject prefab))
+                Lootable lootable = inventoryItem.item;
+                if (lootable)
                 {
-                    Lootable lootable = prefab.GetComponent<Lootable>();
-                    if (lootable)
-                    {
-                        loots.Add(lootable.item);
-                        GameObject instantiated = Instantiate(prefab, transform.position, Quaternion.identity);
-                        Destroy(instantiated.GetComponent<StateSave>());
-                        SaveManager.Instance.addSpawnedItem(instantiated);
-                    }
+                    loots.Add(lootable.item);
+                    GameObject instantiated = Instantiate(lootable.gameObject, transform.position, Quaternion.identity);
+                    Destroy(instantiated.GetComponent<StateSave>());
+                    SaveManager.Instance.addSpawnedItem(instantiated);
                 }
             }
         }
@@ -121,16 +99,9 @@ public class Ennemy : MonoBehaviour
 [System.Serializable]
 public class EnnemyInventoryItem
 {
-    public Item item;
+    public Lootable item;
     public bool _equipped = true;
     public bool _applyBonuses = true;
     [RangeAttribute(0, 100)]
     public int dropRate;
-}
-
-[System.Serializable]
-public class EnnemyEquipmentSlot
-{
-    public EGearSlotType type;
-    public Transform parent;
 }

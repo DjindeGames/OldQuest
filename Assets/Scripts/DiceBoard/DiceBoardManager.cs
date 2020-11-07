@@ -420,7 +420,7 @@ public class ThrowAction
         switch(actionType)
         {
             case (EThrowActionType.PlayerHit):
-                minimumValueNeeded = PlayerStatsManager._Instance._PlayerStats.GetPassiveStatOfType(EPassiveStatType.ScoreToHit);
+                minimumValueNeeded = PlayerFastAccess._CharacterStats.GetPassiveStatOfType(EPassiveStatType.ScoreToHit);
                 break;
             case (EThrowActionType.PlayerWound):
                 minimumValueNeeded = CombatManager.Instance.getScoreToWoundCurrentEnnemy();

@@ -76,7 +76,7 @@ public class DiceActionManager : MonoBehaviour
         {
             case (EThrowActionType.HealingPotion):
                 ScreenManager.Instance.switchToPreviousScreen();
-                PlayerStatsManager._Instance._PlayerStats.AddHealthPointsModifier(bufferedCompletedAction.result);
+                PlayerFastAccess._CharacterStats.AddHealthPointsModifier(bufferedCompletedAction.result);
                 SoundManager.Instance.playSFX(ESFXType.DrinkPotion);
                 break;
             default:

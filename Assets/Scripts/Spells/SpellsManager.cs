@@ -116,11 +116,11 @@ public class SpellsManager : MonoBehaviour
     {
         foreach(ActiveBonus bonus in spell._activeBonuses)
         {
-            PlayerStatsManager._Instance._PlayerStats.RegisterActiveBonus(bonus);
+            PlayerFastAccess._CharacterStats.RegisterActiveBonus(bonus);
         }
         foreach (PassiveBonus bonus in spell._passiveBonuses)
         {
-            PlayerStatsManager._Instance._PlayerStats.RegisterPassiveBonus(bonus);
+            PlayerFastAccess._CharacterStats.RegisterPassiveBonus(bonus);
         }
     }
 
@@ -128,11 +128,11 @@ public class SpellsManager : MonoBehaviour
     {
         foreach (ActiveBonus bonus in spell._activeBonuses)
         {
-            PlayerStatsManager._Instance._PlayerStats.UnregisterActiveBonus(bonus);
+            PlayerFastAccess._CharacterStats.UnregisterActiveBonus(bonus);
         }
         foreach (PassiveBonus bonus in spell._passiveBonuses)
         {
-            PlayerStatsManager._Instance._PlayerStats.UnregisterPassiveBonus(bonus);
+            PlayerFastAccess._CharacterStats.UnregisterPassiveBonus(bonus);
         }
     }
 }

@@ -61,7 +61,7 @@ public class CharacterStats : MonoBehaviour
     {
         int newValue = _baseCharacterStats.GetStat(type) + amount;
         _baseCharacterStats.SetStat(type, newValue);
-        OnPassiveStatUpdated(type, GetPassiveStatOfType(type));
+        OnPassiveStatUpdated?.Invoke(type, GetPassiveStatOfType(type));
     }
 
     public int GetCurrentHealth()
@@ -154,13 +154,13 @@ public class CharacterStats : MonoBehaviour
     public void RegisterPassiveBonus(PassiveBonus bonus)
     {
         _registeredPassiveBonuses.Add(bonus);
-        OnPassiveStatUpdated(bonus.type, GetPassiveStatOfType(bonus.type));
+        OnPassiveStatUpdated?.Invoke(bonus.type, GetPassiveStatOfType(bonus.type));
     }
 
     public void UnregisterPassiveBonus(PassiveBonus bonus)
     {
         _registeredPassiveBonuses.Remove(bonus);
-        OnPassiveStatUpdated(bonus.type, GetPassiveStatOfType(bonus.type));
+        OnPassiveStatUpdated?.Invoke(bonus.type, GetPassiveStatOfType(bonus.type));
     }
 
     public void RegisterActiveBonus(ActiveBonus bonus)
@@ -169,7 +169,7 @@ public class CharacterStats : MonoBehaviour
         _registeredActiveBonuses.Add(bonus);
         if (!hadBonus)
         {
-            OnActiveBonusUpdatedEvent(bonus.type, true);
+            OnActiveBonusUpdatedEvent?.Invoke(bonus.type, true);
         }
     }
 
@@ -179,7 +179,7 @@ public class CharacterStats : MonoBehaviour
         _registeredActiveBonuses.Remove(bonus);
         if (HasActiveBonusOfType(bonus.type) == false)
         {
-            OnActiveBonusUpdatedEvent(bonus.type, false);
+            OnActiveBonusUpdatedEvent?.Invoke(bonus.type, false);
         }
     }
 

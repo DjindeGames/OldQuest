@@ -14,10 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: An iron sword.
   rarity: 4
-  name: Iron Sword
+  label: 
   details: Rusty and not very sharp, could you even kill something with that?
   skin: {fileID: 6341694693462103450, guid: ce88dfd885071344a8e5a97c9b92d824, type: 3}
   slots: 0200000003000000
-  stats:
-  - type: 1
+  _passiveBonuses:
+  - type: 3
     value: 2
+  - type: 4
+    value: -1
+  _activeBonuses: []

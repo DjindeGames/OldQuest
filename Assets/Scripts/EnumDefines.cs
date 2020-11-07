@@ -68,6 +68,13 @@ public enum EItemType
     Spell
 }
 
+public enum EEquipResult
+{
+    Equipped,
+    Unequipped,
+    Failed
+}
+
 public enum ELootableOutlineType
 {
     Lightable,

@@ -13,10 +13,6 @@ public class InventoryManager : MonoBehaviour
     private GameObject inventoryTable;
     [SerializeField]
     private InventoryKey[] keys;
-    [SerializeField]
-    private EquipmentSlot[] equipmentSlots;
-    [SerializeField]
-    private PuppetSlot[] puppetSlots;
 
     private int goldAmount = 0;
     private int oilAmount = 0;
@@ -119,7 +115,8 @@ public class InventoryManager : MonoBehaviour
 
     public void removeItem(InventoryItem inventoryItem, bool destroy = false)
     {
-        if (isAlreadyEquipped(inventoryItem, out EquipmentSlot slot))
+
+        if (/*isAlreadyEquipped(inventoryItem, out EquipmentSlot slot)*/true)
         {
             //writeEquipmentLog(-2, slot.type, inventoryItem.LinkedItem.name);
             MainUI.Instance.writeLog("Cannot remove the " + inventoryItem.LinkedItem.label + " from inventory: unequip it first.");
@@ -149,6 +146,13 @@ public class InventoryManager : MonoBehaviour
                 Destroy(item);
             }
         }
+    }
+
+    private void updateEquipmentState(GameObject reference, bool value)
+    {
+        Tuple<GameObject, bool> tuple = retrieveItem(reference);
+        inventoryContent.Remove(tuple);
+        inventoryContent.Add(new Tuple<GameObject, bool>(reference, value));
     }
 
     public void addFileToArchives(ReadableKey key, bool withSelection = true)
@@ -226,56 +230,11 @@ public class InventoryManager : MonoBehaviour
         switch (item.Type)
         {
             case (EItemType.Equipment):
-                Equipment equipment = ((Equipment)item);
-                StateSave stateSave = inventoryItem.GetComponent<StateSave>();
-                for (int i = 0; i < equipment.slots.Length; i++)
-                {
-                    bool slotsRemaining = (i < equipment.slots.Length - 1) ? true : false;
-                    
-                    if (isAlreadyEquipped(inventoryItem, out EquipmentSlot equippedSlot))
-                    {
-                        equippedSlot.unequip();
-                        PuppetSlot pupperSlot = getPuppetSlot(equippedSlot.type);
-                        Destroy(equippedSlot.parent.GetChild(0).gameObject);
-                        Destroy(pupperSlot.parent.GetChild(0).gameObject);
-                        updateEquipmentState(inventoryItem.gameObject, false);
-                        updateEquipmentBonuses(equipment, false);
-                        if (!restored)
-                        {
-                            writeEquipmentLog(0, equippedSlot.type, inventoryItem.LinkedItem.label);
-                            SoundManager.Instance.playSFX(ESFXType.ItemEquipped);
-                        }
-                        break;
-                    }
-                    else
-                    {
-                        EquipmentSlot associatedSlot = getEquipmentSlot(((Equipment)item).slots[i]);
-                        if (!associatedSlot.isUsed)
-                        {
-                            associatedSlot.equip(inventoryItem);
-                            GameObject skin = equipment.skin;
-                            PuppetSlot pupperSlot = getPuppetSlot(associatedSlot.type);
-                            Instantiate(skin, associatedSlot.parent);
-                            Instantiate(skin, pupperSlot.parent);
-                            updateEquipmentState(inventoryItem.gameObject, true);
-                            updateEquipmentBonuses(equipment, true);
-                            if (!restored)
-                            {
-                                writeEquipmentLog(1, equipment.slots[i], inventoryItem.LinkedItem.label);
-                                SoundManager.Instance.playSFX(ESFXType.ItemEquipped);
-                            }
-                            break;
-                        }
-                        else if (!slotsRemaining)
-                        {
-                            writeEquipmentLog(-1, equipment.slots[i], inventoryItem.LinkedItem.label);
-                        }
-                    }
-                }
+                UseEquipment(inventoryItem);
                 break;
             case (EItemType.Potion):
                 Potion potion = (Potion)item;
-                if (potion.type == EPotionType.Health && PlayerStatsManager._Instance._PlayerStats._HasFullHealth)
+                if (potion.type == EPotionType.Health && PlayerFastAccess._CharacterStats._HasFullHealth)
                 {
                     MainUI.Instance.writeLog("It would be a waste!");
                 }
@@ -288,29 +247,18 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    private void updateEquipmentBonuses(Equipment equipment, bool apply)
+    private void UseEquipment(InventoryItem item)
     {
-        foreach(PassiveBonus passiveBonus in equipment._passiveBonuses)
+        switch (PlayerFastAccess._EquipmentHolder.TryToEquip(item.GetComponent<Lootable>()))
         {
-            if (apply)
-            {
-                PlayerStatsManager._Instance._PlayerStats.RegisterPassiveBonus(passiveBonus);
-            }
-            else
-            {
-                PlayerStatsManager._Instance._PlayerStats.UnregisterPassiveBonus(passiveBonus);
-            }
-        }
-        foreach (ActiveBonus activeBonus in equipment._activeBonuses)
-        {
-            if (apply)
-            {
-                PlayerStatsManager._Instance._PlayerStats.RegisterActiveBonus(activeBonus);
-            }
-            else
-            {
-                PlayerStatsManager._Instance._PlayerStats.UnregisterActiveBonus(activeBonus);
-            }
+            case (EEquipResult.Equipped):
+                updateEquipmentState(item.gameObject, true);
+                break;
+            case (EEquipResult.Unequipped):
+                updateEquipmentState(item.gameObject, false);
+                break;
+            case (EEquipResult.Failed):
+                break;
         }
     }
 
@@ -348,12 +296,7 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    private void updateEquipmentState(GameObject reference, bool value)
-    {
-        Tuple<GameObject, bool> tuple = retrieveItem(reference);
-        inventoryContent.Remove(tuple);
-        inventoryContent.Add(new Tuple<GameObject, bool>(reference, value));
-    }
+    
 
     private Tuple<GameObject, bool> retrieveItem(GameObject reference)
     {
@@ -369,49 +312,7 @@ public class InventoryManager : MonoBehaviour
         return tuple;
     }
 
-    private EquipmentSlot getEquipmentSlot(EGearSlotType which)
-    {
-        EquipmentSlot slot = null;
-        for (int i = 0; i < equipmentSlots.Length; i++)
-        {
-            if (equipmentSlots[i].type == which)
-            {
-                slot = equipmentSlots[i];
-                break;
-            }
-        }
-        return slot;
-    }
-
-    private PuppetSlot getPuppetSlot(EGearSlotType which)
-    {
-        PuppetSlot slot = null;
-        for (int i = 0; i < puppetSlots.Length; i++)
-        {
-            if (equipmentSlots[i].type == which)
-            {
-                slot = puppetSlots[i];
-                break;
-            }
-        }
-        return slot;
-    }
-
-    private bool isAlreadyEquipped(InventoryItem item, out EquipmentSlot associatedSlot)
-    {
-        bool alreadyEquipped = false;
-        associatedSlot = null;
-        for (int i = 0; i < equipmentSlots.Length; i++)
-        {
-            if (equipmentSlots[i].isUsed && equipmentSlots[i].currentlyEquipped == item)
-            {
-                alreadyEquipped = true;
-                associatedSlot = equipmentSlots[i];
-                break;
-            }
-        }
-        return alreadyEquipped;
-    }
+    
 
     public InventoryKey getKeyByMaterial(KeyMaterial material)
     {
@@ -436,33 +337,7 @@ public class InventoryManager : MonoBehaviour
     }
 }
 
-[System.Serializable]
-public class EquipmentSlot
-{
-    public EGearSlotType type;
-    public Transform parent;
-    public bool isUsed = false;
-    public InventoryItem currentlyEquipped;
 
-    public void equip(InventoryItem equipped)
-    {
-        isUsed = true;
-        currentlyEquipped = equipped;
-    }
-
-    public void unequip()
-    {
-        isUsed = false;
-        currentlyEquipped = null;
-    }
-}
-
-[System.Serializable]
-public class PuppetSlot
-{
-    public EGearSlotType type;
-    public Transform parent;
-}
 
 [System.Serializable]
 public class InventoryKey
