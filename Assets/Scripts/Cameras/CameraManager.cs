@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Djinde.Quest;
 
 public class CameraManager : MonoBehaviour
 {

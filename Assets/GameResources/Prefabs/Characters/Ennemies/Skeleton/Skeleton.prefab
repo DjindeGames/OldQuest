@@ -276,7 +276,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4170d48a388cc624f8ece5b27fcaf5e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 2419925448108191098}
   inventoryContent:
   - item: {fileID: 4144301845429613791, guid: af28ad3951cb1644699720c916dad6b6, type: 3}
     _equipped: 1
@@ -321,7 +320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _baseCharacterStats:
-    _healthPoints: 1
+    _healthPoints: 3
     _vitality: 3
     _strength: 3
     _endurance: 3

@@ -1,47 +1,52 @@
-﻿public class SelectableListItem_Spell : SelectableListItem
+﻿using Djinde.UI;
+
+namespace Djinde.Quest
 {
-    #region Events
+    public class SelectableListItem_Spell : SelectableListItem
+    {
+        #region Events
 
 
 
-    #endregion
+        #endregion
 
-    #region Exposed Attributes
-
-
-
-    #endregion
-
-    #region Attributes
+        #region Exposed Attributes
 
 
 
-    #endregion
+        #endregion
 
-    #region MonoBehaviour Methods
-
-
-
-    #endregion
-
-    #region Private Methods
+        #region Attributes
 
 
 
-    #endregion
+        #endregion
 
-    #region Public Methods
+        #region MonoBehaviour Methods
 
 
 
-    #endregion
-}
+        #endregion
 
-public class SelectableListItem_SpellData : SelectableListItemData
-{
-    #region Attributes
+        #region Private Methods
 
-    public ESpellType _spellType;
 
-    #endregion
+
+        #endregion
+
+        #region Public Methods
+
+
+
+        #endregion
+    }
+
+    public class SelectableListItem_SpellData : SelectableListItemData
+    {
+        #region Attributes
+
+        public ESpellType _spellType;
+
+        #endregion
+    }
 }

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Djinde.Quest;
 
 public class SoundManager : MonoBehaviour
 {

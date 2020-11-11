@@ -1,31 +1,34 @@
 ﻿using UnityEngine;
 
-public class DiceFace : MonoBehaviour
+namespace Djinde.Quest
 {
-    [SerializeField]
-    [Header("Settings")]
-    private EDiceValue value;
-
-    private Dice dice;
-
-    void Awake()
+    public class DiceFace : MonoBehaviour
     {
-        dice = transform.parent.GetComponent<Dice>();
-    }
+        [SerializeField]
+        [Header("Settings")]
+        private EDiceValue value;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == Constants.DiceBoardTag)
+        private Dice dice;
+
+        void Awake()
         {
-            dice.notifyFaceDown(value);
+            dice = transform.parent.GetComponent<Dice>();
         }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == Constants.DiceBoardTag)
+        private void OnTriggerEnter(Collider other)
         {
-            dice.notifyFaceUp(value);
+            if (other.tag == Constants.DiceBoardTag)
+            {
+                dice.notifyFaceDown(value);
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.tag == Constants.DiceBoardTag)
+            {
+                dice.notifyFaceUp(value);
+            }
         }
     }
 }

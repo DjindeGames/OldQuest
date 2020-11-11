@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using Djinde.Utils;
+using Djinde.Quest;
 
 public class EquipmentHolder : MonoBehaviour
 {
@@ -41,7 +41,7 @@ public class EquipmentHolder : MonoBehaviour
         _characterStats = GetComponent<CharacterStats>();
         if (_characterStats == null)
         {
-            Utils.LogError(this, "No CharacterStats Component on GameObject " + name);
+            Tools.LogError(this, "No CharacterStats Component on GameObject " + name);
         }
     }
 
@@ -87,7 +87,7 @@ public class EquipmentHolder : MonoBehaviour
     {
         bool alreadyEquipped = false;
         associatedSlot = null;
-        if (Utils.TryCast(item.item, out Equipment equipment))
+        if (Tools.TryCast(item.item, out Equipment equipment))
         {
             foreach (EGearSlotType slotType in equipment.slots)
             {
@@ -129,7 +129,7 @@ public class EquipmentHolder : MonoBehaviour
 
     private void Equip(Lootable item, EquipmentSlot slot)
     {
-        if (Utils.TryCast(item.item, out Equipment equipment))
+        if (Tools.TryCast(item.item, out Equipment equipment))
         {
             PuppetSlot puppetSlot = GetPuppetSlot(slot);
             slot.Equip(item);
@@ -145,7 +145,7 @@ public class EquipmentHolder : MonoBehaviour
 
     private void Unequip(Lootable item, EquipmentSlot slot)
     {
-        if (Utils.TryCast(item.item, out Equipment equipment))
+        if (Tools.TryCast(item.item, out Equipment equipment))
         {
             PuppetSlot puppetSlot = GetPuppetSlot(slot);
             slot.Unequip();
@@ -192,7 +192,7 @@ public class EquipmentHolder : MonoBehaviour
 
     public EEquipResult TryToEquip(Lootable item, bool restoreFromSaveFile = false)
     {
-        if (Utils.TryCast(item.item, out Equipment equipment))
+        if (Tools.TryCast(item.item, out Equipment equipment))
         {
             foreach (EGearSlotType slotType in equipment.slots)
             {

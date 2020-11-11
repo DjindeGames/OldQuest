@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 
-public class Archives : MonoBehaviour
+namespace Djinde.Quest
 {
-    void OnMouseOver()
+    public class Archives : MonoBehaviour
     {
-        if (Input.GetMouseButtonDown(0))
+        void OnMouseOver()
         {
-            ScreenManager.Instance.switchScreen(EScreenType.Archives);
+            if (Input.GetMouseButtonDown(0))
+            {
+                ScreenManager.Instance.switchScreen(EScreenType.Archives);
+            }
         }
     }
 }

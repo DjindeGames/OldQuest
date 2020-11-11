@@ -1,85 +1,88 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Chest : Highlightable
+namespace Djinde.Quest
 {
-    [Header("References")]
-    [SerializeField]
-    GameObject openedChestPrefab;
-    [SerializeField]
-    LootByScore[] loots;
-    [Header("Parameters")]
-    [SerializeField]
-    float baseLootVerticalOffset = 0.3f;
-    [SerializeField]
-    float iterativeLootVerticalOffset = 0.3f;
-
-
-    // Start is called before the first frame update
-    override protected void Start()
+    public class Chest : Highlightable
     {
-        base.Start();
-    }
+        [Header("References")]
+        [SerializeField]
+        GameObject openedChestPrefab;
+        [SerializeField]
+        LootByScore[] loots;
+        [Header("Parameters")]
+        [SerializeField]
+        float baseLootVerticalOffset = 0.3f;
+        [SerializeField]
+        float iterativeLootVerticalOffset = 0.3f;
 
-    protected override void activate()
-    {
-        DiceActionManager.Instance.performThrowAction(EThrowActionType.LootChest, 6, 0);
-        DiceActionManager.Instance.onActionPerformed += onThrowComplete;
-    }
 
-    private void onThrowComplete(EThrowActionType actionType, int score)
-    {
-        if (actionType == EThrowActionType.LootChest)
+        // Start is called before the first frame update
+        override protected void Start()
         {
-            DiceActionManager.Instance.onActionPerformed -= onThrowComplete;
-            StateSave stateSave = GetComponent<StateSave>();
-            if (stateSave)
-            {
-                SaveManager.Instance.addOpenedChest(stateSave.id);
-            }
-            openChest(score);
+            base.Start();
         }
-    }
 
-    private void dispatchLoot(int score)
-    {
-        List<Item> lootedItems = new List<Item>();
-        for (int i = 0; i < loots.Length; i++)
+        protected override void activate()
         {
-            if (loots[i].requiredScore <= score)
+            DiceActionManager.Instance.performThrowAction(EThrowActionType.LootChest, 6, 0);
+            DiceActionManager.Instance.onActionPerformed += onThrowComplete;
+        }
+
+        private void onThrowComplete(EThrowActionType actionType, int score)
+        {
+            if (actionType == EThrowActionType.LootChest)
             {
-                Vector3 instancePosition = new Vector3(transform.position.x, transform.position.y + baseLootVerticalOffset, transform.position.z);
-                GameObject instantiated = Instantiate(loots[i].loot, instancePosition, Quaternion.identity);
-                Destroy(instantiated.GetComponent<StateSave>());
-                SaveManager.Instance.addSpawnedItem(instantiated);
-                baseLootVerticalOffset += iterativeLootVerticalOffset;
-                lootedItems.Add(instantiated.GetComponent<Lootable>().item);
+                DiceActionManager.Instance.onActionPerformed -= onThrowComplete;
+                StateSave stateSave = GetComponent<StateSave>();
+                if (stateSave)
+                {
+                    SaveManager.Instance.addOpenedChest(stateSave.id);
+                }
+                openChest(score);
             }
         }
-        DiceBoardUI.Instance.showLootResults(lootedItems);
-        SoundManager.Instance.playSFX(ESFXType.OpenedChest);
-    }
 
-    private void openChest(int score, bool forced = false)
-    {
-        if (!forced)
+        private void dispatchLoot(int score)
         {
-            dispatchLoot(score);
+            List<Item> lootedItems = new List<Item>();
+            for (int i = 0; i < loots.Length; i++)
+            {
+                if (loots[i].requiredScore <= score)
+                {
+                    Vector3 instancePosition = new Vector3(transform.position.x, transform.position.y + baseLootVerticalOffset, transform.position.z);
+                    GameObject instantiated = Instantiate(loots[i].loot, instancePosition, Quaternion.identity);
+                    Destroy(instantiated.GetComponent<StateSave>());
+                    SaveManager.Instance.addSpawnedItem(instantiated);
+                    baseLootVerticalOffset += iterativeLootVerticalOffset;
+                    lootedItems.Add(instantiated.GetComponent<Lootable>().item);
+                }
+            }
+            DiceBoardUI.Instance.showLootResults(lootedItems);
+            SoundManager.Instance.playSFX(ESFXType.OpenedChest);
         }
-        Instantiate(openedChestPrefab, transform.position, transform.rotation);
-        Destroy(gameObject);
+
+        private void openChest(int score, bool forced = false)
+        {
+            if (!forced)
+            {
+                dispatchLoot(score);
+            }
+            Instantiate(openedChestPrefab, transform.position, transform.rotation);
+            Destroy(gameObject);
+        }
+
+        public void forceOpen()
+        {
+            openChest(-1, true);
+        }
     }
 
-    public void forceOpen()
+    [System.Serializable]
+    public class LootByScore
     {
-        openChest(-1, true);
+        [RangeAttribute(6, 36)]
+        public int requiredScore;
+        public GameObject loot;
     }
-}
-
-[System.Serializable]
-public class LootByScore
-{
-    [RangeAttribute(6,36)]
-    public int requiredScore;
-    public GameObject loot;
 }

@@ -14,9 +14,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/GameResources/Scenes/IntroMovie.unity
     guid: f2cc9230f4ffa5643bcf762b1a4472fd
-  - enabled: 0
-    path: Assets/Scenes/Stage1.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/GameResources/Scenes/Chapter1.unity
     guid: ec5081742ad61f24387a426f72e5944a

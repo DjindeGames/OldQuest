@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Usable : Item
+namespace Djinde.Quest
 {
-    public string label;
-    public string details;
+    public class Usable : Item
+    {
+        public string label;
+        public string details;
+    }
 }

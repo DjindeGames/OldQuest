@@ -1,50 +1,54 @@
 ﻿using TMPro;
 using UnityEngine;
+using Djinde.UI;
 
-public class SelectableListItem_Archive : SelectableListItem
+namespace Djinde.Quest
 {
-    #region Events
+    public class SelectableListItem_Archive : SelectableListItem
+    {
+        #region Events
 
 
 
-    #endregion
+        #endregion
 
-    #region Exposed Attributes
-
-
-
-    #endregion
-
-    #region Attributes
+        #region Exposed Attributes
 
 
 
-    #endregion
+        #endregion
 
-    #region MonoBehaviour Methods
-
-
-
-    #endregion
-
-    #region Private Methods
+        #region Attributes
 
 
 
-    #endregion
+        #endregion
 
-    #region Public Methods
+        #region MonoBehaviour Methods
 
 
 
-    #endregion
-}
+        #endregion
 
-public class SelectableListItem_ArchiveData : SelectableListItemData
-{
-    #region Attributes
+        #region Private Methods
 
-    public ReadableKey _readableKey;
 
-    #endregion
+
+        #endregion
+
+        #region Public Methods
+
+
+
+        #endregion
+    }
+
+    public class SelectableListItem_ArchiveData : SelectableListItemData
+    {
+        #region Attributes
+
+        public ReadableKey _readableKey;
+
+        #endregion
+    }
 }

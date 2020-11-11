@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu]
-public class Readable : Item
+namespace Djinde.Quest
 {
-    public ReadableKey contentKey;
+    [CreateAssetMenu]
+    public class Readable : Item
+    {
+        public ReadableKey contentKey;
+    }
 }

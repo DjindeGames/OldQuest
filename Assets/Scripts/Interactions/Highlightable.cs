@@ -1,88 +1,91 @@
 ﻿using UnityEngine;
 
-public abstract class Highlightable : Interactable
+namespace Djinde.Quest
 {
-    [Header("Settings")]
-    [SerializeField]
-    private ELootableOutlineType outlineType;
-
-    private Material[] baseMaterials;
-    private Material[] outlinedMaterials;
-    private Renderer renderer;
-
-    bool outline = true;
-
-    protected bool OutlineEnabled
+    public abstract class Highlightable : Interactable
     {
-        get
+        [Header("Settings")]
+        [SerializeField]
+        private ELootableOutlineType outlineType;
+
+        private Material[] baseMaterials;
+        private Material[] outlinedMaterials;
+        private Renderer renderer;
+
+        bool outline = true;
+
+        protected bool OutlineEnabled
         {
-            return outline;
-        }
-        set
-        {
-            outline = value;
-            if (!outline)
+            get
             {
-                toggleOutline(false);
+                return outline;
+            }
+            set
+            {
+                outline = value;
+                if (!outline)
+                {
+                    toggleOutline(false);
+                }
             }
         }
-    }
 
-    protected virtual void Awake()
-    {
-        renderer = GetComponent<Renderer>();
-        baseMaterials = renderer.materials;
-    }
-
-    protected virtual void Start()
-    {
-        initializeOutlinedMaterials();
-    }
-
-    protected override void OnMouseOver()
-    {
-        base.OnMouseOver();
-    }
-
-    protected override void mouseEntered()
-    {
-        if (!OutlineEnabled)
+        protected virtual void Awake()
         {
-            return;
+            renderer = GetComponent<Renderer>();
+            baseMaterials = renderer.materials;
         }
-        toggleOutline(true);
-    }
 
-    protected override void mouseExited()
-    {
-        if (!OutlineEnabled)
+        protected virtual void Start()
         {
-            return;
+            initializeOutlinedMaterials();
         }
-        toggleOutline(false);
-    }
 
-    protected void toggleOutline(bool on)
-    {
-        if (on)
+        protected override void OnMouseOver()
         {
-            renderer.materials = outlinedMaterials;
+            base.OnMouseOver();
         }
-        else
-        {
-            renderer.materials = baseMaterials;
-        }
-    }
 
-    private void initializeOutlinedMaterials()
-    {
-        outlinedMaterials = new Material[baseMaterials.Length];
-        Material baseOutline = GameConstants.Instance.getLootableOutlineMaterialByType(outlineType);
-        for (int i = 0; i < outlinedMaterials.Length; i++)
+        protected override void mouseEntered()
         {
-            Material material = new Material(baseOutline);
-            material.color = baseMaterials[i].color;
-            outlinedMaterials[i] = material;
+            if (!OutlineEnabled)
+            {
+                return;
+            }
+            toggleOutline(true);
+        }
+
+        protected override void mouseExited()
+        {
+            if (!OutlineEnabled)
+            {
+                return;
+            }
+            toggleOutline(false);
+        }
+
+        protected void toggleOutline(bool on)
+        {
+            if (on)
+            {
+                renderer.materials = outlinedMaterials;
+            }
+            else
+            {
+                renderer.materials = baseMaterials;
+            }
+        }
+
+        private void initializeOutlinedMaterials()
+        {
+            outlinedMaterials = new Material[baseMaterials.Length];
+            Material baseOutline = GameConstants.Instance.getLootableOutlineMaterialByType(outlineType);
+            for (int i = 0; i < outlinedMaterials.Length; i++)
+            {
+                Material material = new Material(baseOutline);
+                material.color = baseMaterials[i].color;
+                outlinedMaterials[i] = material;
+            }
         }
     }
 }

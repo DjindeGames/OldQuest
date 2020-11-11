@@ -1,93 +1,96 @@
 ﻿using UnityEngine;
 
-public abstract class Interactable : MonoBehaviour
+namespace Djinde.Quest
 {
-    [SerializeField]
-    private EScreenType associatedScreen = EScreenType.Main;
-     
-    private bool enabled = true;
-
-
-    private void Start()
+    public abstract class Interactable : MonoBehaviour
     {
-        ScreenManager.Instance.screenHasChanged += onScreenChanged;
-    }
+        [SerializeField]
+        private EScreenType associatedScreen = EScreenType.Main;
 
-    protected bool closeEnough()
-    {
-        bool closeEnough = getInteractionDistance() < GameConstants.Instance.interactionRadius;
-        if (!closeEnough)
+        private bool enabled = true;
+
+
+        private void Start()
         {
-            MainUI.Instance.writeLog("That's too far...");
+            ScreenManager.Instance.screenHasChanged += onScreenChanged;
         }
-        return closeEnough;
-    }
 
-    protected virtual void OnMouseOver()
-    {
-        if (!enabled) return;
-        if (Input.GetMouseButtonDown(0))
+        protected bool closeEnough()
         {
-            PlayerController.Instance.cancelMove();
-            if (closeEnough() && ScreenManager.Instance.ActiveScreen == associatedScreen)
+            bool closeEnough = getInteractionDistance() < GameConstants.Instance.interactionRadius;
+            if (!closeEnough)
             {
-                activate();
+                MainUI.Instance.writeLog("That's too far...");
+            }
+            return closeEnough;
+        }
+
+        protected virtual void OnMouseOver()
+        {
+            if (!enabled) return;
+            if (Input.GetMouseButtonDown(0))
+            {
+                PlayerController.Instance.cancelMove();
+                if (closeEnough() && ScreenManager.Instance.ActiveScreen == associatedScreen)
+                {
+                    activate();
+                }
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                PlayerController.Instance.cancelMove();
+                if (closeEnough() && ScreenManager.Instance.ActiveScreen == associatedScreen)
+                {
+                    deactivate();
+                }
             }
         }
-        else if (Input.GetMouseButtonUp(0))
+
+        protected virtual float getInteractionDistance()
         {
-            PlayerController.Instance.cancelMove();
-            if (closeEnough() && ScreenManager.Instance.ActiveScreen == associatedScreen)
+            return Vector3.Distance(transform.position, PlayerController.Instance.interactionsOrigin.position); ;
+        }
+
+        protected virtual void OnMouseEnter()
+        {
+            if (!enabled) return;
+            if (ScreenManager.Instance.ActiveScreen == associatedScreen)
             {
-                deactivate();
+                mouseEntered();
             }
         }
-    }
 
-    protected virtual float getInteractionDistance()
-    {
-        return Vector3.Distance(transform.position, PlayerController.Instance.interactionsOrigin.position); ;
-    }
-
-    protected virtual void OnMouseEnter()
-    {
-        if (!enabled) return;
-        if (ScreenManager.Instance.ActiveScreen == associatedScreen)
+        protected virtual void OnMouseExit()
         {
-            mouseEntered();
+            if (!enabled) return;
+            if (ScreenManager.Instance.ActiveScreen == associatedScreen)
+            {
+                mouseExited();
+            }
         }
-    }
 
-    protected virtual void OnMouseExit()
-    {
-        if (!enabled) return;
-        if (ScreenManager.Instance.ActiveScreen == associatedScreen)
+        private void onScreenChanged(EScreenType which)
         {
-            mouseExited();
+            if (which != associatedScreen)
+            {
+                disable();
+            }
+            else
+            {
+                enable();
+            }
         }
-    }
 
-    private void onScreenChanged(EScreenType which)
-    {
-        if (which != associatedScreen)
+        protected virtual void disable() { enabled = false; }
+        protected virtual void enable() { enabled = true; }
+        protected virtual void activate() { }
+        protected virtual void deactivate() { }
+        protected virtual void mouseEntered() { }
+        protected virtual void mouseExited() { }
+
+        private void OnDestroy()
         {
-            disable();
+            ScreenManager.Instance.screenHasChanged -= onScreenChanged;
         }
-        else
-        {
-            enable();
-        }
-    }
-
-    protected virtual void disable() { enabled = false; }
-    protected virtual void enable() { enabled = true; }
-    protected virtual void activate() { }
-    protected virtual void deactivate() { }
-    protected virtual void mouseEntered() { }
-    protected virtual void mouseExited() { }
-
-    private void OnDestroy()
-    {
-        ScreenManager.Instance.screenHasChanged -= onScreenChanged;
     }
 }

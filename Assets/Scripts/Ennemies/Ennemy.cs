@@ -1,107 +1,154 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-public class Ennemy : MonoBehaviour
+using Djinde.Utils;
+
+namespace Djinde.Quest
 {
-    [Header("Stats")]
-    public CharacterStats stats;
-    [SerializeField]
-    private EnnemyInventoryItem[] inventoryContent;
-    [Header("References")]
-    [SerializeField]
-    private GameObject corpse;
-
-    private EquipmentHolder _equipmentHolder;
-
-    public delegate void ennemyDeath();
-    public event ennemyDeath onEnnemyDeath;
-
-    private void Start()
+    public class Ennemy : MonoBehaviour
     {
-        _equipmentHolder = GetComponent<EquipmentHolder>();
-        if (_equipmentHolder != null)
-        {
-            equipItems();
-        }
-        else
-        {
-            Utils.LogWarning(this, "No EquipmentHolder on " + name);
-        }
-    }
+        #region Events
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            engageCombat();
-        }
-    }
 
-    private void engageCombat()
-    {
-        CombatManager.Instance.startCombat(this);
-    }
 
-    private void equipItems()
-    {
-        foreach (EnnemyInventoryItem item in inventoryContent)
+        #endregion
+
+        #region Exposed Attributes
+
+        [Header("Stats")]
+        [SerializeField]
+        private EnnemyInventoryItem[] inventoryContent;
+        [Header("References")]
+        [SerializeField]
+        private GameObject corpse;
+
+        #endregion
+
+        #region Attributes
+
+        public CharacterStats _Stats
         {
-            if (item._equipped && item._applyBonuses && Utils.TryCast(item.item.item, out Equipment equipment))
+            get
             {
-                _equipmentHolder.TryToEquip(item.item);
+                return _characterStats;
             }
         }
-    }
 
-    public void onDeath()
-    {
-        StateSave stateSave = GetComponent<StateSave>();
-        if (stateSave != null)
+        private EquipmentHolder _equipmentHolder;
+        private CharacterStats _characterStats;
+
+        #endregion
+
+        #region MonoBehaviour Methods
+
+        private void Start()
         {
-            SaveManager.Instance.addKilledEnnemy(stateSave.id);
-        }
-        dispatchLoot();
-    }
-
-    public void forceUnspawn()
-    {
-        spawnCorpse();
-        Destroy(gameObject);
-    }
-
-    private void dispatchLoot()
-    {
-        List<Item> loots = new List<Item>();
-        foreach (EnnemyInventoryItem inventoryItem in inventoryContent)
-        {
-            if (Random.Range(1, 101) <= inventoryItem.dropRate)
+            _equipmentHolder = GetComponent<EquipmentHolder>();
+            _characterStats = GetComponent<CharacterStats>();
+            if (_characterStats == null)
             {
-                Lootable lootable = inventoryItem.item;
-                if (lootable)
+                Tools.LogWarning(this, "No CharacterStats on " + name);
+            }
+            if (_equipmentHolder != null)
+            {
+                equipItems();
+            }
+            else
+            {
+                Tools.LogWarning(this, "No EquipmentHolder on " + name);
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                engageCombat();
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void engageCombat()
+        {
+            CombatManager.Instance.startCombat(this);
+        }
+
+        private void equipItems()
+        {
+            foreach (EnnemyInventoryItem item in inventoryContent)
+            {
+                if (item._equipped && item._applyBonuses && Tools.TryCast(item.item.item, out Equipment equipment))
                 {
-                    loots.Add(lootable.item);
-                    GameObject instantiated = Instantiate(lootable.gameObject, transform.position, Quaternion.identity);
-                    Destroy(instantiated.GetComponent<StateSave>());
-                    SaveManager.Instance.addSpawnedItem(instantiated);
+                    _equipmentHolder.TryToEquip(item.item);
                 }
             }
         }
-        DiceBoardUI.Instance.showLootResults(loots);
-        spawnCorpse();
-        Destroy(gameObject);
-    }
 
-    private void spawnCorpse()
-    {
-        Instantiate(corpse, transform.position, transform.rotation);
-    }
-}
+        private void dispatchLoot()
+        {
+            List<Item> loots = new List<Item>();
+            foreach (EnnemyInventoryItem inventoryItem in inventoryContent)
+            {
+                if (Random.Range(1, 101) <= inventoryItem.dropRate)
+                {
+                    Lootable lootable = inventoryItem.item;
+                    if (lootable)
+                    {
+                        loots.Add(lootable.item);
+                        GameObject instantiated = Instantiate(lootable.gameObject, transform.position, Quaternion.identity);
+                        Destroy(instantiated.GetComponent<StateSave>());
+                        SaveManager.Instance.addSpawnedItem(instantiated);
+                    }
+                }
+            }
+            DiceBoardUI.Instance.showLootResults(loots);
+            spawnCorpse();
+            Destroy(gameObject);
+        }
 
-[System.Serializable]
-public class EnnemyInventoryItem
-{
-    public Lootable item;
-    public bool _equipped = true;
-    public bool _applyBonuses = true;
-    [RangeAttribute(0, 100)]
-    public int dropRate;
+        private void spawnCorpse()
+        {
+            Instantiate(corpse, transform.position, transform.rotation);
+        }
+
+        #endregion
+
+        #region Protected Methods
+
+
+
+        #endregion
+
+        #region Public Methods
+
+        public void onDeath()
+        {
+            StateSave stateSave = GetComponent<StateSave>();
+            if (stateSave != null)
+            {
+                SaveManager.Instance.addKilledEnnemy(stateSave.id);
+            }
+            dispatchLoot();
+        }
+
+        public void forceUnspawn()
+        {
+            spawnCorpse();
+            Destroy(gameObject);
+        }
+
+        #endregion
+
+        [System.Serializable]
+        private class EnnemyInventoryItem
+        {
+            public Lootable item;
+            public bool _equipped = true;
+            public bool _applyBonuses = true;
+            [RangeAttribute(0, 100)]
+            public int dropRate;
+        }
+    }
 }

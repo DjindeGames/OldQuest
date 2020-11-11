@@ -1,24 +1,27 @@
-﻿public class PlayerCharacterStats : CharacterStats
+﻿namespace Djinde.Quest
 {
-    #region Public Methods
-
-    public void LoadStats(BaseCharacterStats stats)
+    public class PlayerCharacterStats : CharacterStats
     {
-        _baseCharacterStats = stats;
-    }
+        #region Public Methods
 
-    public BaseCharacterStats GetStats()
-    {
-        BaseCharacterStats stats = new BaseCharacterStats();
-        stats.SetStat(EPassiveStatType.Vitality, _baseCharacterStats.GetStat(EPassiveStatType.Vitality));
-        stats.SetStat(EPassiveStatType.Strength, _baseCharacterStats.GetStat(EPassiveStatType.Strength));
-        stats.SetStat(EPassiveStatType.Endurance, _baseCharacterStats.GetStat(EPassiveStatType.Endurance));
-        stats.SetStat(EPassiveStatType.HitRolls, _baseCharacterStats.GetStat(EPassiveStatType.HitRolls));
-        stats.SetStat(EPassiveStatType.ScoreToHit, _baseCharacterStats.GetStat(EPassiveStatType.ScoreToHit));
-        stats.SetStat(EPassiveStatType.Damages, _baseCharacterStats.GetStat(EPassiveStatType.Damages));
-        stats.SetCurrentHealth(_baseCharacterStats.GetCurrentHealth());
-        return stats;
-    }
+        public void LoadStats(BaseCharacterStats stats)
+        {
+            _baseCharacterStats = stats;
+        }
 
-    #endregion
+        public BaseCharacterStats GetStats()
+        {
+            BaseCharacterStats stats = new BaseCharacterStats();
+            stats.SetStat(EPassiveStatType.Vitality, _baseCharacterStats.GetStat(EPassiveStatType.Vitality));
+            stats.SetStat(EPassiveStatType.Strength, _baseCharacterStats.GetStat(EPassiveStatType.Strength));
+            stats.SetStat(EPassiveStatType.Endurance, _baseCharacterStats.GetStat(EPassiveStatType.Endurance));
+            stats.SetStat(EPassiveStatType.HitRolls, _baseCharacterStats.GetStat(EPassiveStatType.HitRolls));
+            stats.SetStat(EPassiveStatType.ScoreToHit, _baseCharacterStats.GetStat(EPassiveStatType.ScoreToHit));
+            stats.SetStat(EPassiveStatType.Damages, _baseCharacterStats.GetStat(EPassiveStatType.Damages));
+            stats.SetCurrentHealth(_baseCharacterStats.GetCurrentHealth());
+            return stats;
+        }
+
+        #endregion
+    }
 }

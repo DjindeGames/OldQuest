@@ -1,19 +1,23 @@
 ﻿using System;
 using UnityEngine;
 
-public abstract class Item : ScriptableObject
+namespace Djinde.Quest
 {
-    public string description;
-    public EItemType Type { get; private set; }
-    public ELootableOutlineType rarity;
-
-    public void Awake()
+    public abstract class Item : ScriptableObject
     {
-        fetchType();
-    }
+        public string description;
+        public EItemType Type { get; private set; }
+        public ELootableOutlineType rarity;
 
-    public void fetchType()
-    {
-        Type =  (EItemType)Enum.Parse(typeof(EItemType), GetType().ToString());
+        public void Awake()
+        {
+            fetchType();
+        }
+
+        public void fetchType()
+        {
+            string[] splittedType = GetType().ToString().Split('.');
+            Type = (EItemType)Enum.Parse(typeof(EItemType), splittedType[splittedType.Length - 1]);
+        }
     }
 }

@@ -1,35 +1,40 @@
-﻿public class SelectableList_Loot : SelectableList
+﻿using Djinde.UI;
+
+namespace Djinde.Quest
 {
-    #region Events
-
-    public delegate void LootsFullyRevealedEvent();
-    public event LootsFullyRevealedEvent OnLootsFullyRevealedEvent;
-
-    #endregion
-
-    #region Attributes
-
-    private int _lootsRevealedCount = 0;
-
-    #endregion
-
-    #region Public Methods
-
-    public override void ClearList()
+    public class SelectableList_Loot : SelectableList
     {
-        base.ClearList();
-        _lootsRevealedCount = 0;
-    }
+        #region Events
 
-    public override void OnItemSelected(SelectableListItem item)
-    {
-        base.OnItemSelected(item);
-        _lootsRevealedCount++;
-        if (_lootsRevealedCount == _listContent.Count)
+        public delegate void LootsFullyRevealedEvent();
+        public event LootsFullyRevealedEvent OnLootsFullyRevealedEvent;
+
+        #endregion
+
+        #region Attributes
+
+        private int _lootsRevealedCount = 0;
+
+        #endregion
+
+        #region Public Methods
+
+        public override void ClearList()
         {
-            OnLootsFullyRevealedEvent?.Invoke();
+            base.ClearList();
+            _lootsRevealedCount = 0;
         }
-    }
 
-    #endregion
+        public override void OnItemSelected(SelectableListItem item)
+        {
+            base.OnItemSelected(item);
+            _lootsRevealedCount++;
+            if (_lootsRevealedCount == _listContent.Count)
+            {
+                OnLootsFullyRevealedEvent?.Invoke();
+            }
+        }
+
+        #endregion
+    }
 }

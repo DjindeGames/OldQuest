@@ -1,94 +1,97 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class Lootable : ItemPhysics
+namespace Djinde.Quest
 {
-    [Header("Parameters")]
-    public Item item;
-
-    private Material[] baseMaterials;
-    private Material[] outlinedMaterials;
-    private Renderer renderer;
-
-    protected override void Awake()
+    public class Lootable : ItemPhysics
     {
-        base.Awake();
-        renderer = GetComponent<Renderer>();
-        baseMaterials = renderer.materials;
-        item.fetchType();
-    }
+        [Header("Parameters")]
+        public Item item;
 
-    protected void Start()
-    {
-        initializeOutlinedMaterials();
-    }
+        private Material[] baseMaterials;
+        private Material[] outlinedMaterials;
+        private Renderer renderer;
 
-    protected override void mouseEntered()
-    {
-        MainUI.Instance.displayDescription(item.description);
-        toggleOutline(!grabbed);
-    }
-
-    protected override void mouseExited()
-    {
-        MainUI.Instance.hideDescription();
-        toggleOutline(false);
-    }
-
-    private void loot()
-    {
-        toggleOutline(false);
-        InventoryManager.Instance.loot(this);
-    }
-
-    protected override void activate()
-    {
-        base.activate();
-        toggleOutline(false);
-        StartCoroutine(checkIfGrabbedOrClicked());
-    }
-
-    private IEnumerator checkIfGrabbedOrClicked()
-    {
-        if (CameraManager.Instance.FirstPersonViewActive)
+        protected override void Awake()
         {
-            yield return new WaitForSecondsRealtime(0.1f);
-            if (Input.GetMouseButton(0))
+            base.Awake();
+            renderer = GetComponent<Renderer>();
+            baseMaterials = renderer.materials;
+            item.fetchType();
+        }
+
+        protected void Start()
+        {
+            initializeOutlinedMaterials();
+        }
+
+        protected override void mouseEntered()
+        {
+            MainUI.Instance.displayDescription(item.description);
+            toggleOutline(!grabbed);
+        }
+
+        protected override void mouseExited()
+        {
+            MainUI.Instance.hideDescription();
+            toggleOutline(false);
+        }
+
+        private void loot()
+        {
+            toggleOutline(false);
+            InventoryManager.Instance.loot(this);
+        }
+
+        protected override void activate()
+        {
+            base.activate();
+            toggleOutline(false);
+            StartCoroutine(checkIfGrabbedOrClicked());
+        }
+
+        private IEnumerator checkIfGrabbedOrClicked()
+        {
+            if (CameraManager.Instance.FirstPersonViewActive)
             {
-                grabbed = true;
+                yield return new WaitForSecondsRealtime(0.1f);
+                if (Input.GetMouseButton(0))
+                {
+                    grabbed = true;
+                }
+                else
+                {
+                    loot();
+                }
             }
             else
             {
                 loot();
             }
         }
-        else
-        {
-            loot();
-        }
-    }
 
-    private void toggleOutline(bool on)
-    {
-        if (on)
+        private void toggleOutline(bool on)
         {
-            renderer.materials = outlinedMaterials;
+            if (on)
+            {
+                renderer.materials = outlinedMaterials;
+            }
+            else
+            {
+                renderer.materials = baseMaterials;
+            }
         }
-        else
-        {
-            renderer.materials = baseMaterials;
-        }
-    }
 
-    private void initializeOutlinedMaterials()
-    {
-        outlinedMaterials = new Material[baseMaterials.Length];
-        Material baseOutline = GameConstants.Instance.getLootableOutlineMaterialByType(item.rarity);
-        for (int i = 0; i < outlinedMaterials.Length; i++)
+        private void initializeOutlinedMaterials()
         {
-            Material material = new Material(baseOutline);
-            material.color = baseMaterials[i].color;
-            outlinedMaterials[i] = material;
+            outlinedMaterials = new Material[baseMaterials.Length];
+            Material baseOutline = GameConstants.Instance.getLootableOutlineMaterialByType(item.rarity);
+            for (int i = 0; i < outlinedMaterials.Length; i++)
+            {
+                Material material = new Material(baseOutline);
+                material.color = baseMaterials[i].color;
+                outlinedMaterials[i] = material;
+            }
         }
     }
 }

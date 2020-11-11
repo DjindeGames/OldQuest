@@ -1,46 +1,49 @@
 ﻿using UnityEngine;
 
-public class Puppet : MonoBehaviour
+namespace Djinde.Quest
 {
-    private Quaternion baseRotation;
-
-    void Awake()
+    public class Puppet : MonoBehaviour
     {
-        baseRotation = transform.rotation;
-    }
+        private Quaternion baseRotation;
 
-    private void Update()
-    {
-        if (ScreenManager.Instance.ActiveScreen != EScreenType.Puppet)
+        void Awake()
         {
-            return;
+            baseRotation = transform.rotation;
         }
 
-        if (Input.GetMouseButtonUp(0))
+        private void Update()
         {
-            Cursor.visible = true;
-            transform.rotation = baseRotation;
-        }
-        else if (Input.GetMouseButtonDown(0))
-        {
-            Cursor.visible = false;
+            if (ScreenManager.Instance.ActiveScreen != EScreenType.Puppet)
+            {
+                return;
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                Cursor.visible = true;
+                transform.rotation = baseRotation;
+            }
+            else if (Input.GetMouseButtonDown(0))
+            {
+                Cursor.visible = false;
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                transform.Rotate(new Vector3(0, -Input.GetAxis("Mouse X") * GameConstants.Instance.puppetRotationSpeedMultiplier, 0));
+            }
         }
 
-        if (Input.GetMouseButton(0))
+        void OnMouseOver()
         {
-            transform.Rotate(new Vector3(0, -Input.GetAxis("Mouse X") * GameConstants.Instance.puppetRotationSpeedMultiplier, 0));
-        }
-    }
-
-    void OnMouseOver()
-    {
-        if (ScreenManager.Instance.ActiveScreen != EScreenType.Inventory)
-        {
-            return;
-        }
-        if(Input.GetMouseButtonDown(0))
-        {
-            ScreenManager.Instance.switchScreen(EScreenType.Puppet);
+            if (ScreenManager.Instance.ActiveScreen != EScreenType.Inventory)
+            {
+                return;
+            }
+            if (Input.GetMouseButtonDown(0))
+            {
+                ScreenManager.Instance.switchScreen(EScreenType.Puppet);
+            }
         }
     }
 }

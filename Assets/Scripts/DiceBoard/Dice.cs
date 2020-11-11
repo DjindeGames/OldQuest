@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using Djinde.Quest;
 
 public class Dice : ConstrainedDraggableItem
 {

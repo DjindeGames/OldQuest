@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 
-public class Fishnet : MonoBehaviour
+namespace Djinde.Quest
 {
-    private void OnTriggerEnter(Collider other)
+    public class Fishnet : MonoBehaviour
     {
-        ItemPhysics itemPhysics = other.gameObject.GetComponent<ItemPhysics>();
-        Dice dice = other.gameObject.GetComponent<Dice>();
-        if (itemPhysics != null)
+        private void OnTriggerEnter(Collider other)
         {
-            itemPhysics.restorePosition();
-        }
-        if (dice != null)
-        {
-            dice.restorePosition();
+            ItemPhysics itemPhysics = other.gameObject.GetComponent<ItemPhysics>();
+            Dice dice = other.gameObject.GetComponent<Dice>();
+            if (itemPhysics != null)
+            {
+                itemPhysics.restorePosition();
+            }
+            if (dice != null)
+            {
+                dice.restorePosition();
+            }
         }
     }
 }

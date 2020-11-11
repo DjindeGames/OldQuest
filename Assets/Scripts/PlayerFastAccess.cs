@@ -1,18 +1,21 @@
-﻿public class PlayerFastAccess
+﻿namespace Djinde.Quest
 {
-    public static EquipmentHolder _EquipmentHolder
+    public class PlayerFastAccess
     {
-        get
+        public static EquipmentHolder _EquipmentHolder
         {
-            return PlayerComponent._Instance._EquipmentHolder;
+            get
+            {
+                return PlayerComponent._Instance._EquipmentHolder;
+            }
         }
-    }
 
-    public static PlayerCharacterStats _CharacterStats
-    {
-        get
+        public static PlayerCharacterStats _CharacterStats
         {
-            return PlayerComponent._Instance._CharacterStats;
+            get
+            {
+                return PlayerComponent._Instance._CharacterStats;
+            }
         }
     }
 }

@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
-public class Oil : Item
+namespace Djinde.Quest
 {
+    [CreateAssetMenu]
+    public class Oil : Item
+    {
+    }
 }

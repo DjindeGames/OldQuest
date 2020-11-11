@@ -1,46 +1,49 @@
 ﻿using UnityEngine;
 
-public class TemplateClass : MonoBehaviour
+namespace Djinde.Quest
 {
-    #region Events
+    public class TemplateClass : MonoBehaviour
+    {
+        #region Events
 
 
 
-    #endregion
+        #endregion
 
-    #region Exposed Attributes
-
-
-
-    #endregion
-
-    #region Attributes
+        #region Exposed Attributes
 
 
 
-    #endregion
+        #endregion
 
-    #region MonoBehaviour Methods
-
-
-
-    #endregion
-
-    #region Private Methods
+        #region Attributes
 
 
 
-    #endregion
+        #endregion
 
-    #region Protected Methods
-
-
-
-    #endregion
-
-    #region Public Methods
+        #region MonoBehaviour Methods
 
 
 
-    #endregion
+        #endregion
+
+        #region Private Methods
+
+
+
+        #endregion
+
+        #region Protected Methods
+
+
+
+        #endregion
+
+        #region Public Methods
+
+
+
+        #endregion
+    }
 }

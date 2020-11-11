@@ -1,23 +1,26 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu]
-public class Equipment : Usable
+namespace Djinde.Quest
 {
-    public GameObject skin;
-    public EGearSlotType[] slots;
-    public PassiveBonus[] _passiveBonuses;
-    public ActiveBonus[] _activeBonuses;
-}
+    [CreateAssetMenu]
+    public class Equipment : Usable
+    {
+        public GameObject skin;
+        public EGearSlotType[] slots;
+        public PassiveBonus[] _passiveBonuses;
+        public ActiveBonus[] _activeBonuses;
+    }
 
-[System.Serializable]
-public class PassiveBonus
-{
-    public EPassiveStatType type;
-    public int value;
-}
+    [System.Serializable]
+    public class PassiveBonus
+    {
+        public EPassiveStatType type;
+        public int value;
+    }
 
-[System.Serializable]
-public class ActiveBonus
-{
-    public EActiveBonusType type;
+    [System.Serializable]
+    public class ActiveBonus
+    {
+        public EActiveBonusType type;
+    }
 }

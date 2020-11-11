@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Djinde.Quest;
 
 public class DiceBoardManager : MonoBehaviour
 {

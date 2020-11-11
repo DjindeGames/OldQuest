@@ -1,53 +1,53 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class AudioSync : MonoBehaviour
+namespace Djinde.Quest
 {
-    [Header("Parameters")]
-    [SerializeField]
-    private EVolumeType type;
-
-    private AudioSource source;
-
-    private void Awake()
+    public class AudioSync : MonoBehaviour
     {
-        source = GetComponent<AudioSource>();
-    }
+        [Header("Parameters")]
+        [SerializeField]
+        private EVolumeType type;
 
-    private void Start()
-    {
-        SettingsManager.Instance.volumeHasChanged += onVolumeChanged;
-        initVolume();
-    }
+        private AudioSource source;
 
-    private void initVolume()
-    {
-        switch(type)
+        private void Awake()
         {
-            case (EVolumeType.Effects):
-                source.volume = SettingsManager.Instance.EffectsVolume;
-                break;
-            case (EVolumeType.Music):
-                source.volume = SettingsManager.Instance.MusicVolume;
-                break;
-            case (EVolumeType.Physics):
-                source.volume = SettingsManager.Instance.PhysicsVolume;
-                break;
+            source = GetComponent<AudioSource>();
         }
-    }
 
-    private void onVolumeChanged(EVolumeType which, float value)
-    {
-        if (which == type)
+        private void Start()
         {
-            source.volume = value;
+            SettingsManager.Instance.volumeHasChanged += onVolumeChanged;
+            initVolume();
         }
-    }
 
-    private void OnDestroy()
-    {
-        SettingsManager.Instance.volumeHasChanged -= onVolumeChanged;
+        private void initVolume()
+        {
+            switch (type)
+            {
+                case (EVolumeType.Effects):
+                    source.volume = SettingsManager.Instance.EffectsVolume;
+                    break;
+                case (EVolumeType.Music):
+                    source.volume = SettingsManager.Instance.MusicVolume;
+                    break;
+                case (EVolumeType.Physics):
+                    source.volume = SettingsManager.Instance.PhysicsVolume;
+                    break;
+            }
+        }
+
+        private void onVolumeChanged(EVolumeType which, float value)
+        {
+            if (which == type)
+            {
+                source.volume = value;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            SettingsManager.Instance.volumeHasChanged -= onVolumeChanged;
+        }
     }
 }
